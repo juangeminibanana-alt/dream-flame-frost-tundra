@@ -1,0 +1,754 @@
+/* ==========================================================================
+   CORTE · Tokens de diseño v1.1  (12 nov 2026)
+   Sistema visual de la app de creador para TikTok Shop México.
+   Fuente de verdad: spec/02_visual.md (v1.1). Nombre técnico del proyecto: creator-hub.
+
+   Cómo se usa
+   - Tema: <html data-theme="dark|light|system">. Oscuro es el principal y el
+     valor por defecto (si no hay atributo, se ve oscuro).
+   - Densidad: <html data-density="comfortable|compact|touch">. Windows usa
+     comfortable (o compact si el usuario lo elige); Android usa touch.
+   - Plataforma: <html data-platform="windows|android">.
+   - Vidrio: <html data-glass="on"> lo enciende (Windows siempre; Android solo si
+     Java detecta un equipo capaz, §10.3). Sin el atributo, las capas .glass son opacas.
+   - Escala de texto (Android): Java inyecta --fs = min(fontScale, 2.0) en
+     document.documentElement.style. En Windows no existe y vale 1.
+   - Movimiento reducido (rev. 1.1.1, BUILD_SPEC 3.1 §8.4): Java solo escribe
+     <html data-system-reduced-motion> (dato del sistema). La interfaz decide y escribe
+     <html data-reduced-motion> si hay que reducir (preferencia "Sí", o "Según el sistema" con
+     el media query o el dato de Java) o <html data-motion="full"> si el usuario eligió "No"
+     (entonces el media query del sistema se ignora).
+   - Los componentes SOLO consumen tokens semánticos (--surface-*, --text-*, ...).
+     Las primitivas (--grafito-*, --lima-*, ...) existen para construir tokens.
+   - Contrastes: batería de 305 pares con contrast() del validador (02 §12), 0 fallas
+     (spec/verificacion/v08_contraste_visual.mjs).
+     Paletas de gráficas validadas con validate_palette.js en oscuro y claro (02 §9).
+   - La sección 14 trae REGLAS BASE obligatorias (foco, colores forzados,
+     movimiento reducido, vidrio, área táctil). Se importan con los tokens.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. PRIMITIVAS (no cambian con el tema)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Grafito: neutro con un 0.6 % de croma verde-frío (h157) que casa con la lima.
+     v1.1: superficies oscuras más separadas (1.12:1 lienzo → superficie 1). */
+  --grafito-0:    #070a08;
+  --grafito-50:   #0c0f0d; /* lienzo oscuro */
+  --grafito-75:   #101311; /* hundido oscuro */
+  --grafito-100:  #181c1a; /* superficie 1 oscura (1.12:1 contra el lienzo) */
+  --grafito-150:  #1d2220; /* superficie 2 oscura */
+  --grafito-200:  #242927; /* superficie 3 oscura */
+  --grafito-250:  #2c312e; /* superficie 4 oscura */
+  --grafito-300:  #343936;
+  --grafito-400:  #3b3e3c;
+  --grafito-500:  #535654; /* texto deshabilitado oscuro */
+  --grafito-550:  #686c69; /* relleno neutro oscuro (3.2:1 contra s1) */
+  --grafito-600:  #5f6360; /* texto 3 claro */
+  --grafito-650:  #7a7e7b; /* borde de control claro (≥ 3.07:1 incl. presionado) */
+  --grafito-680:  #828683; /* borde de control oscuro (≥ 3.09:1 incl. presionado) */
+  --grafito-700:  #a0a4a1; /* texto 3 oscuro */
+  --grafito-720:  #868a87; /* relleno neutro claro */
+  --grafito-750:  #a3a7a4; /* texto deshabilitado claro */
+  --grafito-800:  #c0c5c2; /* texto 2 oscuro */
+  --grafito-850:  #454946; /* texto 2 claro */
+  --grafito-900:  #dbdfdd;
+  --grafito-925:  #eceeec; /* hundido claro / pista */
+  --grafito-950:  #f2f4f2; /* lienzo claro */
+  --grafito-975:  #f6f8f6; /* superficie 2 clara */
+  --grafito-1000: #ffffff;
+  --tinta:        #0f1211; /* texto 1 claro */
+  --papel:        #f0f3f1; /* texto 1 oscuro */
+
+  /* Lima Corte: el acento de marca (OKLCH 0.90 0.20 122) */
+  --lima-50:  #f6fee8;
+  --lima-100: #ebfcc8;
+  --lima-200: #defb96;
+  --lima-300: #d2f962; /* hover sobre oscuro */
+  --lima-400: #c8f23c; /* MARCA */
+  --lima-500: #b9e11f; /* presionado */
+  --lima-600: #93b415;
+  --lima-700: #728d05;
+  --lima-800: #536f04;
+  --lima-850: #4c6500; /* tinta de marca en modo claro (5.68:1 en el peor caso) */
+  --lima-875: #3a4d00; /* etapa "Publicada" en claro */
+  --lima-900: #283302;
+  --lima-950: #171e04;
+
+  /* Iris: tono líder de datos (complementario de la lima) — rampa secuencial */
+  --iris-100: #ecedff;
+  --iris-150: #dadaff;
+  --iris-200: #c8c7fe;
+  --iris-250: #b3b1ff;
+  --iris-300: #9f99fe;
+  --iris-350: #8d80ff;
+  --iris-400: #7c69f4;
+  --iris-450: #6b55df;
+  --iris-500: #5c42ca;
+  --iris-550: #4d2db6;
+  --iris-600: #4118a5;
+  --iris-650: #360191;
+  --iris-700: #290074;
+
+  /* Avatares de tienda: [fondo, iniciales] por tono; elección determinista por hash.
+     v1.1: fondos oscuros en OKLCH L 0.30 / C 0.06 (pizarra C 0.03); "lima" → "pizarra". */
+  --av-iris-bg-d:    #2b294b; --av-iris-fg-d:    #d2d1ff; --av-iris-bg-l:    #e8e8ff; --av-iris-fg-l:    #433e7b;
+  --av-coral-bg-d:   #472215; --av-coral-fg-d:   #ffc8b3; --av-coral-bg-l:   #ffe4da; --av-coral-fg-l:   #733119;
+  --av-aqua-bg-d:    #003732; --av-aqua-fg-d:    #9ee8de; --av-aqua-bg-l:    #d2f3ee; --av-aqua-fg-l:    #00584f;
+  --av-ambar-bg-d:   #3f2903; --av-ambar-fg-d:   #f5d1a0; --av-ambar-bg-l:   #f9e8d2; --av-ambar-fg-l:   #663e00;
+  --av-rosa-bg-d:    #442032; --av-rosa-fg-d:    #ffc4de; --av-rosa-bg-l:    #ffe2ee; --av-rosa-fg-l:    #6e2e4f;
+  --av-pizarra-bg-d: #21303c; --av-pizarra-fg-d: #c5dbee; --av-pizarra-bg-l: #e1edf8; --av-pizarra-fg-l: #334a5f;
+  --av-cielo-bg-d:   #043247; --av-cielo-fg-d:   #a7e0ff; --av-cielo-bg-l:   #d6f0ff; --av-cielo-fg-l:   #004e75;
+  --av-verde-bg-d:   #14361d; --av-verde-fg-d:   #b5e6be; --av-verde-bg-l:   #dcf2df; --av-verde-fg-l:   #115629;
+
+  /* ------------------------------------------------------------------------
+     2. TIPOGRAFÍA (igual en ambos temas; el peso de cuerpo sí cambia)
+     Paquetes npm: @fontsource-variable/mona-sans (importar "wdth.css") y
+     @fontsource-variable/geist-mono. Solo 3 anchos y 4 pesos (instancias
+     limitadas para la caché de glifos de Android, §4.2).
+     ------------------------------------------------------------------------ */
+  --font-sans: "Mona Sans Variable", "Mona Sans", "Segoe UI Variable Text", "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", "Geist Mono", "Cascadia Mono", "Roboto Mono", ui-monospace, monospace;
+
+  /* Ancho (eje wdth). Programa de firma: cifras protagonistas y marca a 125 %. */
+  --stretch-text:  100%;   /* texto y títulos */
+  --stretch-kpi:   112%;   /* valores KPI, cifras de tarjeta, comisión en miniaturas */
+  --stretch-brand: 125%;   /* hero, display, wordmark, total del ticket de corte */
+
+  /* Escala de texto del sistema (Android). --fs la inyecta Java; 1 si no existe. */
+  --fs-lin:  var(--fs, 1);                              /* texto corrido: escala completa */
+  --fs-half: calc(1 + (var(--fs, 1) - 1) * 0.5);        /* cifras y títulos grandes: la mitad */
+
+  /* Escala (tamaño / interlínea sin unidad). Ratio ~1.2 con ajustes ópticos. */
+  --text-hero-size:    calc(56px * var(--fs-half)); --text-hero-lh: 1.0714;    /* 56/60: UNA cifra por vista */
+  --text-display-size: calc(32px * var(--fs-half)); --text-display-lh: 1.1875; /* 32/38 */
+  --text-title1-size:  calc(24px * var(--fs-half)); --text-title1-lh: 1.25;    /* 24/30 */
+  --text-title2-size:  calc(20px * var(--fs-lin));  --text-title2-lh: 1.3;     /* 20/26 */
+  --text-title3-size:  calc(17px * var(--fs-lin));  --text-title3-lh: 1.4118;  /* 17/24 */
+  --text-kpi-size:     calc(30px * var(--fs-half)); --text-kpi-lh: 1.1333;     /* 30/34 */
+  --text-body-lg-size: calc(16px * var(--fs-lin));  --text-body-lg-lh: 1.5;    /* 16/24 */
+  --text-body-size:    calc(14px * var(--fs-lin));  --text-body-lh: 1.4286;    /* 14/20 */
+  --text-body-sm-size: calc(13px * var(--fs-lin));  --text-body-sm-lh: 1.3846; /* 13/18 */
+  --text-caption-size: calc(12px * var(--fs-lin));  --text-caption-lh: 1.3333; /* 12/16 */
+  --text-micro-size:   calc(11px * var(--fs-lin));  --text-micro-lh: 1.2727;   /* 11/14 */
+  --text-overline-size: calc(11px * var(--fs-lin)); --text-overline-lh: 1.2727;
+  --text-mono-size:    calc(13px * var(--fs-lin));  --text-mono-lh: 1.3846;
+
+  --weight-body: 430;      /* oscuro; 400 en claro (lo redefine el tema) */
+  --weight-medium: 520;
+  --weight-semibold: 600;
+  --weight-display: 640;   /* hero, display, KPI, wordmark, insignias, iniciales */
+
+  --tracking-hero: -0.03em;
+  --tracking-display: -0.02em;
+  --tracking-title: -0.012em;
+  --tracking-body: 0em;
+  --tracking-caption: 0.005em;
+  --tracking-overline: 0.06em;
+
+  /* ------------------------------------------------------------------------
+     3. ESPACIADO (base 4 px)
+     ------------------------------------------------------------------------ */
+  --space-0: 0px;
+  --space-0-5: 2px;
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ------------------------------------------------------------------------
+     4. RADIOS Y FORMAS DE FIRMA
+     ------------------------------------------------------------------------ */
+  --radius-2xs: 4px;   /* marcas de datos, kbd */
+  --radius-xs: 6px;    /* chips pequeños, miniaturas 28–32 */
+  --radius-sm: 8px;    /* botones sm, inputs, miniaturas 40–56 */
+  --radius-md: 10px;   /* botones md/lg, segmentado, tira de pendientes 64 */
+  --radius-lg: 14px;   /* tarjetas, miniatura 9:16 */
+  --radius-xl: 20px;   /* modal, panel, foto del detalle Android, tile del QR */
+  --radius-2xl: 28px;  /* hoja inferior (esquinas superiores) */
+  --radius-full: 9999px;
+  --radius-window: 8px; /* esquinas de ventana Windows 11 */
+
+  /* El corte a 45° como forma visible (§2.3). Solo en estos usos. */
+  --cut-chamfer: 18px;                 /* esquina superior derecha de "Ponte al día" (única tarjeta con chaflán) */
+  --cut-gap: 2px;                      /* separador a 45° entre segmentos de la barra de etapas */
+  --hatch-step: 6px;                   /* rayado a 45° de "perdido por reembolsos": 1 px cada 6 px */
+  --ticket-tooth: 8px;                 /* dentado del ticket de corte (máscara zigzag) */
+
+  /* ------------------------------------------------------------------------
+     5. Z-INDEX (capas nombradas; nunca valores sueltos)
+     ------------------------------------------------------------------------ */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-nav: 300;
+  --z-dropdown: 400;
+  --z-drawer: 500;
+  --z-modal: 600;
+  --z-toast: 700;
+  --z-tooltip: 800;
+  --z-titlebar: 900;
+
+  /* ------------------------------------------------------------------------
+     6. MOVIMIENTO (solo transform y opacity)
+     ------------------------------------------------------------------------ */
+  --dur-instant: 80ms;
+  --dur-fast: 140ms;
+  --dur-base: 200ms;
+  --dur-slow: 280ms;
+  --dur-slower: 400ms;
+  --dur-image: 120ms;    /* fundido de imagen: solo opacidad, sin escala (§8.3) */
+  --dur-skeleton: 1400ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-enter: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+  --ease-linear: linear;
+  --motion-distance: 8px;
+
+  /* ------------------------------------------------------------------------
+     7. LAYOUT (puntos de quiebre de 01_ux §3.4: 600 · 1024 · 1440)
+     ------------------------------------------------------------------------ */
+  --titlebar-h: 32px;
+  --header-h: 56px;
+  --sidebar-w: 248px;
+  --rail-w: 80px;              /* barra lateral colapsada = riel (ícono + etiqueta), < 1180 px */
+  --bottomnav-h: 64px;         /* + inset inferior */
+  --panel-w: 480px;            /* panel de detalle de muestra (≥ 1280 px; debajo, pantalla completa) */
+  --content-max: 1360px;
+  --content-pad-x: var(--space-8);
+  --grid-gap: var(--space-4);
+  --band-gap: var(--space-12); /* separación entre bandas sin tarjeta (héroe, dinero) */
+  --touch-min: 48px;
+
+  --inset-top: var(--native-inset-top, env(safe-area-inset-top, 0px));
+  --inset-right: var(--native-inset-right, env(safe-area-inset-right, 0px));
+  --inset-bottom: var(--native-inset-bottom, env(safe-area-inset-bottom, 0px));
+  --inset-left: var(--native-inset-left, env(safe-area-inset-left, 0px));
+
+  /* Densidad por defecto = comfortable (Windows). Los controles usan min-height. */
+  --control-h-sm: 32px;
+  --control-h-md: 36px;
+  --control-h-lg: 44px;
+  --row-h: 52px;
+  --row-h-dense: 40px;
+  --thumb-row: 40px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 24px;
+  --icon-stroke: 1.75px;
+
+  /* Imágenes */
+  --img-ratio-product: 1 / 1;
+  --img-ratio-video: 9 / 16;
+  --img-ratio-hero: 4 / 5;     /* foto protagonista de "Ponte al día" y detalle Android */
+}
+
+/* --------------------------------------------------------------------------
+   8. TEMA OSCURO (principal, por defecto)
+   -------------------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Superficies: se eleva aclarando 1 paso (≈ 1.12:1 el primer paso) */
+  --bg-canvas: var(--grafito-50);
+  --bg-sunken: var(--grafito-75);
+  --surface-1: var(--grafito-100);
+  --surface-2: var(--grafito-150);
+  --surface-3: var(--grafito-200);
+  --surface-4: var(--grafito-250);
+  --surface-hover: rgba(240, 243, 241, 0.04);
+  --surface-pressed: rgba(240, 243, 241, 0.05);
+  --surface-selected: rgba(200, 242, 60, 0.09);
+  --surface-inverse: var(--papel);
+  --overlay-scrim: rgba(4, 6, 5, 0.66);
+
+  /* Vidrio: con texto encima nunca baja de .86 (peor caso: blanco debajo, §12) */
+  --glass-bg: rgba(24, 28, 26, 0.86);
+  --glass-bg-solid: var(--surface-1);
+  --glass-border: rgba(240, 243, 241, 0.08);
+  --glass-blur: 20px;
+  --glass-saturate: 140%;
+
+  /* Texto */
+  --text-1: var(--papel);             /* ≥ 10.2:1 */
+  --text-2: var(--grafito-800);       /* ≥ 6.5:1 */
+  --text-3: var(--grafito-700);       /* ≥ 4.52:1 (s4 presionado) */
+  --text-disabled: var(--grafito-500);/* exento; nunca para información */
+  --text-on-brand: var(--grafito-50);
+  --text-on-media: #ffffff;
+  --text-link: var(--lima-400);
+
+  /* Bordes */
+  --border-subtle: rgba(240, 243, 241, 0.07);
+  --border-default: rgba(240, 243, 241, 0.11);
+  --border-strong: rgba(240, 243, 241, 0.18);
+  --border-control: var(--grafito-680);
+  --border-focus: var(--lima-400);
+  --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--lima-400);
+
+  /* Marca */
+  --brand: var(--lima-400);
+  --brand-hover: var(--lima-300);
+  --brand-pressed: var(--lima-500);
+  --brand-ink: var(--lima-400);
+  --brand-subtle: rgba(200, 242, 60, 0.10);
+  --brand-subtle-border: rgba(200, 242, 60, 0.28);
+  --btn-primary-bg: var(--lima-400);
+  --btn-primary-bg-hover: var(--lima-300);
+  --btn-primary-bg-pressed: var(--lima-500);
+  --btn-primary-fg: var(--grafito-50);
+  /* Deshabilitado: sin opacidad (la lima a 42 % parecía otro color de marca) */
+  --disabled-bg: var(--surface-2);
+  --disabled-fg: var(--text-disabled);
+  --disabled-border: var(--border-subtle);
+  /* Indicador activo (barra lateral, píldora): lima */
+  --nav-indicator: var(--lima-400);
+  --nav-indicator-edge: transparent;
+  /* Progreso propio */
+  --progress-fill: var(--lima-400);
+  --progress-edge: transparent;
+  --progress-track: var(--surface-3);
+  --seg-thumb-bg: var(--surface-4);
+
+  /* Etapas de trabajo "Tu avance" (§3.6): escala ordinal de lima, validada --ordinal */
+  --stage-planeada: var(--lima-800);
+  --stage-listo: var(--lima-700);
+  --stage-programada: var(--lima-600);
+  --stage-publicada: var(--lima-400);
+  --stage-on-light: var(--grafito-50);   /* número dentro de Programada / Publicada */
+  --stage-on-dark: var(--papel);         /* número dentro de Planeada / Video listo */
+  --stage-track: var(--surface-3);
+
+  /* Estados — siempre con ícono + texto, nunca color solo */
+  --ok-fg: #31d78c;      --ok-bg: rgba(49, 215, 140, 0.14);   --ok-border: rgba(49, 215, 140, 0.32);   --ok-solid: #31d78c;   --ok-on-solid: #0c0f0d;
+  --warn-fg: #f5ae39;    --warn-bg: rgba(245, 174, 57, 0.14); --warn-border: rgba(245, 174, 57, 0.34); --warn-solid: #f5ae39; --warn-on-solid: #0c0f0d;
+  --crit-fg: #ff8a84;    --crit-bg: rgba(255, 138, 132, 0.14);--crit-border: rgba(255, 138, 132, 0.36);--crit-solid: #ff8a84; --crit-on-solid: #0c0f0d;
+  --info-fg: #86bafe;    --info-bg: rgba(134, 186, 254, 0.14);--info-border: rgba(134, 186, 254, 0.32);--info-solid: #86bafe; --info-on-solid: #0c0f0d;
+  --neutral-fg: var(--grafito-800); --neutral-bg: rgba(240, 243, 241, 0.07); --neutral-border: rgba(240, 243, 241, 0.14); --neutral-solid: var(--grafito-550); --neutral-on-solid: var(--papel);
+
+  /* Elevación: reflejo superior de 1 px + sombras solo en capas flotantes */
+  --elev-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-2: 0 4px 12px -2px rgba(0, 0, 0, 0.50), 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-3: 0 12px 32px -8px rgba(0, 0, 0, 0.60), 0 2px 6px rgba(0, 0, 0, 0.40);
+  --shadow-4: 0 24px 64px -12px rgba(0, 0, 0, 0.70), 0 4px 12px rgba(0, 0, 0, 0.45);
+
+  /* Imágenes */
+  --media-bg: #1f2422;
+  --media-border: rgba(255, 255, 255, 0.07);
+  --media-veil: rgba(0, 0, 0, 0.06);   /* baja el deslumbre de fotos blancas SIN filter (en ::after) */
+  /* Velo anclado en px desde el pie: α ≥ .66 bajo todo el bloque de texto (§7.18) */
+  --media-scrim: linear-gradient(to top, rgba(0,0,0,0.78) 0, rgba(0,0,0,0.66) calc(84px * var(--fs-lin)), rgba(0,0,0,0) calc(150px * var(--fs-lin)));
+  --media-scrim-top: linear-gradient(to bottom, rgba(0,0,0,0.42) 0, rgba(0,0,0,0) 56px);
+  --media-glyph-bg: rgba(12, 15, 13, 0.72);
+  --skeleton-a: rgba(240, 243, 241, 0.05);
+  --skeleton-b: rgba(240, 243, 241, 0.10);
+
+  /* Dataviz */
+  --viz-mono: rgba(201, 206, 203, 0.85);  /* gráficas de UNA serie (grafito) */
+  --viz-current: var(--viz-1);            /* barra con hover, foco o seleccionada */
+  --viz-1: #7e72e7; /* iris  */
+  --viz-2: #e6653c; /* coral */
+  --viz-3: #02a998; /* aqua  */
+  --viz-4: #bf8608; /* ámbar */
+  --viz-5: #d4599b; /* rosa  */
+  --viz-6: #7ba208; /* oliva de datos (no es la lima de marca) */
+  --viz-7: #0790ce; /* cielo */
+  --viz-8: #31983d; /* verde */
+  --viz-muted: var(--grafito-700);
+  --viz-now: var(--lima-400);             /* punto "ahora" del sparkline */
+  --viz-now-ring: var(--surface-1);
+  --viz-grid: rgba(240, 243, 241, 0.06);
+  --viz-axis: rgba(240, 243, 241, 0.14);
+  --viz-label: var(--text-3);
+  --viz-gap: var(--surface-1);
+  --viz-hatch-line: rgba(240, 243, 241, 0.22);   /* rayado 45° de reembolsos */
+  --viz-hatch-bg: rgba(240, 243, 241, 0.07);
+  /* Secuencial: exactamente 5 cubetas, nunca interpolar */
+  --viz-seq-1: var(--iris-500); --viz-seq-2: var(--iris-400); --viz-seq-3: var(--iris-300); --viz-seq-4: var(--iris-200); --viz-seq-5: var(--iris-100);
+  --viz-div-neg: var(--viz-2);
+  --viz-div-mid: #3a3f3c;
+  --viz-div-pos: var(--viz-1);
+
+  /* Avatares */
+  --av-iris-bg: var(--av-iris-bg-d);       --av-iris-fg: var(--av-iris-fg-d);
+  --av-coral-bg: var(--av-coral-bg-d);     --av-coral-fg: var(--av-coral-fg-d);
+  --av-aqua-bg: var(--av-aqua-bg-d);       --av-aqua-fg: var(--av-aqua-fg-d);
+  --av-ambar-bg: var(--av-ambar-bg-d);     --av-ambar-fg: var(--av-ambar-fg-d);
+  --av-rosa-bg: var(--av-rosa-bg-d);       --av-rosa-fg: var(--av-rosa-fg-d);
+  --av-pizarra-bg: var(--av-pizarra-bg-d); --av-pizarra-fg: var(--av-pizarra-fg-d);
+  --av-cielo-bg: var(--av-cielo-bg-d);     --av-cielo-fg: var(--av-cielo-fg-d);
+  --av-verde-bg: var(--av-verde-bg-d);     --av-verde-fg: var(--av-verde-fg-d);
+
+  --qr-bg: #ffffff;
+  --qr-fg: #0c0f0d;
+}
+
+/* --------------------------------------------------------------------------
+   9. TEMA CLARO (bloque duplicado a propósito para data-theme="system")
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg-canvas: var(--grafito-950);
+  --bg-sunken: var(--grafito-925);
+  --surface-1: #ffffff;
+  --surface-2: var(--grafito-975);
+  --surface-3: #ffffff;
+  --surface-4: #ffffff;
+  --surface-hover: rgba(15, 18, 17, 0.04);
+  --surface-pressed: rgba(15, 18, 17, 0.07);
+  --surface-selected: rgba(76, 101, 0, 0.08);
+  --surface-inverse: var(--tinta);
+  --overlay-scrim: rgba(15, 18, 17, 0.42);
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-bg-solid: #ffffff;
+  --glass-border: rgba(15, 18, 17, 0.08);
+  --glass-blur: 20px;
+  --glass-saturate: 160%;
+  --text-1: var(--tinta);
+  --text-2: var(--grafito-850);
+  --text-3: var(--grafito-600);
+  --text-disabled: var(--grafito-750);
+  --text-on-brand: var(--tinta);
+  --text-on-media: #ffffff;
+  --text-link: var(--lima-850);
+  --weight-body: 400;
+  --border-subtle: rgba(15, 18, 17, 0.07);
+  --border-default: rgba(15, 18, 17, 0.11);
+  --border-strong: rgba(15, 18, 17, 0.18);
+  --border-control: var(--grafito-650);
+  --border-focus: var(--lima-850);
+  --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--lima-850);
+  --brand: var(--lima-400);
+  --brand-hover: var(--lima-300);
+  --brand-pressed: var(--lima-500);
+  --brand-ink: var(--lima-850);
+  --brand-subtle: var(--lima-100);
+  --brand-subtle-border: rgba(76, 101, 0, 0.24);
+  --btn-primary-bg: var(--tinta);
+  --btn-primary-bg-hover: #232826;
+  --btn-primary-bg-pressed: #000000;
+  --btn-primary-fg: var(--lima-400);
+  --disabled-bg: var(--surface-2);
+  --disabled-fg: var(--text-disabled);
+  --disabled-border: var(--border-subtle);
+  --nav-indicator: var(--lima-400);
+  --nav-indicator-edge: var(--lima-850);
+  --progress-fill: var(--lima-400);
+  --progress-edge: var(--lima-850);
+  --progress-track: var(--grafito-925);
+  --seg-thumb-bg: #ffffff;
+  --stage-planeada: var(--lima-600);
+  --stage-listo: var(--lima-700);
+  --stage-programada: var(--lima-800);
+  --stage-publicada: var(--lima-875);
+  --stage-on-light: var(--tinta);
+  --stage-on-dark: #ffffff;
+  --stage-track: var(--grafito-925);
+  --ok-fg: #067346;   --ok-bg: #e2f8ea;   --ok-border: rgba(6, 115, 70, 0.24);   --ok-solid: #067346;   --ok-on-solid: #ffffff;
+  --warn-fg: #865900; --warn-bg: #feefdc; --warn-border: rgba(134, 89, 0, 0.26); --warn-solid: #a87400; --warn-on-solid: #0f1211;
+  --crit-fg: #b42f2b; --crit-bg: #feedec; --crit-border: rgba(180, 47, 43, 0.24);--crit-solid: #b42f2b; --crit-on-solid: #ffffff;
+  --info-fg: #2463ae; --info-bg: #eaf3fe; --info-border: rgba(36, 99, 174, 0.24);--info-solid: #2463ae; --info-on-solid: #ffffff;
+  --neutral-fg: var(--grafito-850); --neutral-bg: rgba(15, 18, 17, 0.05); --neutral-border: rgba(15, 18, 17, 0.12); --neutral-solid: var(--grafito-720); --neutral-on-solid: var(--tinta);
+  --elev-highlight: inset 0 0 0 0 transparent;
+  --shadow-1: 0 1px 2px rgba(15, 18, 17, 0.06), 0 0 0 1px rgba(15, 18, 17, 0.04);
+  --shadow-2: 0 4px 12px -2px rgba(15, 18, 17, 0.08), 0 1px 3px rgba(15, 18, 17, 0.06);
+  --shadow-3: 0 12px 32px -8px rgba(15, 18, 17, 0.14), 0 2px 6px rgba(15, 18, 17, 0.06);
+  --shadow-4: 0 24px 64px -12px rgba(15, 18, 17, 0.22), 0 4px 12px rgba(15, 18, 17, 0.08);
+  --media-bg: #eceeec;
+  --media-border: rgba(15, 18, 17, 0.07);
+  --media-veil: rgba(0, 0, 0, 0);
+  --media-scrim: linear-gradient(to top, rgba(0,0,0,0.78) 0, rgba(0,0,0,0.66) calc(84px * var(--fs-lin)), rgba(0,0,0,0) calc(150px * var(--fs-lin)));
+  --media-scrim-top: linear-gradient(to bottom, rgba(0,0,0,0.42) 0, rgba(0,0,0,0) 56px);
+  --media-glyph-bg: rgba(12, 15, 13, 0.72);
+  --skeleton-a: rgba(15, 18, 17, 0.05);
+  --skeleton-b: rgba(15, 18, 17, 0.09);
+  --viz-mono: #2b2f2d;
+  --viz-current: var(--viz-1);
+  --viz-1: #664fd8; --viz-2: #e35a2d; --viz-3: #05a291; --viz-4: #df9c02;
+  --viz-5: #d8559b; --viz-6: #719507; --viz-7: #0383bd; --viz-8: #118d29;
+  --viz-muted: var(--grafito-750);
+  --viz-now: var(--lima-400);
+  --viz-now-ring: var(--lima-850);
+  --viz-grid: rgba(15, 18, 17, 0.06);
+  --viz-axis: rgba(15, 18, 17, 0.16);
+  --viz-label: var(--text-3);
+  --viz-gap: var(--surface-1);
+  --viz-hatch-line: rgba(15, 18, 17, 0.30);
+  --viz-hatch-bg: rgba(15, 18, 17, 0.06);
+  --viz-seq-1: var(--iris-300); --viz-seq-2: var(--iris-400); --viz-seq-3: var(--iris-500); --viz-seq-4: var(--iris-600); --viz-seq-5: var(--iris-700);
+  --viz-div-neg: var(--viz-2);
+  --viz-div-mid: #e9ebe9;
+  --viz-div-pos: var(--viz-1);
+  --av-iris-bg: var(--av-iris-bg-l);       --av-iris-fg: var(--av-iris-fg-l);
+  --av-coral-bg: var(--av-coral-bg-l);     --av-coral-fg: var(--av-coral-fg-l);
+  --av-aqua-bg: var(--av-aqua-bg-l);       --av-aqua-fg: var(--av-aqua-fg-l);
+  --av-ambar-bg: var(--av-ambar-bg-l);     --av-ambar-fg: var(--av-ambar-fg-l);
+  --av-rosa-bg: var(--av-rosa-bg-l);       --av-rosa-fg: var(--av-rosa-fg-l);
+  --av-pizarra-bg: var(--av-pizarra-bg-l); --av-pizarra-fg: var(--av-pizarra-fg-l);
+  --av-cielo-bg: var(--av-cielo-bg-l);     --av-cielo-fg: var(--av-cielo-fg-l);
+  --av-verde-bg: var(--av-verde-bg-l);     --av-verde-fg: var(--av-verde-fg-l);
+  --qr-bg: #ffffff;
+  --qr-fg: #0c0f0d;
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    color-scheme: light;
+    --bg-canvas: var(--grafito-950);
+    --bg-sunken: var(--grafito-925);
+    --surface-1: #ffffff;
+    --surface-2: var(--grafito-975);
+    --surface-3: #ffffff;
+    --surface-4: #ffffff;
+    --surface-hover: rgba(15, 18, 17, 0.04);
+    --surface-pressed: rgba(15, 18, 17, 0.07);
+    --surface-selected: rgba(76, 101, 0, 0.08);
+    --surface-inverse: var(--tinta);
+    --overlay-scrim: rgba(15, 18, 17, 0.42);
+    --glass-bg: rgba(255, 255, 255, 0.88);
+    --glass-bg-solid: #ffffff;
+    --glass-border: rgba(15, 18, 17, 0.08);
+    --glass-blur: 20px;
+    --glass-saturate: 160%;
+    --text-1: var(--tinta);
+    --text-2: var(--grafito-850);
+    --text-3: var(--grafito-600);
+    --text-disabled: var(--grafito-750);
+    --text-on-brand: var(--tinta);
+    --text-on-media: #ffffff;
+    --text-link: var(--lima-850);
+    --weight-body: 400;
+    --border-subtle: rgba(15, 18, 17, 0.07);
+    --border-default: rgba(15, 18, 17, 0.11);
+    --border-strong: rgba(15, 18, 17, 0.18);
+    --border-control: var(--grafito-650);
+    --border-focus: var(--lima-850);
+    --focus-ring: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--lima-850);
+    --brand: var(--lima-400);
+    --brand-hover: var(--lima-300);
+    --brand-pressed: var(--lima-500);
+    --brand-ink: var(--lima-850);
+    --brand-subtle: var(--lima-100);
+    --brand-subtle-border: rgba(76, 101, 0, 0.24);
+    --btn-primary-bg: var(--tinta);
+    --btn-primary-bg-hover: #232826;
+    --btn-primary-bg-pressed: #000000;
+    --btn-primary-fg: var(--lima-400);
+    --disabled-bg: var(--surface-2);
+    --disabled-fg: var(--text-disabled);
+    --disabled-border: var(--border-subtle);
+    --nav-indicator: var(--lima-400);
+    --nav-indicator-edge: var(--lima-850);
+    --progress-fill: var(--lima-400);
+    --progress-edge: var(--lima-850);
+    --progress-track: var(--grafito-925);
+    --seg-thumb-bg: #ffffff;
+    --stage-planeada: var(--lima-600);
+    --stage-listo: var(--lima-700);
+    --stage-programada: var(--lima-800);
+    --stage-publicada: var(--lima-875);
+    --stage-on-light: var(--tinta);
+    --stage-on-dark: #ffffff;
+    --stage-track: var(--grafito-925);
+    --ok-fg: #067346;   --ok-bg: #e2f8ea;   --ok-border: rgba(6, 115, 70, 0.24);   --ok-solid: #067346;   --ok-on-solid: #ffffff;
+    --warn-fg: #865900; --warn-bg: #feefdc; --warn-border: rgba(134, 89, 0, 0.26); --warn-solid: #a87400; --warn-on-solid: #0f1211;
+    --crit-fg: #b42f2b; --crit-bg: #feedec; --crit-border: rgba(180, 47, 43, 0.24);--crit-solid: #b42f2b; --crit-on-solid: #ffffff;
+    --info-fg: #2463ae; --info-bg: #eaf3fe; --info-border: rgba(36, 99, 174, 0.24);--info-solid: #2463ae; --info-on-solid: #ffffff;
+    --neutral-fg: var(--grafito-850); --neutral-bg: rgba(15, 18, 17, 0.05); --neutral-border: rgba(15, 18, 17, 0.12); --neutral-solid: var(--grafito-720); --neutral-on-solid: var(--tinta);
+    --elev-highlight: inset 0 0 0 0 transparent;
+    --shadow-1: 0 1px 2px rgba(15, 18, 17, 0.06), 0 0 0 1px rgba(15, 18, 17, 0.04);
+    --shadow-2: 0 4px 12px -2px rgba(15, 18, 17, 0.08), 0 1px 3px rgba(15, 18, 17, 0.06);
+    --shadow-3: 0 12px 32px -8px rgba(15, 18, 17, 0.14), 0 2px 6px rgba(15, 18, 17, 0.06);
+    --shadow-4: 0 24px 64px -12px rgba(15, 18, 17, 0.22), 0 4px 12px rgba(15, 18, 17, 0.08);
+    --media-bg: #eceeec;
+    --media-border: rgba(15, 18, 17, 0.07);
+    --media-veil: rgba(0, 0, 0, 0);
+    --media-scrim: linear-gradient(to top, rgba(0,0,0,0.78) 0, rgba(0,0,0,0.66) calc(84px * var(--fs-lin)), rgba(0,0,0,0) calc(150px * var(--fs-lin)));
+    --media-scrim-top: linear-gradient(to bottom, rgba(0,0,0,0.42) 0, rgba(0,0,0,0) 56px);
+    --media-glyph-bg: rgba(12, 15, 13, 0.72);
+    --skeleton-a: rgba(15, 18, 17, 0.05);
+    --skeleton-b: rgba(15, 18, 17, 0.09);
+    --viz-mono: #2b2f2d;
+    --viz-current: var(--viz-1);
+    --viz-1: #664fd8; --viz-2: #e35a2d; --viz-3: #05a291; --viz-4: #df9c02;
+    --viz-5: #d8559b; --viz-6: #719507; --viz-7: #0383bd; --viz-8: #118d29;
+    --viz-muted: var(--grafito-750);
+    --viz-now: var(--lima-400);
+    --viz-now-ring: var(--lima-850);
+    --viz-grid: rgba(15, 18, 17, 0.06);
+    --viz-axis: rgba(15, 18, 17, 0.16);
+    --viz-label: var(--text-3);
+    --viz-gap: var(--surface-1);
+    --viz-hatch-line: rgba(15, 18, 17, 0.30);
+    --viz-hatch-bg: rgba(15, 18, 17, 0.06);
+    --viz-seq-1: var(--iris-300); --viz-seq-2: var(--iris-400); --viz-seq-3: var(--iris-500); --viz-seq-4: var(--iris-600); --viz-seq-5: var(--iris-700);
+    --viz-div-neg: var(--viz-2);
+    --viz-div-mid: #e9ebe9;
+    --viz-div-pos: var(--viz-1);
+    --av-iris-bg: var(--av-iris-bg-l);       --av-iris-fg: var(--av-iris-fg-l);
+    --av-coral-bg: var(--av-coral-bg-l);     --av-coral-fg: var(--av-coral-fg-l);
+    --av-aqua-bg: var(--av-aqua-bg-l);       --av-aqua-fg: var(--av-aqua-fg-l);
+    --av-ambar-bg: var(--av-ambar-bg-l);     --av-ambar-fg: var(--av-ambar-fg-l);
+    --av-rosa-bg: var(--av-rosa-bg-l);       --av-rosa-fg: var(--av-rosa-fg-l);
+    --av-pizarra-bg: var(--av-pizarra-bg-l); --av-pizarra-fg: var(--av-pizarra-fg-l);
+    --av-cielo-bg: var(--av-cielo-bg-l);     --av-cielo-fg: var(--av-cielo-fg-l);
+    --av-verde-bg: var(--av-verde-bg-l);     --av-verde-fg: var(--av-verde-fg-l);
+    --qr-bg: #ffffff;
+    --qr-fg: #0c0f0d;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. DENSIDAD
+   -------------------------------------------------------------------------- */
+:root[data-density="compact"],
+[data-density="compact"] {
+  --control-h-sm: 28px;
+  --control-h-md: 32px;
+  --control-h-lg: 40px;
+  --row-h: 40px;
+  --row-h-dense: 32px;
+  --thumb-row: 28px;
+  --content-pad-x: var(--space-6);
+  --grid-gap: var(--space-3);
+}
+:root[data-density="touch"],
+[data-density="touch"] {
+  --control-h-sm: 40px;   /* el pseudo-elemento .hit lo lleva a 48 de área táctil */
+  --control-h-md: 48px;
+  --control-h-lg: 52px;
+  /* La fila crece con la escala de texto; el virtualizador vuelve a medir al cambiar --fs */
+  --row-h: calc(72px + (var(--fs, 1) - 1) * 48px);
+  --row-h-dense: calc(56px + (var(--fs, 1) - 1) * 32px);
+  --thumb-row: 56px;
+  --content-pad-x: var(--space-4);
+  --grid-gap: var(--space-3);
+  --band-gap: var(--space-8);
+  --icon-md: 22px;
+  --text-body-size: calc(15px * var(--fs-lin));    --text-body-lh: 1.4667;    /* 15/22 */
+  --text-body-sm-size: calc(14px * var(--fs-lin)); --text-body-sm-lh: 1.4286; /* 14/20 */
+  --text-caption-size: calc(13px * var(--fs-lin)); --text-caption-lh: 1.3846; /* 13/18 */
+  --text-micro-size: calc(12px * var(--fs-lin));   --text-micro-lh: 1.3333;   /* 12/16 */
+  --text-overline-size: calc(12px * var(--fs-lin)); --text-overline-lh: 1.3333;
+  --text-hero-size: calc(44px * var(--fs-half));   --text-hero-lh: 1.0909;    /* 44/48 */
+  --text-display-size: calc(28px * var(--fs-half)); --text-display-lh: 1.2143; /* 28/34 */
+  --text-kpi-size: calc(26px * var(--fs-half));    --text-kpi-lh: 1.1538;     /* 26/30 */
+}
+
+/* --------------------------------------------------------------------------
+   11. PLATAFORMA
+   -------------------------------------------------------------------------- */
+:root[data-platform="android"],
+[data-platform="android"] {
+  --glass-blur: 14px;     /* solo aplica con data-glass="on" (equipos capaces) */
+  --glass-saturate: 130%;
+}
+
+/* --------------------------------------------------------------------------
+   12. MOVIMIENTO REDUCIDO (media query o atributo que decide la interfaz)
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) {
+    --dur-fast: 1ms;
+    --dur-base: 120ms;
+    --dur-slow: 160ms;
+    --dur-slower: 1ms;
+    --dur-image: 1ms;
+    --dur-skeleton: 0ms;
+    --ease-spring: var(--ease-standard);
+    --motion-distance: 0px;
+  }
+}
+:root[data-reduced-motion] {
+  --dur-fast: 1ms;
+  --dur-base: 120ms;
+  --dur-slow: 160ms;
+  --dur-slower: 1ms;
+  --dur-image: 1ms;
+  --dur-skeleton: 0ms;
+  --ease-spring: var(--ease-standard);
+  --motion-distance: 0px;
+}
+
+/* --------------------------------------------------------------------------
+   13. ALTO CONTRASTE (Windows "Temas de contraste"): tokens
+   Nota: en forced-colors el navegador fuerza box-shadow:none y los fondos a
+   Canvas. Por eso el foco y los rellenos con significado se resuelven en la
+   sección 14 con outline y forced-color-adjust, no con tokens.
+   -------------------------------------------------------------------------- */
+@media (forced-colors: active) {
+  :root, :root[data-theme], :root[data-platform] {
+    --border-default: CanvasText;
+    --border-subtle: CanvasText;
+    --border-control: CanvasText;
+    --border-focus: Highlight;
+  }
+}
+
+/* ==========================================================================
+   14. REGLAS BASE OBLIGATORIAS (acompañan a los tokens; no son de un componente)
+   ========================================================================== */
+
+/* 14.1 Foco: outline transparente + anillo. El outline transparente se vuelve
+   visible en colores forzados, donde el box-shadow desaparece. */
+:focus-visible { outline: 2px solid transparent; outline-offset: 2px; box-shadow: var(--focus-ring); }
+
+/* 14.2 Vidrio: controlado por atributo, no por variable. Sin data-glass="on",
+   la capa es opaca y NO lleva backdrop-filter (ni siquiera blur(0)). */
+.glass { background: var(--glass-bg-solid); }
+:root[data-glass="on"] .glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root[data-glass="on"] .glass { background: var(--glass-bg-solid); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root[data-glass="on"] .glass { background: var(--glass-bg-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+/* Con una hoja inferior o un modal abierto (<html data-overlay>) no hay vidrio: una capa menos que componer. */
+:root[data-glass="on"][data-overlay] .glass { background: var(--glass-bg-solid); -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* 14.3 Área táctil: crece solo en vertical hasta --touch-min (no se encima con el vecino a 8 dp).
+   El elemento necesita position: relative. */
+.hit::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%;
+  height: max(100%, var(--touch-min)); transform: translateY(-50%);
+}
+
+/* 14.4 Movimiento reducido: nada en bucle ni crecimientos */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="full"]) .anim-loop, :root:not([data-motion="full"]) .anim-loop::before, :root:not([data-motion="full"]) .anim-loop::after,
+  :root:not([data-motion="full"]) .anim-grow, :root:not([data-motion="full"]) .anim-grow::before, :root:not([data-motion="full"]) .anim-grow::after { animation: none !important; }
+}
+:root[data-reduced-motion] .anim-loop, :root[data-reduced-motion] .anim-loop::before, :root[data-reduced-motion] .anim-loop::after,
+:root[data-reduced-motion] .anim-grow, :root[data-reduced-motion] .anim-grow::before, :root[data-reduced-motion] .anim-grow::after { animation: none !important; }
+
+/* 14.5 Colores forzados: lo que se pinta con fondo o sombra y significa algo */
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid Highlight; outline-offset: 2px; }
+  tr:focus-visible, [role="row"]:focus-visible { outline: 2px solid Highlight; outline-offset: -2px; }
+  /* .fc-fill: relleno de progreso, pulgar del segmentado, segmentos de barras, indicador activo */
+  .fc-fill { forced-color-adjust: none; background: Highlight !important; color: HighlightText !important; }
+  /* .fc-selected: fila o chip seleccionado/presionado y elemento de navegación actual */
+  .fc-selected, [aria-selected="true"], [aria-pressed="true"], [aria-current="page"] { outline: 2px solid Highlight; outline-offset: -2px; }
+  /* Las gráficas conservan sus colores (llevan leyenda y tabla gemela) */
+  .fc-keep { forced-color-adjust: none; }
+}

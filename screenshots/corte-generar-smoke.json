@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/#/videos/generar",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 305,
+      "bodyTextHash": "0e3e786161cd047dc86fd5d011227173f4ecf8a65d3c9704cc46e2b60b75908f",
+      "bodyTextPrefix": "Ir al contenido Corte TU TRABAJO Generar G G Inicio G I Muestras",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-generar-smoke.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Generar video · Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 1110,
+      "bodyTextHash": "8f80ad92f84b5c2b392911e765ee669bee94f52d1aa554df3b4d3148e535cb8f",
+      "bodyTextPrefix": "Ir al contenido Para conectar con TikTok falta la clave de tu ap",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-generar-smoke-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/corte-generar-smoke.json"
+}

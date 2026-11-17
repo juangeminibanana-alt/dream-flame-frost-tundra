@@ -1,0 +1,35 @@
+.ancla {
+  display: contents;
+}
+
+.globo {
+  position: fixed;
+  z-index: var(--z-tooltip);
+  max-width: min(320px, calc(100vw - 16px));
+  padding: var(--space-2) 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-4);
+  color: var(--text-1);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caption);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity var(--dur-fast) var(--ease-standard), transform var(--dur-fast) var(--ease-standard);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  white-space: normal;
+}
+.globo[data-abajo] {
+  transform: translateY(-2px);
+}
+.visible,
+.globo[data-abajo].visible {
+  opacity: 1;
+  transform: none;
+}

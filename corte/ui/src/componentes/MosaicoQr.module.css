@@ -1,0 +1,46 @@
+.tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 236px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--qr-bg);
+  box-shadow: var(--shadow-2);
+  forced-color-adjust: none;
+}
+.qr {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.vacio {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-sm);
+  background: repeating-linear-gradient(45deg, var(--media-bg) 0 2px, var(--qr-bg) 2px 8px);
+}
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-radius: 15px;
+  background: var(--qr-bg);
+  display: grid;
+  place-items: center;
+}
+.marca {
+  width: 48px;
+  height: 48px;
+}
+.marcaFondo { fill: var(--qr-fg); }
+.marcaLima { fill: var(--brand); }
+.marcaPieza { fill: var(--qr-bg); }

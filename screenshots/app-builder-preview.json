@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Estudio UGC",
+      "hasCanvas": false,
+      "bodyTextLen": 365,
+      "bodyTextHash": "7cdcb9b91b1e8b7ae85485f1c4d71d2d8ec143e68a52701352d6cdfb05b4d06d",
+      "bodyTextPrefix": "Estudio Foto y video reales. Un corte por clic. Nuevo Una prenda",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Estudio UGC",
+      "hasCanvas": false,
+      "bodyTextLen": 365,
+      "bodyTextHash": "7cdcb9b91b1e8b7ae85485f1c4d71d2d8ec143e68a52701352d6cdfb05b4d06d",
+      "bodyTextPrefix": "Estudio Foto y video reales. Un corte por clic. Nuevo Una prenda",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}

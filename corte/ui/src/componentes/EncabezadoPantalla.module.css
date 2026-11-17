@@ -1,0 +1,168 @@
+.centinela {
+  height: 1px;
+  margin-bottom: -1px;
+  pointer-events: none;
+}
+
+/* Fondo de vidrio que aparece con opacidad (la capa .glass de tokens.css §14.2 decide si hay blur). */
+.fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  border-bottom: 1px solid var(--glass-border);
+  transition: opacity var(--dur-base) var(--ease-standard);
+  pointer-events: none;
+}
+.colapsado .fondo {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------- Windows */
+/* Lienzo aprobado (Main, Muestras y Ventas): título de 30/700, interletra −0.02em e interlínea 1.15; contexto de 14 en
+   text-3; las acciones abajo a la derecha, alineadas con el pie del bloque de textos. Manda sobre 02 §7.9 (title2) en
+   jerarquía (LEEME.md:17). */
+.win {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-4);
+  min-height: var(--header-h);
+  padding: var(--space-2) 0;
+}
+/* El vidrio cubre también el margen lateral de la página (el contenido pasa por debajo). */
+.win .fondo {
+  left: calc(var(--content-pad-x) * -1);
+  right: calc(var(--content-pad-x) * -1);
+}
+.textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-1);
+  align-self: center;
+}
+.titulo {
+  margin: 0;
+  font-size: calc(30px * var(--fs-half));
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.contexto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-3);
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex: none;
+  max-width: 100%;
+}
+/* Dentro del encabezado de Windows el buscador mide 40 de alto, 240 de ancho mínimo y radio 10, y los botones de solo
+   ícono (Sincronizar) 40×40 con radio 10, como el lienzo. Son variables que CampoBusqueda y BotonIcono leen con su
+   medida de siempre como respaldo: fuera del encabezado no cambian. */
+.win .acciones {
+  --busqueda-alto: 40px;
+  --busqueda-ancho-min: 240px;
+  --busqueda-radio: var(--radius-md);
+  --busqueda-texto: var(--text-body-size);
+  --boton-icono-lado: 40px;
+  --boton-icono-radio: var(--radius-md);
+  gap: 10px;
+  align-self: center;
+}
+/* Ventana compacta (< 768, solo en desarrollo o en la galería: Windows no baja de 960): el título vuelve a title1, como
+   el lienzo del celular (22–24), para no comerse media pantalla (a 600 un nombre de producto largo ocupaba 5 renglones
+   de 30). */
+@media (max-width: 767px) {
+  .titulo {
+    font-size: var(--text-title1-size);
+    line-height: var(--text-title1-lh);
+  }
+}
+/* Si el bloque de textos tiene contexto (dos renglones), las acciones se alinean con su pie, como el lienzo. */
+.win:has(.contexto) .acciones {
+  align-self: flex-end;
+}
+.volver {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--space-1);
+  flex: none;
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-2) 0 var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+.volver:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------- Android */
+.and {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: calc(var(--header-h) + var(--inset-top));
+  padding: var(--inset-top) var(--space-1) 0 var(--content-pad-x);
+  margin: 0 calc(var(--content-pad-x) * -1);
+}
+.and .volver {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  justify-content: center;
+  padding: 0;
+  margin-left: calc(var(--space-2) * -1);
+  border-radius: var(--radius-full);
+}
+.tituloAnd {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-title1-size);
+  line-height: var(--text-title1-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.tituloEscala {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+/* 24 → 17 px con transform (sin animar alturas). */
+.colapsado .tituloEscala {
+  transform: scale(0.7083);
+}
+.contextoAnd {
+  margin: calc(var(--space-1) * -1) 0 var(--space-3);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}

@@ -1,0 +1,200 @@
+/* Piezas comunes de los flujos de Muestras (01 §4.4–4.6, §4.17; 02 §7; familia visual de Muestras.png). Solo tokens. */
+
+.pantalla {
+  /* --hueco-pantalla: el hueco entre bloques; ReservaCapas lo descuenta para no ocupar lugar cuando mide 0. */
+  --hueco-pantalla: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--hueco-pantalla);
+  min-width: 0;
+  padding-bottom: var(--space-10);
+}
+/* Espaciador del final (BarraFija.tsx · ReservaCapas): el alto lo pone la medición de las capas ancladas abajo. */
+.reserva {
+  flex: none;
+  margin-top: calc(var(--hueco-pantalla, 0px) * -1);
+  pointer-events: none;
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+
+/* ------------------------------------------------------------------ estados */
+.estadoCentro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-12) 0;
+  text-align: center;
+}
+.cargandoTexto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.esqueletoFila {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+}
+.esqueletoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------ avisos en línea */
+.aviso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--surface-2);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.aviso[data-tono='info'] {
+  background: var(--info-bg);
+  border-color: var(--info-border);
+}
+.aviso[data-tono='info'] > .avisoIcono {
+  color: var(--info-fg);
+}
+.aviso[data-tono='atencion'] {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+}
+.aviso[data-tono='atencion'] > .avisoIcono {
+  color: var(--warn-fg);
+}
+.aviso[data-tono='critico'] {
+  background: var(--crit-bg);
+  border-color: var(--crit-border);
+}
+.aviso[data-tono='critico'] > .avisoIcono {
+  color: var(--crit-fg);
+}
+.avisoIcono {
+  display: inline-flex;
+  padding-top: 1px;
+  color: var(--text-2);
+}
+.avisoCuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.avisoTexto {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.avisoAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ------------------------------------------------------------------ barra de acciones pegada abajo */
+.barraFija {
+  /* --barra-fondo: separación con el borde de abajo; --holgura: lo que sube para apilarse encima de una capa global a
+   * todo lo ancho (BarraFija.tsx, data-esquiva="subir"). Sigue fija: «Siguiente» o «Video listo» no se van de la vista. */
+  --barra-fondo: var(--space-4);
+  position: sticky;
+  bottom: calc(var(--barra-fondo) + var(--holgura, 0px));
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  /* --holgura-izquierda/derecha: los botones se recorren al lado libre de una capa global (BarraFija.tsx). */
+  padding: var(--space-3) calc(var(--space-3) + var(--holgura-derecha, 0px)) var(--space-3) calc(var(--space-3) + var(--holgura-izquierda, 0px));
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-default);
+  background: var(--glass-bg-solid);
+  box-shadow: var(--shadow-3);
+}
+:global([data-nav='inferior']) .barraFija {
+  --barra-fondo: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-3));
+}
+/* Celular: la barra descansa sobre una repisa del color del lienzo que llega hasta la barra inferior, también cuando se
+ * apiló sobre una capa global (+ --holgura: la capa, que va por encima, queda sobre la repisa), para que el contenido
+ * que pasa por detrás no asome en los huecos entre la barra, la capa y la barra inferior. Solo mientras está pegada de
+ * verdad ([data-pegada], BarraFija.tsx): en su lugar natural (paso corto) taparía el contenido que sigue. */
+:global([data-nav='inferior']) .repisa[data-pegada]::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: calc(var(--space-4) * -1);
+  right: calc(var(--space-4) * -1);
+  height: calc(var(--space-3) + 2px + var(--holgura, 0px));
+  background: var(--bg-canvas);
+  pointer-events: none;
+}
+.barraFijaEspacio {
+  flex: 1 1 auto;
+}
+
+/* ------------------------------------------------------------------ texto */
+.overline {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 32px;
+  padding: 0 var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+.enlace:hover {
+  color: var(--text-1);
+}
+.enlace:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

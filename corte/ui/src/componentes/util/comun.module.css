@@ -1,0 +1,62 @@
+/* Piezas compartidas por varios componentes (se usan con `composes`). Solo tokens. */
+
+/* Solo para lectores de pantalla. */
+.sr {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.recorte1 {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.recorte2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* Enlace de marca ("Ver todos ›", "Planear solo esta ›"). */
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-0-5);
+  color: var(--brand-ink);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  border-radius: var(--radius-2xs);
+  white-space: nowrap;
+}
+.enlace:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Rótulo corto en mayúsculas ("PONTE AL DÍA"). */
+.rotulo {
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+
+.titulo3 {
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}

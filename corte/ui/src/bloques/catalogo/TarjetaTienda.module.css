@@ -1,0 +1,167 @@
+/* TarjetaTienda: misma familia que la tarjeta de la cola (surface-1, radio 14, filete sutil). */
+.tarjeta {
+  position: relative;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+  color: var(--text-1);
+  transition: border-color var(--dur-fast) var(--ease-standard), transform var(--dur-base) var(--ease-standard);
+}
+.pulsable:hover {
+  border-color: var(--border-default);
+}
+:global(:root[data-platform="windows"]) .ficha.pulsable:hover,
+:global(:root:not([data-platform])) .ficha.pulsable:hover {
+  transform: translateY(-2px);
+}
+.pulsable:active {
+  background: color-mix(in srgb, var(--surface-1), var(--text-1) 5%);
+}
+.tarjeta:has(.abrir:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+.nombre {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-1);
+  font: inherit;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  text-align: left;
+}
+.abrir {
+  cursor: pointer;
+}
+.abrir::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.abrir:focus-visible {
+  outline: none;
+}
+
+/* fila */
+.fila {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 48px auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.titulo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px var(--space-2);
+  min-width: 0;
+}
+.titulo .nombre {
+  flex: 0 1 auto;
+}
+.chip {
+  flex: none;
+}
+.linea {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.foto48 {
+  width: 48px;
+}
+.chevron {
+  color: var(--text-3);
+}
+.contenedorFila {
+  container-type: inline-size;
+  min-width: 0;
+}
+@container (max-width: 340px) {
+  .fila {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+  }
+  .fila .foto48 {
+    display: none;
+  }
+}
+
+/* ficha */
+.ficha {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.fotoFicha {
+  position: relative;
+}
+.fotoLlena {
+  width: 100%;
+  border-radius: 0;
+}
+.avatarSobre {
+  position: absolute;
+  left: var(--space-3);
+  bottom: calc(-1 * var(--space-4));
+  z-index: 4;
+  box-shadow: 0 0 0 3px var(--surface-1);
+}
+.cuerpoFicha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4) var(--space-4);
+  min-width: 0;
+}
+.cuerpoFicha .nombre {
+  max-width: 100%;
+}
+.porque {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.cifras {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  width: 100%;
+  margin: var(--space-1) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.cifras div {
+  min-width: 0;
+}
+.cifras dt {
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  color: var(--text-3);
+}
+.cifras dd {
+  margin: 2px 0 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

@@ -1,0 +1,14 @@
+/* Marca de la barra lateral (02 §2.2). Solo tokens: el ícono es igual en oscuro y en claro. */
+.logo {
+  flex: none;
+  display: block;
+}
+.fondo {
+  fill: var(--grafito-150);
+}
+.lima {
+  fill: var(--lima-400);
+}
+.papel {
+  fill: var(--papel);
+}

@@ -1,0 +1,21 @@
+.pista {
+  position: relative;
+  height: 8px;
+  width: 100%;
+  border-radius: 4px;
+  background: var(--progress-track);
+  overflow: hidden;
+}
+.relleno {
+  position: absolute;
+  inset: 0;
+  background: var(--progress-fill);
+  box-shadow: inset 0 0 0 1px var(--progress-edge);
+  transform: translateX(calc((var(--p, 0) - 1) * 100%));
+  transition: transform var(--dur-slower) var(--ease-standard);
+  /* Borde de avance cortado a 45° (el alto de la barra). */
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+.relleno[data-completo] {
+  clip-path: none;
+}

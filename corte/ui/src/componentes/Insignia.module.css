@@ -1,0 +1,23 @@
+.insignia {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-text);
+  font-variant-numeric: proportional-nums;
+  white-space: nowrap;
+}
+.atencion { background: var(--warn-solid); color: var(--warn-on-solid); }
+.critica { background: var(--crit-solid); color: var(--crit-on-solid); }
+.discreta { background: var(--surface-3); color: var(--text-2); box-shadow: inset 0 0 0 1px var(--border-subtle); }
+.marca { background: var(--brand); color: var(--text-on-brand); }
+.sr {
+  composes: sr from './util/comun.module.css';
+}

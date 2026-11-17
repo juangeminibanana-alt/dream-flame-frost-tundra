@@ -1,0 +1,91 @@
+/* __DOBLE_CORTE__ · marco mínimo de la App doble. Solo tokens. */
+.marco {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-canvas);
+  color: var(--text-1);
+}
+
+.franja {
+  padding: var(--space-1) var(--content-pad-x);
+  background: var(--brand-subtle);
+  color: var(--text-1);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  text-align: center;
+}
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--content-pad-x);
+  border-bottom: 1px dashed var(--border-default);
+  background: var(--surface-1);
+}
+
+.marca {
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  letter-spacing: var(--tracking-display);
+  color: var(--brand-ink);
+}
+
+.info {
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  width: 100%;
+}
+
+.nav a {
+  color: var(--text-2);
+  text-decoration: none;
+  padding: var(--space-1) 0;
+}
+
+.nav a[aria-current="page"] {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.contenido {
+  min-width: 0;
+  padding: var(--space-6) var(--content-pad-x);
+}
+
+.aviso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 62ch;
+  padding: var(--space-5);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.aviso h1 {
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+}
+
+.ruta {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  color: var(--text-2);
+}

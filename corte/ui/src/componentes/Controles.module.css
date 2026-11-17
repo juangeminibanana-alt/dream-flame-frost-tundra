@@ -1,0 +1,273 @@
+/* Interruptor, casilla, opciones, selector de número y chips de días. Solo transform/opacity se animan. */
+.fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: var(--control-h-md);
+  min-width: 0;
+}
+.inactiva {
+  color: var(--disabled-fg);
+  cursor: not-allowed;
+}
+.textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.etiqueta {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+}
+.descripcion {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+/* Deshabilitado: la etiqueta y la razón («Necesita tu PC encendida») son información y no van en --text-disabled
+   (02 §12.1: 2.3:1); solo la pista y la perilla llevan los tokens de deshabilitado. */
+.inactiva .etiqueta {
+  color: var(--text-3);
+}
+.inactiva .descripcion {
+  color: var(--text-3);
+}
+.nativo {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- interruptor */
+.interruptor {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+}
+.interruptor:disabled {
+  cursor: not-allowed;
+}
+.pistaInterruptor {
+  position: relative;
+  display: block;
+  width: 40px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  box-shadow: inset 0 0 0 1px var(--border-control);
+}
+.perilla {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--text-2);
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.interruptor[aria-checked="true"] .pistaInterruptor {
+  background: var(--brand);
+  box-shadow: inset 0 0 0 1px var(--progress-edge);
+}
+.interruptor[aria-checked="true"] .perilla {
+  background: var(--text-on-brand);
+  transform: translateX(16px);
+}
+.interruptor:disabled .pistaInterruptor {
+  background: var(--disabled-bg);
+  box-shadow: inset 0 0 0 1px var(--disabled-border);
+}
+.interruptor:disabled .perilla {
+  background: var(--disabled-fg);
+}
+
+/* ------------------------------------------------------------- casilla */
+.casilla {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-sm);
+  cursor: pointer;
+}
+.caja {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1.5px var(--border-control);
+  color: var(--text-on-brand);
+}
+.caja[data-estado="si"],
+.caja[data-estado="mixta"] {
+  background: var(--brand);
+  box-shadow: inset 0 0 0 1px var(--progress-edge);
+}
+.nativo:focus-visible + .caja,
+.nativo:focus-visible + .aro {
+  box-shadow: var(--focus-ring);
+}
+.inactiva .caja {
+  background: var(--disabled-bg);
+  box-shadow: inset 0 0 0 1px var(--disabled-border);
+  color: var(--disabled-fg);
+}
+
+/* ------------------------------------------------------------- opciones */
+.grupoRadio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.leyenda {
+  padding: 0;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.radio {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+.radio:hover {
+  background: var(--surface-hover);
+}
+.radioMarcada,
+.radioMarcada:hover {
+  border-color: var(--brand-subtle-border);
+  background: var(--surface-selected);
+}
+.aro {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: var(--radius-full);
+  box-shadow: inset 0 0 0 1.5px var(--border-control);
+  background: var(--surface-2);
+}
+.radioMarcada .aro {
+  background: var(--brand);
+  box-shadow: inset 0 0 0 1px var(--progress-edge);
+}
+.radioMarcada .aro::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: var(--radius-full);
+  background: var(--text-on-brand);
+}
+
+/* ------------------------------------------------------------- número */
+.numero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.numeroControl {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+.paso {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: calc(var(--control-h-md) - 6px);
+  height: calc(var(--control-h-md) - 6px);
+  border-radius: calc(var(--radius-md) - 3px);
+  color: var(--text-2);
+}
+.paso:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.paso:disabled {
+  color: var(--disabled-fg);
+  cursor: not-allowed;
+}
+.valor {
+  min-width: 40px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs);
+  text-align: center;
+  font-size: calc(17px * var(--fs-half));
+  line-height: 1.4;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------- días */
+.dias {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.diasFila {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+.dia {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--control-h-md);
+  height: var(--control-h-md);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+  transition: transform var(--dur-instant) var(--ease-standard);
+}
+.dia:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.dia:active {
+  transform: scale(0.96);
+}
+.dia[aria-pressed="true"] {
+  background: var(--brand-subtle);
+  border-color: var(--brand-subtle-border);
+  color: var(--brand-ink);
+}

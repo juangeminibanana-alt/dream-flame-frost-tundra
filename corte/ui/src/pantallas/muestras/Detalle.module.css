@@ -1,0 +1,1025 @@
+/* Detalle de muestra (01 §4.3; 02 §7.12; lienzos Muestras.png y MovilMuestra.png). Solo tokens de tokens.css. */
+
+/* ------------------------------------------------------------------ panel de 480 (Windows ≥ 1280) */
+.panel {
+  /* Contenedor de tamaño: la foto y el encabezado se acomodan al alto real del panel (ver «encabezado del panel»). */
+  container: panel-detalle / size;
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-3));
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 280px;
+  /* --panel-alto (PanelDetalle): lo libre del borde superior del panel al fondo de la ventana (o hasta la capa global
+     anclada abajo); así el pie con la acción principal se ve aunque el panel todavía no esté pegado arriba. Alto
+     completo (02 §7.12): el contenido de una muestra siempre es más largo y se desplaza por dentro. */
+  height: min(calc(100dvh - var(--header-h) - var(--space-6)), var(--panel-alto, 100dvh));
+  /* Pie fijo: botón md + relleno de 12 arriba y abajo + su borde. */
+  --panel-pie: calc(var(--control-h-md) + var(--space-3) * 2 + 1px);
+  /* Lo que el encabezado de texto necesita a la vista debajo de la foto: relleno superior y separación (16 + 16),
+     rótulo, H2 de hasta dos renglones, «Ver título completo», la tienda y un asomo de lo que sigue (32). */
+  --panel-reserva: calc(
+    var(--space-4) * 2 + var(--text-overline-size) * var(--text-overline-lh) + var(--space-1-5) * 2 + var(--space-1) +
+      var(--text-title2-size) * var(--text-title2-lh) * 2 + var(--text-body-sm-size) * var(--text-body-sm-lh) * 2 + var(--space-8)
+  );
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--surface-1);
+  border: 1px solid var(--brand-subtle-border);
+  box-shadow: var(--elev-highlight);
+  animation: entrarPanel var(--dur-slow) var(--ease-enter) both;
+}
+@keyframes entrarPanel {
+  from {
+    opacity: 0;
+    transform: translateX(var(--space-6));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Encabezado compacto: solo aparece con scroll (fundido de opacidad, sin animar alturas). */
+.panelCabeza {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--header-h);
+  /* Deja libre la píldora de ⤢ y ✕ a la derecha. */
+  padding: var(--space-2) calc(var(--space-20) + var(--space-2)) var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.panelCabeza[data-visible] {
+  opacity: 1;
+}
+.panelControles {
+  position: absolute;
+  top: calc(var(--space-2) + (var(--header-h) - var(--space-2) * 2 - var(--control-h-sm)) / 2);
+  right: var(--space-3);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--space-0-5);
+  padding: var(--space-0-5);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+}
+/* Sobre la foto (en reposo): la píldora baja al margen de la foto. */
+.panelControles[data-sobre-foto] {
+  top: calc(var(--space-4) + var(--space-2));
+  right: calc(var(--space-5) + var(--space-2));
+  box-shadow: var(--shadow-2);
+}
+.panelMini {
+  flex: none;
+  width: var(--space-8);
+}
+.panelNombre {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.panelScroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-6);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  /* Lo que sigue se desvanece en los últimos 24 px antes del pie (el relleno inferior es igual, así el final del
+     contenido nunca queda desvanecido): con poco alto, la fila que asoma se lee como «hay más abajo», no como corte. */
+  mask-image: linear-gradient(to bottom, black calc(100% - var(--space-6)), transparent);
+}
+/* ------------------------------------------------------------------ encabezado del panel
+   La foto toma el alto que queda libre en el panel después del pie y del encabezado de texto (100cqh = alto del panel,
+   container «panel-detalle»), así rótulo, título y tienda siempre se ven en reposo. Con alto de sobra queda en 4:3 a
+   todo el ancho, como el lienzo Muestras.png. Con menos alto, la foto conserva su proporción (4:3, recorte suave de
+   arriba y abajo) y se centra sobre un paspartú teñido del color dominante, en lugar de volverse una franja donde no se
+   reconoce el producto. Si quedarían menos de 192 px para la foto, pasa a miniatura de 112 junto al título (container
+   query de abajo). */
+.panelHeroe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.panelFoto {
+  position: relative;
+  flex: none;
+  display: flex;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  max-height: calc(100cqh - var(--panel-pie) - var(--panel-reserva));
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--media-bg);
+  isolation: isolate;
+}
+.panelFoto[data-halo] {
+  background: linear-gradient(rgb(var(--halo) / 0.22), rgb(var(--halo) / 0.22)), var(--media-bg);
+}
+.panelFotoCaja {
+  display: flex;
+  flex: none;
+  align-items: center;
+  width: min(100%, calc((100cqh - var(--panel-pie) - var(--panel-reserva)) * 4 / 3));
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+.panelFotoImg {
+  width: 100%;
+  flex: none;
+}
+.panelFotoVelo {
+  position: absolute;
+  inset: 0;
+  background: var(--media-scrim-top), var(--media-scrim);
+  opacity: 0.85;
+  pointer-events: none;
+}
+.panelFotoChip {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  display: inline-flex;
+  max-width: calc(100% - var(--space-6));
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+}
+/* Poco alto (panel < pie 61 + reserva 184 + foto grande mínima 192 ≈ 437 px; p. ej. 1280×800 en reposo, o 1440×900
+   con la tarjeta global abajo): miniatura 1:1 de 112 a la izquierda (el producto completo, sin recorte) y, a la
+   derecha, rótulo, título, tienda y el chip «TikTok:». La píldora ⤢ ✕ sube a la esquina y el rótulo le deja su lugar
+   en el primer renglón. Al desplazar la página el panel se pega arriba, crece y vuelve la foto grande. */
+@container panel-detalle (max-height: 436px) {
+  .panelHeroe {
+    display: grid;
+    grid-template-columns: calc(var(--space-16) + var(--space-12)) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      'foto texto'
+      'foto chip';
+    gap: var(--space-2) var(--space-4);
+    align-items: start;
+  }
+  .panelFoto {
+    display: contents;
+  }
+  .panelFotoCaja {
+    grid-area: foto;
+    width: 100%;
+    background: var(--media-bg);
+  }
+  .panelFotoVelo {
+    display: none;
+  }
+  .panelFotoChip {
+    grid-area: chip;
+    position: static;
+    justify-self: start;
+    max-width: 100%;
+    background: none;
+  }
+  .encabezadoTexto {
+    grid-area: texto;
+  }
+  .rotuloTienda {
+    display: none;
+  }
+  .encabezadoTexto > .overline:first-child {
+    display: flex;
+    align-items: center;
+    min-height: calc(var(--control-h-sm) + var(--space-0-5) * 2 + 2px);
+    padding-right: calc(var(--control-h-sm) * 2 + var(--space-0-5) * 3 + 2px + var(--space-2));
+  }
+  .panelControles[data-sobre-foto] {
+    top: var(--space-4);
+    right: var(--space-5);
+    box-shadow: none;
+  }
+}
+.panelPie {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-2);
+}
+.pieAccion {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.panelEstado {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10) var(--space-5);
+}
+.panelEsqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+/* ------------------------------------------------------------------ encabezado de texto (con halo) */
+.encabezadoTexto {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+  isolation: isolate;
+}
+/* Luz ambiente: halo del color dominante al 14 % detrás del título (02 §7.12; radial, sin blur). La elipse llega a
+   transparente ANTES de los bordes de su caja (closest-side): sin orillas rectas visibles (en claro, con una foto
+   oscura, el corte se veía como una mancha gris). */
+.encabezadoTexto[data-halo]::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--space-6) * -1) 0;
+  z-index: -1;
+  background: radial-gradient(ellipse closest-side at 34% 50%, rgb(var(--halo) / 0.14), rgb(var(--halo) / 0.06) 55%, transparent);
+  pointer-events: none;
+}
+/* En claro, un color dominante oscuro (chamarra negra) al 14 % sobre el lienzo claro se lee como mancha gris: la luz
+   ambiente baja a la mitad (sigue tiñendo con fotos de color, sin ensuciar con las oscuras). */
+:global(html[data-theme='light']) .encabezadoTexto[data-halo]::before,
+:global(html[data-theme='light']) .fotoAncha[data-halo]::before {
+  opacity: 0.5;
+}
+.overline {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.titulo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.tituloFila {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.tituloTexto {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  overflow-wrap: anywhere;
+}
+h1.tituloTexto {
+  font-size: var(--text-title1-size);
+  line-height: var(--text-title1-lh);
+}
+.tituloEdicion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.tituloEdicionAcciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.tituloCompleto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  overflow-wrap: anywhere;
+}
+/* «Ver título completo» / «Ver descripción del producto»: un despliegue secundario, no una acción. En lima competía con
+   el título y con la acción principal; va en text-2 con subrayado discreto (sigue siendo claramente un enlace). */
+.enlaceTexto {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-2);
+  font: inherit;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+  border-radius: var(--radius-2xs);
+  transition: color var(--dur-instant) var(--ease-standard);
+}
+.enlaceTexto:hover {
+  color: var(--text-1);
+  text-decoration-color: currentColor;
+}
+.lineaTienda {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  overflow-wrap: anywhere;
+}
+.enlaceTienda {
+  color: var(--text-1);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-2xs);
+}
+.enlaceTienda:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.atenuado {
+  color: var(--text-2);
+}
+.copia {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+/* ------------------------------------------------------------------ cuerpo */
+.cuerpoPanel,
+.cuerpoCompleto {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.cuerpoPanel {
+  gap: var(--space-4);
+}
+.cuerpoCompleto {
+  gap: var(--space-5);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.chips:empty {
+  display: none;
+}.texto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  max-width: 62ch;
+}
+.vacio {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-body-sm-size);
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+}
+
+/* Bloques: en el panel, rótulo en overline y cajas hundidas; a pantalla completa, títulos normales y tarjetas. */
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.bloqueInterno {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.bloqueCaja {
+  min-width: 0;
+}
+.cuerpoPanel .bloqueCaja {
+  background: var(--bg-sunken);
+  border-color: var(--border-subtle);
+}
+.bloqueCabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--control-h-sm);
+}
+.bloqueTitulo {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.cuerpoCompleto .bloqueTitulo {
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  letter-spacing: var(--tracking-body);
+  text-transform: none;
+}
+.bloqueMeta {
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+}
+.enlaceAccion {
+  color: var(--text-link);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  border-radius: var(--radius-2xs);
+}
+.enlaceAccion:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.subBloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.subTitulo {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+}
+.listaSimple {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.filaAviso {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--control-h-md);
+}
+.filaAvisoTexto {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  min-width: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.filaAvisoTexto > svg {
+  color: var(--text-3);
+}
+
+/* Cifras: precio (FichaPrecio) + casillas como el lienzo móvil. */
+.cifras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.fichaPrecio {
+  min-width: 0;
+}
+.stats,
+.statsTienda {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.statsTienda {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+}
+.cuerpoCompleto .stat {
+  background: var(--surface-1);
+}
+.statsTienda .stat {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.cuerpoCompleto .statsTienda .stat {
+  background: none;
+}
+.statValor {
+  color: var(--text-1);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  overflow-wrap: anywhere;
+}
+.statsTienda .statValor {
+  font-size: calc(18px * var(--fs-half));
+}
+.statRotulo {
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.porque {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+/* Tu avance: pasos en horizontal (lienzo) con la fecha en los completados. */
+.promesa {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.promesa > svg {
+  color: var(--info-fg);
+  flex: none;
+}
+.promesaVencida {
+  background: var(--crit-bg);
+  border-color: var(--crit-border);
+}
+.promesaVencida > svg {
+  color: var(--crit-fg);
+}
+.pasos {
+  display: grid;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.paso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.pasoBarra {
+  height: var(--space-1-5);
+  border-radius: var(--radius-2xs);
+  background: var(--stage-track);
+}
+.paso[data-hecho] .pasoBarra {
+  background: var(--progress-fill);
+}
+.pasoNombre {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  overflow-wrap: anywhere;
+}
+.paso[data-hecho] .pasoNombre {
+  color: var(--text-2);
+}
+.paso[data-actual] .pasoNombre {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.pasoFecha {
+  margin-top: calc(var(--space-1) * -1);
+  color: var(--text-3);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+.confirmado {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--ok-fg);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+}
+
+/* «TikTok dice» y datos técnicos: listas de definición. */
+.datos {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--space-1-5) var(--space-4);
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.datos > div {
+  display: contents;
+}
+.datos dt {
+  color: var(--text-2);
+}
+.datos dd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  margin: 0;
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.cortado {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* «Para tu video». */
+.botonesVideo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.botonBloque {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* «Mensaje a la tienda». */
+.pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.preguntaAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.editor {
+  min-width: 0;
+}
+
+/* Historial y otras de la tienda. */
+.historial {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-1);
+}
+.historial li {
+  display: grid;
+  grid-template-columns: 4.5em minmax(0, 1fr);
+  gap: var(--space-2);
+}
+.historial svg {
+  vertical-align: -2px;
+  color: var(--text-3);
+}
+.historialFecha {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+}
+.otras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.otra {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-1-5);
+  margin: 0 calc(var(--space-1-5) * -1);
+  border-radius: var(--radius-md);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--dur-instant) var(--ease-standard);
+}
+.otra:hover {
+  background: var(--surface-hover);
+}
+.otraFoto {
+  flex: none;
+  width: var(--space-10);
+}
+.otraTextos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.otraNombre {
+  overflow: hidden;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tecnicos {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-3);
+}
+.tecnicosResumen {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius-2xs);
+}
+.tecnicosResumen::-webkit-details-marker {
+  display: none;
+}
+.tecnicosFlecha {
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.tecnicos[open] .tecnicosFlecha {
+  transform: rotate(90deg);
+}
+.tecnicos[open] .datos {
+  margin-top: var(--space-3);
+}
+.hojaCuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Aviso de conflicto (C26). */
+.conflicto {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-2) var(--space-3) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  color: var(--text-1);
+}
+.conflicto > svg {
+  flex: none;
+  margin-top: var(--space-0-5);
+  color: var(--info-fg);
+}
+.conflictoTextos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.conflictoTexto {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.conflictoVersion ul {
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-4);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+}
+
+/* ------------------------------------------------------------------ pantalla completa: celular */
+.pantallaMovil {
+  min-width: 0;
+  padding-bottom: calc(var(--control-h-lg) + var(--space-10) + var(--inset-bottom));
+}
+/* El marco puede dar margen lateral (Windows angosto) o ninguno (detalle de muestra en Android): la foto va a sangre con
+   (100% − 100vw) / 2 y el texto completa el margen hasta --content-pad-x, sin duplicarlo ni salirse de la ventana. */
+.completoMovil {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.heroe {
+  position: relative;
+  height: min(88vw, 460px);
+  margin-inline: calc((100% - 100vw) / 2);
+  overflow: hidden;
+  background: var(--media-bg);
+  isolation: isolate;
+}
+.heroeFoto {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+}
+.heroeVelo {
+  position: absolute;
+  inset: 0;
+  background: var(--media-scrim-top), linear-gradient(to bottom, transparent 52%, var(--bg-canvas) 100%);
+  pointer-events: none;
+}
+.heroeAtras {
+  position: absolute;
+  top: calc(var(--inset-top) + var(--space-3));
+  left: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  color: var(--text-on-media);
+  cursor: pointer;
+}
+.heroeChip {
+  position: absolute;
+  top: calc(var(--inset-top) + var(--space-3) + (var(--touch-min) - var(--space-7)) / 2);
+  right: var(--space-4);
+  display: inline-flex;
+  max-width: calc(100% - var(--touch-min) - var(--space-10));
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+}
+.completoMovilCuerpo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  margin-top: calc(var(--space-10) * -1);
+  padding-inline: max(0px, calc(var(--content-pad-x) - (100vw - 100%) / 2));
+}
+.barraAcciones {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: calc(var(--z-nav) + 1);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + var(--inset-bottom));
+  border-top: 1px solid var(--glass-border);
+  /* Sube por encima de una capa global anclada abajo (Flotante + capas.ts). */
+  transform: translateY(calc(var(--holgura, 0px) * -1));
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+.barraPrincipal {
+  flex: 1;
+  min-width: 0;
+}
+.barraMas {
+  flex: none;
+  width: var(--control-h-lg);
+  height: var(--control-h-lg);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.esqueletoMovil {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ------------------------------------------------------------------ pantalla completa: Windows (< 1280 o ⤢) */
+.pantallaAncha {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+.completoAncho {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-8);
+  min-width: 0;
+}
+.columnaFoto {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+  min-width: 0;
+}
+.fotoAncha {
+  position: relative;
+  isolation: isolate;
+}
+.fotoAncha[data-halo]::before {
+  content: '';
+  position: absolute;
+  inset: calc(var(--space-6) * -1) calc(var(--space-4) * -1);
+  z-index: -1;
+  background: radial-gradient(60% 55% at 50% 50%, rgb(var(--halo) / 0.18), transparent 75%);
+  pointer-events: none;
+}
+.columnaDatos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  max-width: 720px;
+}
+.accionesFila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.accionAncha {
+  display: flex;
+  flex: 0 0 auto;
+  min-width: 168px;
+}
+.accionAncha:empty {
+  display: none;
+}
+.estadoCompleto {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+.esqueletoAncho {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: var(--space-8);
+}
+.esqueletoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+@media (max-width: 1023px) {
+  .completoAncho {
+    grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}

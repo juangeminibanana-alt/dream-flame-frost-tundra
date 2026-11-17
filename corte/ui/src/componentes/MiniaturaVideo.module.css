@@ -1,0 +1,253 @@
+.miniatura {
+  --fb-bg: var(--av-pizarra-bg);
+  --fb-fg: var(--av-pizarra-fg);
+  --blanco-86: color-mix(in srgb, var(--text-on-media) 86%, transparent);
+  position: relative;
+  display: block;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-lg);
+  background: var(--media-bg);
+  color: var(--text-on-media);
+  text-align: left;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  container-type: inline-size;
+}
+:where(.miniatura) {
+  width: var(--ancho);
+  max-width: 100%;
+  flex: none;
+}
+.pulsable {
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+:global(:root[data-platform="windows"]) .pulsable:hover,
+:global(:root:not([data-platform])) .pulsable:hover {
+  transform: translateY(-2px);
+}
+.pulsable:active {
+  transform: scale(0.99);
+}
+
+/* Fondo: LQIP ampliado (ya es borroso) o el color dominante. */
+.fondo {
+  position: absolute;
+  inset: 0;
+  background: var(--fondo-color, var(--media-bg));
+}
+.fondo img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  opacity: 0.9;
+}
+/* La foto del producto llena el 9:16 en cover (Main.png): ni franja de LQIP abajo ni corte duro. La proporción 1:1 de
+   FotoBase se anula con dos clases de especificidad. */
+.miniatura .producto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  border-radius: 0;
+  z-index: 1;
+}
+.rotulo {
+  position: absolute;
+  left: 8px;
+  top: 40px;
+  z-index: 4;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-on-media) 14%, transparent);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: var(--weight-medium);
+}
+
+/* Velos: superior de 56 px y el inferior anclado en px desde el pie (--media-scrim). */
+.miniatura::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 56px;
+  background: var(--media-scrim-top);
+  z-index: 3;
+  pointer-events: none;
+}
+.miniatura::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--media-scrim);
+  z-index: 3;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--media-border);
+}
+
+.ranking {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 4;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 12px;
+  background: var(--media-glyph-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-on-media) 12%, transparent);
+  font-size: 12px;
+  line-height: 24px;
+  font-weight: var(--weight-display);
+  text-align: center;
+}
+.rankingUno {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  box-shadow: none;
+}
+.play {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 4;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  display: grid;
+  place-items: center;
+}
+.play svg {
+  width: 12px;
+  height: 12px;
+  fill: var(--text-on-media);
+}
+
+.datos {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.comision {
+  font-size: calc(20px * var(--fs-half));
+  line-height: 1.2;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.unidades,
+.nombre {
+  font-size: calc(12px * var(--fs-lin));
+  line-height: 1.3333;
+  color: var(--blanco-86);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* El nombre del producto en 2 renglones (02 §4.4: 2 en tarjetas), recortado por ancho. */
+.nombre {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+/* Miniatura angosta (≤ 139 px, la del video estrella en celular): márgenes de 6 y rótulo de 10 para que
+   «Foto del producto» quepa entero. */
+@container (max-width: 139px) {
+  .ranking {
+    top: 6px;
+    left: 6px;
+  }
+  .play {
+    top: 6px;
+    right: 6px;
+  }
+  .rotulo {
+    left: 6px;
+    top: 36px;
+    max-width: calc(100% - 12px);
+    padding: 1px 6px;
+    font-size: 10px;
+    line-height: 15px;
+  }
+  .datos {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+  .comision {
+    font-size: calc(18px * var(--fs-half));
+  }
+  .unidades,
+  .nombre {
+    font-size: calc(11px * var(--fs-lin));
+  }
+}
+
+/* Póster tipográfico (sin imagen). */
+.conPoster {
+  background: linear-gradient(170deg, var(--fb-bg), var(--media-bg));
+}
+.poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 40px 12px 0;
+  color: var(--fb-fg);
+}
+.posterFecha {
+  display: block;
+  font-size: max(18px, 22cqi);
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  letter-spacing: -0.03em;
+}
+.posterNota {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+.posterRanking {
+  position: absolute;
+  right: 8px;
+  bottom: 22%;
+  font-size: 56cqi;
+  line-height: 0.8;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  opacity: 0.18;
+}
+
+.miniatura[data-tono="iris"] { --fb-bg: var(--av-iris-bg); --fb-fg: var(--av-iris-fg); }
+.miniatura[data-tono="coral"] { --fb-bg: var(--av-coral-bg); --fb-fg: var(--av-coral-fg); }
+.miniatura[data-tono="aqua"] { --fb-bg: var(--av-aqua-bg); --fb-fg: var(--av-aqua-fg); }
+.miniatura[data-tono="ambar"] { --fb-bg: var(--av-ambar-bg); --fb-fg: var(--av-ambar-fg); }
+.miniatura[data-tono="rosa"] { --fb-bg: var(--av-rosa-bg); --fb-fg: var(--av-rosa-fg); }
+.miniatura[data-tono="pizarra"] { --fb-bg: var(--av-pizarra-bg); --fb-fg: var(--av-pizarra-fg); }
+.miniatura[data-tono="cielo"] { --fb-bg: var(--av-cielo-bg); --fb-fg: var(--av-cielo-fg); }
+.miniatura[data-tono="verde"] { --fb-bg: var(--av-verde-bg); --fb-fg: var(--av-verde-fg); }

@@ -1,0 +1,180 @@
+/**
+ * Textos de Videos y Detalle de video (01_ux §4.12, §4.16, §6.4; vocabulario de §1.5). Español de México.
+ * Las cifras se arman aquí con `formato` de @/dominio: la pantalla nunca escribe números a mano.
+ */
+import { formato } from '@/dominio';
+
+const n = (x: number): string => formato.numero(x);
+const plural = (x: number, uno: string, varios: string): string => `${n(x)} ${x === 1 ? uno : varios}`;
+
+export const T = {
+  titulo: 'Videos',
+  contexto: (conPedidos: number, conVentas: number, ultimos7: number | null): string =>
+    [
+      plural(conPedidos, 'video con pedidos', 'videos con pedidos'),
+      `${n(conVentas)} con ventas`,
+      ...(ultimos7 !== null ? [`${n(ultimos7)} ${ultimos7 === 1 ? 'vendió' : 'vendieron'} en los últimos 7 días`] : []),
+    ].join(' · '),
+  notaFecha: 'TikTok Shop no da la fecha de publicación; usamos la fecha de la primera venta.',
+
+  // Controles (01 §4.12)
+  rango: 'Rango',
+  rangoCon: (etiqueta: string): string => `Rango: ${etiqueta}`,
+  rangos: { '7d': '7 días', '30d': '30 días', '90d': '90 días', '12m': '12 meses', todo: 'Todo' },
+  ordenarCon: (etiqueta: string): string => `Ordenar: ${etiqueta}`,
+  /** Chip del celular cuando el orden no es el de siempre (al quitarlo vuelve a «Más comisión»). */
+  ordenActivo: (etiqueta: string): string => `Orden: ${etiqueta}`,
+  orden: {
+    comision: 'Más comisión',
+    pedidos: 'Más pedidos',
+    unidades: 'Más unidades',
+    reciente: 'Vendió más recientemente',
+    nuevos: 'Más nuevos (primera venta)',
+    reembolso: 'Mayor % de reembolso',
+    // rev. 5 · Solo con las métricas de TikTok conectadas.
+    vistas: 'Más vistas',
+    conversion: 'Más pedidos por 1,000 vistas',
+  },
+  filtros: 'Filtros de videos',
+  vendiendoAhora: 'Vendiendo ahora',
+  vendiendoAhoraAyuda: 'Con una venta válida en los últimos 7 días',
+  soloConVentas: 'Solo con ventas',
+  reembolsoAlto: 'Reembolso alto',
+  reembolsoAltoAyuda: 'Más de 30 % de pedidos reembolsados',
+  buscar: 'Buscar por tienda o producto',
+  vista: 'Cómo ver los videos',
+  vistaCuadricula: 'Cuadrícula',
+  vistaTabla: 'Tabla',
+  tablaEtiqueta: 'Videos con pedidos',
+  rejillaEtiqueta: 'Videos con pedidos, de más a menos según el orden elegido',
+  mostrando: (visibles: number, total: number): string => `Mostrando ${n(visibles)} de ${n(total)}`,
+
+  // Tarjeta
+  nombreVideo: (idCorto: string): string => `Video ${idCorto}`,
+  /** Contexto del encabezado cuando el título se acortó: el nombre completo y el ID corto del video. */
+  contextoDetalle: (nombre: string, idCorto: string): string => (idCorto ? `${nombre} · ${idCorto}` : nombre),
+  fotoDelProducto: 'Foto del producto',
+  unidades: (u: number): string => plural(u, 'unidad', 'unidades'),
+  pedidosReembolsos: (pedidos: number, tasa: string): string => `${plural(pedidos, 'pedido', 'pedidos')} · ${tasa} reembolsos`,
+  pedidos: (pedidos: number): string => plural(pedidos, 'pedido', 'pedidos'),
+  reembolsos: (tasa: string): string => `${tasa} reembolsos`,
+  etiquetaVideo: (lugar: number | null, dinero: string, unidades: number, producto: string): string =>
+    `${lugar !== null ? `Video ${n(lugar)}: ` : ''}${dinero} de comisión, ${plural(unidades, 'unidad', 'unidades')}. Producto: ${producto}`,
+
+  // Estados (01 §4.12 y §4.16)
+  vacioTitulo: 'Aún no hay videos con ventas en este periodo',
+  vacioTexto: 'Cuando un video tuyo venda, aparecerá aquí con su miniatura.',
+  verTodo: 'Ver todo el historial',
+  sincronizar: 'Sincronizar ahora',
+  sinResultados: 'Ningún video con estos filtros',
+  sinResultadosTexto: 'Prueba con otro filtro o borra la búsqueda.',
+  quitarFiltros: 'Quitar filtros',
+  cargando: 'Estamos trayendo tus datos de TikTok Shop…',
+  lento: 'Sigue cargando… revisa la conexión con tu PC',
+  necesitaPc: 'Necesita tu PC encendida',
+  necesitaPcTexto: 'Esta vista se arma en Corte de tu PC. Ábrelo y conéctate al mismo Wi‑Fi.',
+  necesitaPcRango: 'Sin conexión con tu PC solo está «Todo». Elige ese rango o abre Corte en tu PC.',
+  errorTitulo: 'No pudimos mostrar tus videos',
+  errorDetalleTitulo: 'No pudimos mostrar este video',
+  noExiste: 'No encontramos este video',
+  noExisteTexto: 'Puede que ya no tenga pedidos registrados.',
+  verVideos: 'Ver mis videos',
+  reintentar: 'Reintentar',
+
+  // Detalle (01 §4.12)
+  volver: 'Videos',
+  abrirEnTikTok: 'Abrir en TikTok',
+  abrirFallo: 'No se pudo abrir TikTok',
+  idVideo: 'ID del video',
+  copiarId: 'Copiar ID del video',
+  idCopiado: 'ID del video copiado',
+  overline: (participacion: string): string => `${participacion} de tu comisión total`,
+  // La fecha nunca se parte («24 / ago»): espacio duro entre día y mes.
+  vendiendoDesde: (fecha: string): string => `Vendiendo desde ${fecha.replace(/ /g, ' ')}`,
+  ultimaVenta: (fecha: string): string => `Última venta ${fecha.replace(/ /g, ' ')}`,
+  kpisTitulo: 'Lo que dejó este video',
+  kpiComision: 'Comisión',
+  kpiPedidos: 'Pedidos',
+  kpiUnidades: 'Unidades',
+  kpiReembolsos: 'Reembolsos',
+  kpiPedidosNota: (validos: number): string => `${plural(validos, 'válido', 'válidos')}`,
+  kpiReembolsosNota: (reembolsados: number): string => plural(reembolsados, 'pedido', 'pedidos'),
+  kpiVentas: (dinero: string): string => `≈ ${dinero} en ventas`,
+  graficaSemana: 'Comisión por semana',
+  graficaNota: (etiqueta: string, dinero: string): string => `Mejor semana: ${etiqueta} · ${dinero}`,
+  ariaSemana: (etiqueta: string, dinero: string, pedidos: number): string => `${etiqueta}: ${dinero} de comisión, ${plural(pedidos, 'pedido', 'pedidos')}`,
+  colSemana: 'Semana',
+  colComision: 'Comisión estimada',
+  colPedidos: 'Pedidos',
+  enCurso: 'en curso',
+  /** Una sola columna no es gráfica (02 §9): con ventas solo en la semana en curso se dice la cifra. */
+  unaSolaSemana: (semana: string, dinero: string, pedidos: number): string =>
+    `Todas sus ventas son de la semana del ${semana} (en curso): ${dinero} de comisión · ${plural(pedidos, 'pedido', 'pedidos')}.`,
+  etiquetaSemana: (fecha: string): string => `sem ${fecha}`,
+  sinSerie: 'La gráfica por semana necesita tu PC encendida.',
+  productos: 'Productos que vendió este video',
+  productosNota: 'Cifras totales de cada producto, en todos tus videos.',
+  productosCuenta: (x: number): string => plural(x, 'producto', 'productos'),
+  productoCifra: (unidades: number): string => plural(unidades, 'unidad', 'unidades'),
+  listaCorta: (visibles: number, total: number): string => `Mostrando ${n(visibles)} de ${n(total)} · el resto con tu PC encendida`,
+  sinProductos: 'No hay productos registrados para este video.',
+  muestras: 'Muestras vinculadas',
+  muestrasVacio: 'Ninguna muestra está vinculada a este video.',
+  muestraSinDatos: (idCorto: string): string => `Muestra ${idCorto}`,
+  verMuestra: 'Ver muestra',
+  notas: 'Notas del video',
+  notasAyuda: 'Qué funcionó, qué repetirías…',
+  // rev. 5 · Métricas de TikTok (Display API): vistas, likes, comentarios, compartidos y conversión.
+  notaMetricas: (fecha: string): string => `Vistas de TikTok al ${fecha.replace(/ /g, '\u00a0')} · pedidos y comisión de TikTok Shop.`,
+  vistas: (cifra: string): string => `${cifra} vistas`,
+  likes: (cifra: string): string => `${cifra} likes`,
+  comentarios: (cifra: string, x: number): string => `${cifra} ${x === 1 ? 'comentario' : 'comentarios'}`,
+  compartidos: (cifra: string): string => `${cifra} compartidos`,
+  porMil: 'pedidos por 1,000 vistas',
+  porMilPedidos: 'pedidos',
+  porMilResto: 'por 1,000 vistas',
+  metricasDe: (nombre: string): string => `Cifras de TikTok de ${nombre}`,
+  sinCifras: 'Sin cifras de TikTok',
+  sinCifrasAyuda: 'TikTok no da cifras de este video: puede ser privado, estar borrado o ser de otra cuenta.',
+  // Corto a propósito: va en un chip de la tarjeta (220 px); el «tiene vistas» lo dicen el ícono y la ayuda.
+  sinVentasConVistas: 'Sin ventas válidas',
+  sinVentasConVistasAyuda: 'Tiene vistas en TikTok, pero todos sus pedidos se reembolsaron o se cancelaron.',
+  colVistas: 'Vistas',
+  colLikes: 'Likes',
+  colComentarios: 'Comentarios',
+  colCompartidos: 'Compartidos',
+  colPorMil: 'Pedidos por 1,000 vistas',
+  publicadoEl: (fecha: string): string => `Publicado el ${fecha.replace(/ /g, ' ')}`,
+  tiktokTitulo: 'En TikTok',
+  tiktokNota: (fecha: string, publicado: string | null): string =>
+    [`Cifras que dio TikTok el ${fecha.replace(/ /g, '\u00a0')}`, ...(publicado ? [`publicado el ${publicado.replace(/ /g, '\u00a0')}`] : [])].join(' · '),
+  kpiVistas: 'Vistas',
+  kpiLikes: 'Likes',
+  kpiComentarios: 'Comentarios',
+  kpiCompartidos: 'Compartidos',
+  kpiVistasResumen: (desde: string, hasta: string, total: string): string => `Vistas acumuladas del ${desde} al ${hasta}: ${total}`,
+  kpiVistasNota: (exacto: string): string => exacto,
+  kpiLikesNota: (tasa: string): string => `${tasa} de las vistas`,
+  conversionTitulo: 'Conversión',
+  conversionEtiqueta: 'pedidos por cada 1,000 vistas',
+  conversionComision: (dinero: string): string => `≈ ${dinero} de comisión por cada 1,000 vistas`,
+  conversionTipico: (cifra: string): string => `Tu video típico: ${cifra}`,
+  conversionNota: 'Con los pedidos válidos de toda la vida del video.',
+  conversionSinVistas: 'Todavía no hay vistas para calcularla.',
+  tendenciaTitulo: 'Vistas nuevas por día',
+  tendenciaNota: (fecha: string, cifra: string): string => `Mejor día: ${fecha.replace(/ /g, '\u00a0')} · ${cifra} vistas`,
+  ariaDia: (fecha: string, nuevas: string, total: string): string => `${fecha}: ${nuevas} vistas nuevas, ${total} en total`,
+  colDia: 'Día',
+  colNuevas: 'Vistas nuevas',
+  colTotal: 'Vistas en total',
+  tendenciaPoca: 'La tendencia aparece cuando Corte guarde las cifras de dos días distintos.',
+  tendenciaSinPc: 'Las vistas por día necesitan tu PC encendida.',
+  tendenciaHuecos: 'Si Corte no se abrió algún día, sus vistas se suman al día siguiente.',
+  sinCifrasDetalle: 'TikTok no da cifras de este video: puede ser privado, estar borrado o ser de otra cuenta. Las ventas sí se cuentan.',
+  reproductorTitulo: (nombre: string): string => `Video de TikTok: ${nombre}`,
+  reproducirEn: 'Se reproduce aquí con el reproductor oficial de TikTok',
+  fueraDeLaApp: 'Se abre fuera de Corte, en TikTok.',
+} as const;
+
+export type ClaveRango = keyof typeof T.rangos;
+export type ClaveOrden = keyof typeof T.orden;

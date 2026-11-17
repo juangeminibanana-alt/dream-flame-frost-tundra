@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Corte · base (BUILD_SPEC §8.1): reset mínimo + reglas por atributo de <html>.
+   Solo var(--token) de tokens.css; nada de colores sueltos. Las reglas de foco, vidrio, área táctil,
+   movimiento reducido y colores forzados ya vienen en tokens.css §14.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--bg-canvas);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-body);
+  font-stretch: var(--stretch-text);
+  letter-spacing: var(--tracking-body);
+  font-synthesis-weight: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+#raiz {
+  min-height: 100vh;
+  min-height: 100dvh;
+  isolation: isolate;
+}
+
+h1, h2, h3, h4, h5, h6, p, figure, blockquote, dl, dd, ul, ol {
+  margin: 0;
+}
+
+ul[role="list"], ol[role="list"] {
+  list-style: none;
+  padding: 0;
+}
+
+img, svg, video, canvas, picture {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+a {
+  color: var(--text-link);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+::selection {
+  background: var(--brand-subtle);
+  color: var(--text-1);
+}
+
+/* --------------------------------------------------------------------------
+   Atributos de <html> (tabla de BUILD_SPEC §8.4)
+   -------------------------------------------------------------------------- */
+
+/* Tema claro: el peso de cuerpo lo redefine tokens.css; aquí solo la elección de barras de desplazamiento. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* Android: sin rebote que revele el lienzo detrás de la barra inferior y con los insets nativos. */
+:root[data-platform="android"] body {
+  overscroll-behavior-y: none;
+  padding-left: var(--inset-left);
+  padding-right: var(--inset-right);
+}
+
+/* Con una hoja inferior o un modal abierto, el fondo no se desplaza. */
+:root[data-overlay] body {
+  overflow: hidden;
+}
+
+/* Densidad táctil: objetivos cómodos para el dedo en los controles nativos sin estilo propio. */
+:root[data-density="touch"] :is(button, [role="button"], input[type="checkbox"], input[type="radio"]) {
+  touch-action: manipulation;
+}

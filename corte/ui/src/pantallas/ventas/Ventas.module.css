@@ -1,0 +1,737 @@
+/* Ventas (01_ux §4.11; lienzo aprobado Ventas.png; 02 §5, §7.3, §7.5, §9). Solo tokens. */
+
+.pantalla {
+  min-width: 0;
+}
+/* La raíz es de bloque: el encabezado de pantalla (pegajoso; en Android, barra + línea de contexto debajo) queda en
+   flujo normal y con sus propios márgenes, sin el hueco de la columna. Controles y cuerpo van en .contenido. */
+.ventas {
+  container: ventas / inline-size;
+  display: block;
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-bottom: var(--space-12);
+  min-width: 0;
+}
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  min-width: 0;
+}
+/* Android: la línea de contexto ya trae 12 px abajo; con 4 más, los controles quedan a 16 como el resto. */
+.ventas[data-android] .contenido {
+  margin-top: var(--space-1);
+}
+.bloques {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* Espacio final del alto de una capa global fija abajo (capas.ts): la paginación sube por encima de ella. */
+.holgura {
+  flex: none;
+  pointer-events: none;
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.srSolo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.estadoGlobal {
+  margin: var(--space-10) auto;
+}
+
+/* ------------------------------------------------------------------ controles */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+}
+.segmentoPeriodo {
+  min-width: min(100%, 420px);
+}
+.comparar {
+  margin-left: auto;
+}
+.controlesCompactos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.chipsPeriodo {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 calc(var(--content-pad-x) * -1);
+  padding: var(--space-1) var(--content-pad-x);
+}
+.chipsPeriodo::-webkit-scrollbar {
+  display: none;
+}
+.chipsPeriodo > * {
+  flex: none;
+}
+.controlesCompactos .comparar {
+  margin-left: 0;
+}
+
+/* ------------------------------------------------------------------ KPI (banda abierta, 4 × 2) */
+.kpis {
+  margin-top: var(--space-2);
+}
+
+/* ------------------------------------------------------------------ tarjetas */
+.filaDos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-width: 0;
+}
+@container ventas (min-width: 820px) {
+  .filaDos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tarjetaTitulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.vacioSuave {
+  margin: 0;
+  font-size: var(--text-body-size);
+  color: var(--text-2);
+}
+.textoNota {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.enlacePie {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  align-self: flex-start;
+  min-height: var(--control-h-sm);
+  color: var(--brand-ink);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+.enlacePie:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.enlacePie:focus-visible,
+.producto:focus-visible,
+.tarjetaPedido:focus-visible,
+.lineaNombre:focus-visible,
+.mesResumen:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Gráfica principal */
+.graficaControles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.segmentoMetrica {
+  min-width: min(100%, 440px);
+}
+.graficaControlesCompactos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.chipsMetrica {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 calc(var(--space-4) * -1);
+  padding: var(--space-1) var(--space-4);
+}
+.chipsMetrica::-webkit-scrollbar {
+  display: none;
+}
+.chipsMetrica > * {
+  flex: none;
+}
+.segmentoGran {
+  min-width: min(100%, 220px);
+}
+.notaGrafica {
+  margin: calc(var(--space-2) * -1) 0 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+
+/* ¿Dónde está tu dinero? */
+.corte {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.ayudas {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.ayuda {
+  display: grid;
+  grid-template-columns: minmax(0, 9.5em) minmax(0, 1fr);
+  gap: var(--space-3);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.ayuda dt {
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.ayuda dd {
+  margin: 0;
+  color: var(--text-2);
+}
+@container ventas (max-width: 520px) {
+  .ayuda {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+/* Reembolsos */
+.reembolsoTexto {
+  margin: 0;
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-lh);
+  color: var(--text-1);
+  text-wrap: pretty;
+}
+
+/* Productos que más venden */
+.productos {
+  list-style: none;
+  margin: 0 calc(var(--space-2) * -1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.producto {
+  display: grid;
+  grid-template-columns: 16px auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-1);
+  text-decoration: none;
+  transition: background-color var(--dur-instant) linear;
+}
+.producto:hover {
+  background: var(--surface-hover);
+}
+.productos li:first-child .producto {
+  background: var(--surface-2);
+}
+.productoRanking {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  color: var(--text-3);
+  text-align: center;
+}
+.productoFotoGrande,
+.productoFoto {
+  flex: none;
+}
+.productoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.productoNombre {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.productoLinea {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+}
+.productoCifra {
+  font-size: var(--text-body-lg-size);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Por mes */
+.tablaDesplaza {
+  overflow-x: auto;
+  margin: 0 calc(var(--space-5) * -1);
+  padding: 0 var(--space-5);
+}
+.tablaMeses {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: var(--text-body-size);
+  font-variant-numeric: tabular-nums;
+}
+.tablaMeses th,
+.tablaMeses td {
+  padding: 0 var(--space-3);
+  height: 40px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  white-space: nowrap;
+}
+.tablaMeses thead th {
+  height: 36px;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.tablaMeses tbody th {
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+}
+.tablaMeses td {
+  color: var(--text-1);
+}
+.tablaMeses th:first-child,
+.tablaMeses td:first-child {
+  padding-left: 0;
+}
+.tablaMeses th:last-child,
+.tablaMeses td:last-child {
+  padding-right: 0;
+}
+.tablaMeses tr[data-en-curso] th,
+.tablaMeses tr[data-en-curso] td {
+  color: var(--text-2);
+}
+.tablaMeses .num {
+  text-align: right;
+}
+.num {
+  text-align: right;
+}
+.mesesLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mesDetalle {
+  border-bottom: 1px solid var(--border-subtle);
+}
+.mesResumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--touch-min);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius-xs);
+}
+.mesResumen::-webkit-details-marker {
+  display: none;
+}
+.mesNombre {
+  font-weight: var(--weight-semibold);
+}
+.mesCifra {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--weight-semibold);
+}
+.mesDatos {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-body-sm-size);
+}
+.mesDatos div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.mesDatos dt {
+  color: var(--text-2);
+}
+.mesDatos dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pedidos */
+.pedidosCabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.pedidosTotal {
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.chipsPedidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.ventas[data-compacto] .chipsPedidos {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 calc(var(--space-4) * -1);
+  padding: var(--space-1) var(--space-4);
+}
+.ventas[data-compacto] .chipsPedidos::-webkit-scrollbar {
+  display: none;
+}
+.ventas[data-compacto] .chipsPedidos > * {
+  flex: none;
+}
+.tablaPedidos {
+  min-width: 0;
+  overflow-x: auto;
+  margin: 0 calc(var(--space-5) * -1);
+  padding: 0 var(--space-5);
+}
+/* Encabezado pegajoso sobre la superficie de la tarjeta, no del lienzo. */
+.tablaPedidos .tablaEnTarjeta {
+  --tabla-fondo: var(--surface-1);
+}
+.vacioPedidos {
+  margin: var(--space-6) auto;
+}
+.listaPedidos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.tarjetaPedido {
+  appearance: none;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: none;
+  color: var(--text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tarjetaPedido:active {
+  background: var(--surface-pressed);
+}
+.tarjetaPedidoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tarjetaPedidoProducto {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+}
+.tarjetaPedidoMeta {
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+}
+.tarjetaPedidoDerecha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+.tarjetaPedidoCifra {
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+.paginaTexto {
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Detalle de un pedido (panel de 480 u hoja) */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.detalleCabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.detalleId {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  color: var(--text-2);
+}
+.detalleTotales {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+.detalleTotales div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.detalleTotales dt {
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}
+.detalleTotales dd {
+  margin: 0;
+  font-size: var(--text-body-lg-size);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  font-variant-numeric: proportional-nums;
+  color: var(--text-1);
+}
+.lineas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.linea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+.lineaCabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.lineaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.lineaNombre {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  border-radius: var(--radius-xs);
+}
+.lineaNombre:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.lineaMeta {
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+}
+.lineaDatos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+}
+.lineaDatos div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.lineaDatos dt {
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}
+.lineaDatos dd {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}
+.lineaNotas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+}
+
+/* ------------------------------------------------------------------ avisos y estados */
+.avisoSeccion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px dashed var(--border-default);
+}
+.avisoIcono {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+.avisoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.avisoTextos b {
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.trayendo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+}
+.trayendoIcono {
+  flex: none;
+  margin-top: 2px;
+  color: var(--info-fg);
+}
+.carga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.esqKpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.esqDos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.esqSeccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+/* Filas de chips desplazables (celular): se desvanecen a la derecha para avisar que hay más (como la tira de Inicio) y
+   dejan 40 px al final para que el último chip salga entero del desvanecido. Va al final para ganar el orden. */
+.ventas .chipsPeriodo,
+.ventas .chipsMetrica,
+.ventas[data-compacto] .chipsPedidos {
+  padding-right: var(--space-10);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 40px), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 40px), transparent);
+}
+
+@container ventas (max-width: 599px) {
+  .esqKpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .esqDos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .detalleTotales {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:8081/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 902,
+      "bodyTextHash": "33763131803add9b5979f7ed5a0c91cc82a5a609c09277ef937564a218f8373a",
+      "bodyTextPrefix": "Ir al contenido Corte TU TRABAJO Generar G G Inicio G I Muestras",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-prod-now.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 15,
+      "bodyTextHash": "cc40eafa922958550324e527336cd402961a0b775d94b3ca8180e5e5f317590d",
+      "bodyTextPrefix": "Abriendo Corte…",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-prod-now-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/corte-prod-now.json",
+  "divergesFromBaseline": true,
+  "baselineReasons": [
+    "desktop: body text changed (305 -> 902 chars, hash mismatch)",
+    "mobile: body text collapsed (183 -> 15 chars)"
+  ]
+}

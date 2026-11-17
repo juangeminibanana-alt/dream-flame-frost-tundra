@@ -1,0 +1,123 @@
+.raiz {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  padding-top: max(var(--space-4), var(--inset-top));
+  padding-bottom: max(var(--space-4), var(--inset-bottom));
+}
+.velo {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-scrim);
+  animation: aparecer var(--dur-base) var(--ease-standard) both;
+}
+.dialogo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--ancho-modal, 440px), 100%);
+  max-height: calc(100dvh - var(--space-8));
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--surface-3);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--elev-highlight), var(--shadow-4);
+  color: var(--text-1);
+  outline: none;
+  animation: entrar var(--dur-base) var(--ease-enter) both;
+}
+.dialogo:focus-visible {
+  box-shadow: var(--elev-highlight), var(--shadow-4);
+}
+.a440 { --ancho-modal: 440px; }
+.a560 { --ancho-modal: 560px; }
+.a640 { --ancho-modal: 640px; }
+.a720 { --ancho-modal: 720px; }
+:global(:root[data-platform="android"]) .dialogo {
+  width: min(max(312px, var(--ancho-modal, 440px)), 560px, 100%);
+}
+
+.saliendo .velo {
+  animation: desaparecer var(--dur-base) var(--ease-exit) both;
+}
+.saliendo .dialogo {
+  animation: salir var(--dur-base) var(--ease-exit) both;
+}
+
+.cabeza {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.textos {
+  flex: 1;
+  min-width: 0;
+}
+.titulo {
+  margin: 0;
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  overflow-wrap: anywhere;
+}
+.descripcion {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-2);
+  max-width: 62ch;
+}
+.cerrar {
+  margin: -6px -6px 0 0;
+}
+.cuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin-top: var(--space-4);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+@media (max-width: 599px) {
+  .raiz:has(.completo) {
+    padding: 0;
+  }
+  .completo {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+    padding-top: max(var(--space-5), var(--inset-top));
+    padding-bottom: max(var(--space-5), var(--inset-bottom));
+  }
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes desaparecer {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes entrar {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes salir {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: scale(0.98); }
+}

@@ -1,0 +1,97 @@
+/* ListaNotas: tarjeta surface-1 con el área de nueva nota y la lista (fijadas primero). */
+.raiz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.titulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.estado {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  text-align: right;
+}
+.estadoError {
+  color: var(--crit-fg);
+}
+.nueva {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+.area {
+  width: 100%;
+}
+.agregar {
+  flex: none;
+}
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nota {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.fijada {
+  box-shadow: inset 3px 0 0 var(--nav-indicator);
+}
+.texto {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-1);
+}
+.pieNota {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}
+.marcaFijada {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--brand-ink);
+  font-weight: var(--weight-semibold);
+}
+.vacio {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  color: var(--text-3);
+}

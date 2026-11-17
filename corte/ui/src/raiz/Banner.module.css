@@ -1,0 +1,151 @@
+/* Banner superior único (01 §4.16). Solo tokens; tono de estado en el borde, el ícono y un lavado suave.
+   Rejilla [ícono][texto][acciones]; en angosto (contenedor < 560 px) las acciones bajan bajo el texto. */
+.banner {
+  container-type: inline-size;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+  animation: entrar var(--dur-slow) var(--ease-enter) both;
+}
+.cuerpo {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-height: 52px;
+  padding: 10px var(--space-3) 10px var(--space-4);
+}
+.critico {
+  border-color: var(--crit-border);
+  background: linear-gradient(0deg, var(--crit-bg), var(--crit-bg)), var(--surface-1);
+}
+.atencion {
+  border-color: var(--warn-border);
+  background: linear-gradient(0deg, var(--warn-bg), var(--warn-bg)), var(--surface-1);
+}
+.neutro {
+  border-color: var(--border-default);
+  background: var(--surface-1);
+}
+
+.icono {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  align-self: start;
+}
+.critico .icono {
+  color: var(--crit-fg);
+  background: var(--crit-bg);
+}
+.atencion .icono {
+  color: var(--warn-fg);
+  background: var(--warn-bg);
+}
+.neutro .icono {
+  color: var(--text-2);
+  background: var(--neutral-bg);
+}
+
+.textos {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-height: 28px;
+}
+.texto {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  text-wrap: pretty;
+}
+.detalle {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+.cerrar {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  color: var(--text-2);
+}
+.cerrar:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+
+@container (max-width: 560px) {
+  .cuerpo {
+    grid-template-columns: 28px minmax(0, 1fr);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-3);
+  }
+  .acciones {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+}
+
+/* Franja de estado (celular y compacta, solo avisos neutros, 02 §7.9): delgada, sin halo del ícono, texto de 13/12. */
+.franja {
+  border-color: var(--info-border);
+  border-radius: var(--radius-md);
+  background: linear-gradient(0deg, var(--info-bg), var(--info-bg)), var(--surface-1);
+  box-shadow: none;
+}
+.franja .cuerpo {
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  gap: 2px var(--space-2);
+  min-height: 0;
+  padding: var(--space-2) var(--space-3);
+}
+.franja .icono {
+  width: 16px;
+  height: 18px;
+  color: var(--info-fg);
+  background: none;
+}
+.franja .textos {
+  min-height: 0;
+  gap: 1px;
+}
+.franja .texto {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-semibold);
+  text-wrap: balance;
+}
+.franja .detalle {
+  color: var(--text-2);
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--motion-distance) * -1));
+  }
+}
+
+@media (forced-colors: active) {
+  .banner {
+    border: 2px solid CanvasText;
+  }
+}

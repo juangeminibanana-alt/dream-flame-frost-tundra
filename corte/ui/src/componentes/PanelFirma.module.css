@@ -1,0 +1,102 @@
+/* Panel de firma «Ponte al día» con las medidas del lienzo aprobado (Main.png; MovilInicio.png en angosto): radio 20,
+   relleno 28/30, degradado a 135°, la cuña lima tenue y la diagonal lima de 2 px de la esquina. Conserva el chaflán de
+   18 px de 02 §7.23 (esa esquina va sin radio para que el corte se lea). overflow: clip recorta a los hijos con el
+   radio (la foto a sangre de un héroe sigue la curva). */
+.panel {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-width: 0;
+  padding: var(--space-7) 30px;
+  border-radius: var(--radius-xl) 0 var(--radius-xl) var(--radius-xl);
+  background: linear-gradient(
+    135deg,
+    var(--surface-1) 0%,
+    color-mix(in srgb, var(--surface-1) 70%, var(--bg-sunken)) 60%,
+    color-mix(in srgb, var(--surface-1) 45%, var(--bg-sunken)) 100%
+  );
+  box-shadow: var(--elev-highlight), inset 0 0 0 1px var(--border-subtle);
+  clip-path: polygon(0 0, calc(100% - var(--cut-chamfer)) 0, 100% var(--cut-chamfer), 100% 100%, 0 100%);
+}
+
+/* Cuña tenue: cuadrado lima al 7 % girado 45° que asoma por la esquina (220 px, 60 fuera del borde), detrás del
+   contenido. */
+.panel::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  background: color-mix(in srgb, var(--brand) 7%, transparent);
+  transform: rotate(45deg);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* En una sola capa de 64×64 anclada a la esquina, dos trazos con bordes suaves (sin escalones):
+   1. el filete del chaflán (la diagonal u + v = 18 px, a 12.73 px del vértice superior derecho);
+   2. la diagonal lima de 2 px del lienzo (a 45°, right 44, top −30, opacidad .55): la recta x + y = 79 px de la caja,
+      a 55.86 px de su esquina superior izquierda sobre la diagonal. En Main.png solo se ve su tramo de la esquina (la
+      tarjeta SIGUIENTE tapa el resto): la caja de 64 la corta en ese mismo tramo, para que nunca cruce el titular. */
+.panel::after {
+  --filete: color-mix(in srgb, var(--brand-ink) 60%, transparent);
+  --diagonal: color-mix(in srgb, var(--brand) 55%, transparent);
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 64px;
+  height: 64px;
+  background:
+    linear-gradient(
+      to bottom left,
+      transparent calc(var(--cut-chamfer) * 0.7071 - 0.6px),
+      var(--filete) calc(var(--cut-chamfer) * 0.7071),
+      var(--filete) calc(var(--cut-chamfer) * 0.7071 + 1.25px),
+      transparent calc(var(--cut-chamfer) * 0.7071 + 1.85px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(55.86px - 1.6px),
+      var(--diagonal) calc(55.86px - 1px),
+      var(--diagonal) calc(55.86px + 1px),
+      transparent calc(55.86px + 1.6px)
+    );
+  pointer-events: none;
+}
+
+/* Celular (MovilInicio.png): radio 22, relleno 18 y una cuña de 140 al 8 %, sin la diagonal larga. */
+@media (max-width: 599px) {
+  .panel {
+    padding: 18px;
+    border-radius: 22px 0 22px 22px;
+  }
+  .panel::before {
+    top: -50px;
+    right: -50px;
+    width: 140px;
+    height: 140px;
+    background: color-mix(in srgb, var(--brand) 8%, transparent);
+  }
+  .panel::after {
+    background: linear-gradient(
+      to bottom left,
+      transparent calc(var(--cut-chamfer) * 0.7071 - 0.6px),
+      var(--filete) calc(var(--cut-chamfer) * 0.7071),
+      var(--filete) calc(var(--cut-chamfer) * 0.7071 + 1.25px),
+      transparent calc(var(--cut-chamfer) * 0.7071 + 1.85px)
+    );
+  }
+}
+
+@media (forced-colors: active) {
+  .panel {
+    clip-path: none;
+    border: 1px solid CanvasText;
+  }
+  .panel::before,
+  .panel::after {
+    display: none;
+  }
+}

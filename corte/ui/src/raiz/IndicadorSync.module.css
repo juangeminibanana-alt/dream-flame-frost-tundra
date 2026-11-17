@@ -1,0 +1,206 @@
+/* Indicador de sincronización (01 §3.2, 02 §7.7). Solo tokens. Movimiento: solo transform (giro y avance). */
+
+/* ---------------------------------------------------------------- tarjeta del pie (lateral de 248) */
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 var(--space-1);
+  padding: var(--space-1-5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+}
+.filaSync,
+.filaCelular {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 32px;
+  padding: var(--space-1) var(--space-1-5);
+  border-radius: var(--radius-sm);
+  text-align: left;
+  color: var(--text-1);
+  transition: background-color var(--dur-instant) var(--ease-standard);
+}
+.filaSync:hover,
+.filaCelular:hover {
+  background: var(--surface-hover);
+}
+.filaSync[aria-disabled="true"] {
+  cursor: default;
+}
+.filaSync[aria-disabled="true"]:hover {
+  background: transparent;
+}
+.punto {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  color: var(--brand-ink);
+}
+.textoSync {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-semibold);
+}
+.accion {
+  flex: none;
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.filaSync:hover .accion,
+.filaSync:focus-visible .accion {
+  opacity: 1;
+}
+.error .textoSync {
+  color: var(--crit-fg);
+}
+.filaCelular {
+  min-height: 28px;
+  color: var(--text-3);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+.filaCelular:hover {
+  color: var(--text-2);
+}
+.paso {
+  margin: 0;
+  padding: 0 var(--space-1-5) 0 calc(var(--space-1-5) + 14px + var(--space-2));
+  /* El paso completo en hasta dos renglones («Trayendo fichas de productos de tus ventas»): no se corta a la mitad. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  text-wrap: pretty;
+  color: var(--text-2);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+.pista {
+  display: block;
+  height: 3px;
+  margin: var(--space-1-5) var(--space-1-5) var(--space-1);
+  overflow: hidden;
+  border-radius: var(--radius-full);
+  background: var(--progress-track);
+}
+.relleno {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--progress-fill);
+  transform-origin: left center;
+  transform: scaleX(var(--avance, 0));
+  transition: transform var(--dur-slow) var(--ease-standard);
+}
+
+/* ---------------------------------------------------------------- riel de 80 */
+.riel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+.botonRiel {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  transition: background-color var(--dur-instant) var(--ease-standard);
+}
+.botonRiel:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.botonRiel[aria-disabled="true"] {
+  cursor: default;
+}
+.puntoRiel {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  display: inline-grid;
+  place-items: center;
+  padding: 2px;
+  border-radius: var(--radius-full);
+  background: var(--bg-sunken);
+}
+.marcaCelular {
+  position: absolute;
+  top: 9px;
+  right: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--ok-solid);
+  box-shadow: 0 0 0 2px var(--bg-sunken);
+}
+
+/* ---------------------------------------------------------------- franja (Android y compacta) */
+.franja {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 36px;
+  padding: var(--space-1-5) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  animation: entrar var(--dur-slow) var(--ease-enter) both;
+}
+.franjaActiva {
+  border-color: var(--brand-subtle-border);
+}
+.franjaIcono {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--brand-ink);
+}
+.franjaTexto {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.franjaPaso {
+  color: var(--text-2);
+  font-weight: var(--weight-body);
+}
+
+/* ---------------------------------------------------------------- giro de «Sincronizando…» (único bucle permitido) */
+.gira {
+  animation: girar 1s linear infinite;
+}
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--motion-distance) * -1));
+  }
+}

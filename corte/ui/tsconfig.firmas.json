@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2022", "lib": ["es2022", "dom", "dom.iterable"], "module": "esnext", "moduleResolution": "bundler",
+    "jsx": "react-jsx", "strict": true, "exactOptionalPropertyTypes": true, "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true, "noFallthroughCasesInSwitch": true, "verbatimModuleSyntax": true,
+    "isolatedModules": true, "skipLibCheck": false, "noEmit": true, "types": ["vite/client"], "baseUrl": ".",
+    "paths": {
+      "@/contrato":    ["../spec/contrato.ts"],
+      "@/plataforma":  ["../spec/ui_firmas/plataforma.d.ts"],
+      "@/datos":       ["../spec/ui_firmas/datos.d.ts"],
+      "@/app":         ["../spec/ui_firmas/app.d.ts"],
+      "@/raiz":        ["../spec/ui_firmas/raiz.d.ts"],
+      "@/componentes": ["../spec/ui_firmas/componentes.d.ts"],
+      "@/dominio":     ["../spec/ui_firmas/dominio.d.ts"],
+      "@/bloques":     ["../spec/ui_firmas/bloques.d.ts"],
+      "@firmas/*":     ["../spec/ui_firmas/*"],
+      "react":             ["./node_modules/@types/react/index.d.ts"],
+      "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime.d.ts"]
+    }
+  },
+  "include": ["../spec/ui_firmas/**/*", "../spec/contrato.ts"]
+}

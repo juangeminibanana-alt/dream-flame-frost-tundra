@@ -1,0 +1,48 @@
+.campo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* Las variables --busqueda-* solo existen dentro del encabezado de Windows (40 de alto, 240 de mínimo, radio 10 y
+     texto de 14, como el lienzo). Fuera de él valen su respaldo de 02 §7.10. */
+  min-height: var(--busqueda-alto, var(--control-h-md));
+  min-width: var(--busqueda-ancho-min, 0px);
+  padding: 0 6px 0 10px;
+  border-radius: var(--busqueda-radio, var(--radius-sm));
+  background: var(--surface-2);
+  border: 1px solid var(--border-control);
+  color: var(--text-3);
+  font-size: var(--busqueda-texto, var(--text-body-sm-size));
+  line-height: var(--text-body-sm-lh);
+  cursor: text;
+  text-align: left;
+}
+:where(.campo) {
+  width: 280px;
+  max-width: 100%;
+}
+.campo:hover {
+  border-color: var(--text-3);
+}
+/* Foco con teclado: el anillo 2+2 de todo lo interactivo (02 §12.2); el halo de 3 px en --brand-subtle casi no se veía
+   (≈1.06:1 en claro). */
+.campo:focus-visible {
+  background: var(--surface-1);
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+.lupa {
+  flex: none;
+}
+.placeholder {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+}
+.kbd {
+  margin-left: auto;
+}
+@media (forced-colors: active) {
+  .campo:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}

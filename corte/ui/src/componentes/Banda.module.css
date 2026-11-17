@@ -1,0 +1,38 @@
+.banda {
+  min-width: 0;
+}
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: 14px;
+}
+.titulo {
+  composes: titulo3 from './util/comun.module.css';
+  margin: 0;
+  color: var(--text-1);
+  min-width: 0;
+}
+.accion {
+  composes: enlace from './util/comun.module.css';
+  position: relative;
+  min-height: 24px;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  align-self: center;
+}
+.accion svg {
+  margin-right: -4px;
+}
+/* Táctil: 48 de área sin crecer a la vista (tokens.css §14.3). */
+:global(:root[data-density="touch"]) .accion::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--touch-min));
+  transform: translateY(-50%);
+}

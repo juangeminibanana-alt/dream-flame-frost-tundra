@@ -1,0 +1,294 @@
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.subtitulo {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.pregunta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+/* Banda fija de confirmación (01 §3.5), compacta y minimizable. No desaparece sola, pero no tapa el contenido:
+ *   · Windows ≥ 900: una línea de 48 px abajo a la derecha (los avisos van abajo a la izquierda, 02 §7.15);
+ *   · ventanas de 600 a 899: pregunta arriba y botones abajo (≈ 64 px), abajo a la derecha;
+ *   · celular y ventanas de menos de 600: a lo ancho, encima de la barra inferior (≈ 64 px); los avisos suben sobre
+ *     ella con --avisos-extra (capaConfirmar.ts).
+ * --subir (capaConfirmar.ts) la sube si un aviso cae encima. Va debajo de menús, paneles, diálogos y avisos y encima del
+ * contenido, los encabezados y la barra inferior. El acomodo (una línea o dos renglones) lo decide su propio ancho. */
+.banda {
+  position: fixed;
+  right: var(--space-6);
+  bottom: calc(var(--space-6) + var(--inset-bottom) + var(--subir, 0px));
+  z-index: calc(var(--z-nav) + 1);
+  width: min(680px, calc(100vw - 2 * var(--space-6)));
+  container: confirmar / inline-size;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  background: var(--surface-3);
+  box-shadow: var(--shadow-3);
+  animation: entra var(--dur-base) var(--ease-enter) both;
+}
+@media (max-width: 899px) {
+  .banda {
+    width: min(440px, calc(100vw - 2 * var(--space-6)));
+  }
+}
+@media (max-width: 599px) {
+  .banda {
+    left: var(--space-4);
+    right: var(--space-4);
+    width: auto;
+    bottom: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-2) + var(--subir, 0px));
+  }
+}
+.android {
+  left: var(--space-4);
+  right: var(--space-4);
+  width: auto;
+  bottom: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-2) + var(--subir, 0px));
+}
+/* Táctil: los botones de la banda miden 32 a la vista; su área táctil sigue siendo de 48 (::after de Boton y
+   BotonIcono, tokens.css §14.3). Así la banda no pasa de ≈ 64 px encima de la barra inferior. */
+:global(:root[data-density="touch"]) .banda {
+  --control-h-sm: 32px;
+}
+
+/* Dos renglones (por omisión, en anchos chicos): la pregunta arriba (hasta 2 renglones si el nombre de la tienda es muy
+   largo o la letra está al 130–200 %) con ⌄ en la esquina de arriba a la derecha, y [Sí, ya se lo envié] [Todavía no]
+   abajo. Así ⌄ no se lleva un renglón propio cuando la letra está grande. */
+.contenido {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "texto"
+    "botones";
+  row-gap: 2px;
+  align-items: center;
+  min-width: 0;
+  padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-3);
+}
+.icono {
+  grid-area: icono;
+  display: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+.texto {
+  grid-area: texto;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.titulo {
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+/* Hueco flotante para ⌄ (esquina de arriba a la derecha) solo en el PRIMER renglón de la pregunta: el segundo renglón
+   usa todo el ancho, así que con la letra al 130–200 % el nombre de la tienda sigue cabiendo en dos renglones. Mide un
+   renglón (1lh) para no agrandar la banda cuando la pregunta cabe en uno. */
+.titulo::before {
+  content: "";
+  float: right;
+  width: calc(var(--control-h-sm) + 2px);
+  height: 1lh;
+}
+/* «Lo copiaste hace… · plantilla»: solo para lectores de pantalla en dos renglones; a la vista en una línea. */
+.detalle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.botones {
+  grid-area: botones;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.contenido .minimizar {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+}
+
+/* Una línea (≥ 560 px de banda): ícono · pregunta (· detalle, que se recorta primero) · botones · ⌄. */
+@container confirmar (min-width: 560px) {
+  .contenido {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "icono texto botones";
+    column-gap: var(--space-3);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  }
+  .icono {
+    display: grid;
+  }
+  .texto {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: var(--text-body-sm-size);
+    line-height: var(--text-body-sm-lh);
+  }
+  .detalle {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    font-size: var(--text-caption-size);
+  }
+  .titulo::before {
+    display: none;
+  }
+  .botones {
+    flex-wrap: nowrap;
+  }
+  .contenido .minimizar {
+    position: static;
+  }
+}
+
+/* Minimizada: una pastilla con el nombre de la tienda. En el celular va a la izquierda (el botón flotante de Muestras
+   está a la derecha); en Windows, en la esquina de abajo a la derecha. */
+.minimizada {
+  container-type: normal;
+  width: auto;
+  max-width: calc(100vw - 2 * var(--space-4));
+  border-radius: var(--radius-full);
+}
+@media (max-width: 599px) {
+  .minimizada {
+    right: auto;
+  }
+}
+.android.minimizada {
+  right: auto;
+}
+.pastilla {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-height: 40px;
+  padding: var(--space-1) var(--space-4) var(--space-1) var(--space-1);
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--text-1);
+  font-family: inherit;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pastilla:hover {
+  background: var(--surface-hover);
+}
+.pastilla:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+:global(:root[data-density="touch"]) .pastilla::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: max(100%, var(--touch-min));
+  transform: translateY(-50%);
+}
+.pastillaIcono {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+.pastillaTexto {
+  min-width: 0;
+  max-width: 18ch;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Reserva al final de la página en el acomodo de celular (la página es la que se desplaza): el contenido del marco
+   termina --bottomnav-h + 32 px arriba de la orilla y la banda llega a --bottomnav-h + 8 + su alto; con alto + 8 − 16
+   más, lo último de la pantalla sube hasta quedar 16 px encima de la banda. --avisos-extra = alto de la banda + 8
+   (capaConfirmar.ts). En Windows ≥ 600 no se usa: empujaría la barra lateral fija; ahí reserva el marco. */
+.reserva {
+  display: none;
+  height: max(0px, calc(var(--avisos-extra, 0px) - var(--space-4)));
+}
+@media (max-width: 599px) {
+  .reserva {
+    display: block;
+  }
+}
+.reservaAndroid {
+  display: block;
+}
+
+/* En su lugar (galería): sin posición fija ni animación. */
+.enLinea {
+  position: static;
+  width: 100%;
+  max-width: 680px;
+  animation: none;
+}
+.enLinea.minimizada {
+  width: fit-content;
+}
+
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banda {
+    animation: none;
+  }
+}
+:global(:root[data-reduced-motion]) .banda {
+  animation: none;
+}
+@media (forced-colors: active) {
+  .banda {
+    border-color: CanvasText;
+  }
+}

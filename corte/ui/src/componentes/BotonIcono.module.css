@@ -1,0 +1,90 @@
+.boton {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  /* --boton-icono-* solo existen dentro del encabezado de Windows (40×40, radio 10, como el lienzo). */
+  width: var(--boton-icono-lado, var(--control-h-md));
+  height: var(--boton-icono-lado, var(--control-h-md));
+  border-radius: var(--boton-icono-radio, var(--radius-md));
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-instant) var(--ease-standard);
+}
+.boton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.sm {
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  border-radius: var(--radius-sm);
+}
+.fantasma:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.fantasma:active {
+  background: var(--surface-pressed);
+}
+.secundario {
+  background: var(--surface-2);
+  border-color: var(--border-default);
+  color: var(--text-1);
+}
+.secundario:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+.activo,
+.activo:hover {
+  background: var(--brand-subtle);
+  border-color: var(--brand-subtle-border);
+  color: var(--brand-ink);
+}
+.boton:disabled {
+  background: transparent;
+  color: var(--disabled-fg);
+  cursor: not-allowed;
+}
+.secundario:disabled {
+  background: var(--disabled-bg);
+  border-color: var(--disabled-border);
+}
+
+/* Táctil: 48×48 circular (02 §7.1). */
+:global(:root[data-density="touch"]) .boton {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-full);
+}
+:global(:root[data-density="touch"]) .sm {
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
+}
+:global(:root[data-density="touch"]) .sm::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  transform: translate(-50%, -50%);
+}
+
+.girando {
+  animation: girar 900ms linear infinite;
+}
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (forced-colors: active) {
+  .activo {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

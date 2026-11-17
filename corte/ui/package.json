@@ -1,0 +1,45 @@
+{
+  "name": "creator-hub-ui",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:demo": "vite --mode demo",
+    "typecheck": "tsc -p tsconfig.json",
+    "firmas": "tsc -p tsconfig.firmas.json",
+    "iconos": "node scripts/verificar_iconos.mjs",
+    "test": "vitest run",
+    "capturas": "node scripts/capturas.mjs",
+    "build": "npm run typecheck && vite build && node scripts/verificar_dist.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/geist-mono": "5.3.0",
+    "@fontsource-variable/mona-sans": "5.3.0",
+    "@tanstack/react-virtual": "3.14.22",
+    "jsqr": "1.4.0",
+    "lucide-react": "1.63.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "26.6.6",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "happy-dom": "21.0.4",
+    "typescript": "5.9.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  },
+  "overrides": {
+    "rolldown": "1.2.15",
+    "@rolldown/pluginutils": "1.0.1",
+    "@babel/runtime": "7.29.10",
+    "tinybench": "6.2.2",
+    "ws": "8.22.0"
+  }
+}

@@ -1,0 +1,87 @@
+.raiz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.barra {
+  display: flex;
+  gap: 2px;
+  height: 24px;
+  min-width: 0;
+}
+.segmento {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: var(--crece) 1 0;
+  min-width: 4px;
+  border-radius: var(--radius-2xs);
+  padding: 0 6px;
+  overflow: hidden;
+  cursor: default;
+  transition: opacity var(--dur-fast) linear;
+}
+/* Al pasar o enfocar una parte, las demás bajan un poco: la elegida "se levanta". */
+.barra:has(.activo) .segmento:not(.activo) {
+  opacity: 0.55;
+}
+.segmento:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: var(--focus-ring);
+}
+.numero {
+  /* Escala con el texto del sistema (02 §4.2: cifras a la mitad del aumento). */
+  font-size: calc(12px * var(--fs-half));
+  line-height: 1;
+  font-weight: var(--weight-display);
+  white-space: nowrap;
+}
+.vacia {
+  flex: 1;
+  border-radius: var(--radius-2xs);
+  background: var(--stage-track);
+}
+.ok { background: var(--ok-solid); color: var(--ok-on-solid); }
+.info { background: var(--info-solid); color: var(--info-on-solid); }
+.atencion { background: var(--warn-solid); color: var(--warn-on-solid); }
+.critico { background: var(--crit-solid); color: var(--crit-on-solid); }
+.neutro { background: var(--neutral-solid); color: var(--neutral-on-solid); }
+.marca { background: var(--brand); color: var(--text-on-brand); }
+
+.lectura {
+  min-height: calc(16px * var(--fs-lin));
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.lectura b {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.elemento {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.muestra {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+.n {
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}

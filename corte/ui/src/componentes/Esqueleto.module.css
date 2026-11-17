@@ -1,0 +1,77 @@
+/* Sin animación por elemento: la opacidad la anima EsqueletoVista una sola vez (02 §7.15). */
+.base,
+.linea,
+.valor,
+.miniatura {
+  display: block;
+  background: var(--skeleton-b);
+  border-radius: 6px;
+}
+.base {
+  width: 100%;
+}
+.titulo {
+  height: calc(var(--text-title2-size) * 1.1);
+  width: 46%;
+}
+.bloque {
+  height: 120px;
+  border-radius: var(--radius-lg);
+}
+.foto {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+}
+.circulo {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+}
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+.linea {
+  height: 12px;
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 120px;
+}
+.valor {
+  height: 28px;
+  width: 72%;
+  border-radius: 8px;
+}
+.filas {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.fila {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--row-h);
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.miniatura {
+  flex: none;
+  width: var(--thumb-row);
+  height: var(--thumb-row);
+  border-radius: var(--radius-sm);
+}
+.filaTextos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}

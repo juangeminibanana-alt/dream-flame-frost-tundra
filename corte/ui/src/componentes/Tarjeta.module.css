@@ -1,0 +1,39 @@
+.tarjeta {
+  position: relative;
+  min-width: 0;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-highlight), var(--shadow-1);
+}
+.ninguno { padding: 0; }
+.normal { padding: var(--space-4); }
+.amplio { padding: var(--space-5); }
+:global(:root[data-density="compact"]) .normal { padding: var(--space-3) var(--space-4); }
+
+.pulsable {
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+/* Sombra en ::after con opacidad (nunca se transiciona box-shadow, 02 §7.4). */
+.pulsable::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  transition: opacity var(--dur-base) linear;
+  pointer-events: none;
+}
+:global(:root[data-platform="windows"]) .pulsable:hover,
+:global(:root:not([data-platform])) .pulsable:hover {
+  transform: translateY(-2px);
+}
+:global(:root[data-platform="windows"]) .pulsable:hover::after,
+:global(:root:not([data-platform])) .pulsable:hover::after {
+  opacity: 1;
+}
+.pulsable:active {
+  background: color-mix(in srgb, var(--surface-1), var(--text-1) 5%);
+}

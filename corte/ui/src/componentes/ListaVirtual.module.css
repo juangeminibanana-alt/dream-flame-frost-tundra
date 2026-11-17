@@ -1,0 +1,64 @@
+.marco {
+  position: relative;
+  min-width: 0;
+}
+.lista {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+:where(.lista) {
+  height: min(560px, 70vh);
+}
+.cuerpo {
+  position: relative;
+  width: 100%;
+}
+.fila {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  min-height: var(--row-h);
+  transform: translateY(var(--y, 0px));
+  border-bottom: 1px solid var(--border-subtle);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+.fila:hover {
+  background: var(--surface-hover);
+}
+.fila:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+.celda {
+  display: flex;
+  align-items: center;
+  min-height: var(--row-h);
+  min-width: 0;
+}
+.arriba {
+  position: absolute;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--surface-4);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-2);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+  animation: entrar var(--dur-base) var(--ease-enter) both;
+}
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(var(--motion-distance)); }
+  to { opacity: 1; transform: none; }
+}

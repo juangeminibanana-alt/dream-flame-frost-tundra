@@ -1,0 +1,120 @@
+/* Marco por plataforma (02 §5.1, §7.7–7.9). Solo tokens. La página desplaza la ventana (no un contenedor), para que
+   el encabezado pegajoso de cada pantalla funcione y el scroll se recuerde por ruta. */
+.marco {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-canvas);
+}
+.lateral {
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+}
+.riel {
+  grid-template-columns: var(--rail-w) minmax(0, 1fr);
+}
+
+.columna {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+.contenido {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-5) var(--content-pad-x) var(--space-12);
+  outline: none;
+}
+.contenido:focus,
+.contenido:focus-visible {
+  box-shadow: none;
+}
+.inferior .contenido {
+  padding: 0 var(--content-pad-x) calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-8));
+}
+.ninguna .contenido,
+.contenido[data-completa] {
+  padding: 0;
+}
+
+.lienzo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+.contenido[data-completa] .lienzo {
+  max-width: none;
+}
+
+/* ---------------------------------------------------------------- arriba del contenido */
+.bannerWin {
+  margin-bottom: var(--space-4);
+}
+.superior {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: calc(var(--inset-top) + var(--space-3));
+  padding-bottom: var(--space-1);
+}
+.franjaDemo {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: 2px 10px;
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius-full);
+  background: var(--info-bg);
+  color: var(--info-fg);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  font-weight: var(--weight-semibold);
+}
+.franjaDemoPunto {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+}
+.indicador {
+  padding-top: var(--space-3);
+}
+.indicador:empty {
+  display: none;
+}
+.segmentado {
+  padding: var(--space-1) 0 0;
+}
+.segmentadoControl {
+  width: 100%;
+}
+.arranque {
+  min-height: 60vh;
+}
+
+/* ---------------------------------------------------------------- «Ir al contenido» (02 §12.2) */
+.saltar {
+  position: fixed;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: var(--z-tooltip);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-inverse);
+  color: var(--bg-canvas);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.saltar:focus,
+.saltar:focus-visible {
+  transform: none;
+}

@@ -1,0 +1,69 @@
+/* Panel de atajos '?' (01 §3.6). Solo tokens. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  margin: 0 calc(var(--space-1) * -1);
+  padding: 0 var(--space-1);
+  scrollbar-width: thin;
+}
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.titulo {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.lista {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 40px;
+  padding: var(--space-1-5) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.fila:last-child {
+  border-bottom: 0;
+}
+.descripcion {
+  min-width: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.teclas {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: 0;
+}
+.alternativa,
+.combinacion,
+.paso {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.luego {
+  color: var(--text-3);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}

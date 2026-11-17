@@ -1,0 +1,38 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 305,
+      "bodyTextHash": "0e3e786161cd047dc86fd5d011227173f4ecf8a65d3c9704cc46e2b60b75908f",
+      "bodyTextPrefix": "Ir al contenido Corte TU TRABAJO Generar G G Inicio G I Muestras",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-dev-now.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Corte",
+      "hasCanvas": false,
+      "bodyTextLen": 183,
+      "bodyTextHash": "e2c138ceaafe3c3071987a73733d392e09e2767beb12450680bdefbd0ec96c4d",
+      "bodyTextPrefix": "Ir al contenido Para conectar con TikTok falta la clave de tu ap",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/corte-dev-now-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/corte-dev-now.json",
+  "divergesFromBaseline": false,
+  "baselineReasons": []
+}

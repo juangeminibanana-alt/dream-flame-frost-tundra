@@ -1,0 +1,129 @@
+/* @/dominio · reloj y fechas (BUILD_SPEC §8.2, firma dominio.d.ts). Hora de México centro = UTC−6 FIJO (sin horario de
+   verano desde 2022): nunca se usa la zona del equipo. Todo se calcula desplazando el epoch y leyendo en UTC. */
+import type * as C from '@/contrato';
+
+export const TZ_OFFSET_S = -21600;
+const DIA_MS = 86_400_000;
+const DIA_S = 86_400;
+
+let relojFijo: (() => C.EpochS) | null = null;
+
+/** Reloj de la app (epoch s). En pruebas: fijarReloj(() => 1794500100). */
+export function ahoraS(): C.EpochS {
+  return relojFijo ? Math.floor(relojFijo()) : Math.floor(Date.now() / 1000);
+}
+
+export function fijarReloj(fn: (() => C.EpochS) | null): void {
+  relojFijo = fn;
+}
+
+/** [año, mes 1..12, día]. Lanza RangeError si no es 'YYYY-MM-DD' o la fecha no existe (31 feb). */
+export function partesFecha(fecha: C.FechaLocal): [number, number, number] {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fecha);
+  if (!m) throw new RangeError(`Fecha local inválida: ${fecha}`);
+  const a = Number(m[1]);
+  const mes = Number(m[2]);
+  const d = Number(m[3]);
+  const prueba = new Date(Date.UTC(a, mes - 1, d));
+  if (prueba.getUTCFullYear() !== a || prueba.getUTCMonth() !== mes - 1 || prueba.getUTCDate() !== d) {
+    throw new RangeError(`Fecha local inválida: ${fecha}`);
+  }
+  return [a, mes, d];
+}
+
+/** true si es una fecha 'YYYY-MM-DD' que existe. */
+export function esFechaLocal(fecha: unknown): fecha is C.FechaLocal {
+  if (typeof fecha !== 'string') return false;
+  try {
+    partesFecha(fecha);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function msUtcDe(fecha: C.FechaLocal): number {
+  const [a, m, d] = partesFecha(fecha);
+  return Date.UTC(a, m - 1, d);
+}
+
+function fechaDeMsUtc(ms: number): C.FechaLocal {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+export function fechaLocalDe(t: C.EpochS): C.FechaLocal {
+  return fechaDeMsUtc((Math.floor(t) + TZ_OFFSET_S) * 1000);
+}
+
+export function hoyLocal(ahora: C.EpochS = ahoraS()): C.FechaLocal {
+  return fechaLocalDe(ahora);
+}
+
+export function sumarDias(fecha: C.FechaLocal, dias: number): C.FechaLocal {
+  return fechaDeMsUtc(msUtcDe(fecha) + Math.trunc(dias) * DIA_MS);
+}
+
+/** b − a en días de calendario. */
+export function diasEntre(a: C.FechaLocal, b: C.FechaLocal): number {
+  return Math.round((msUtcDe(b) - msUtcDe(a)) / DIA_MS);
+}
+
+/** 0 = lunes … 6 = domingo. */
+export function diaSemana(fecha: C.FechaLocal): number {
+  return (new Date(msUtcDe(fecha)).getUTCDay() + 6) % 7;
+}
+
+export function horaLocal(t: C.EpochS): { h: number; m: number } {
+  const s = (((Math.floor(t) + TZ_OFFSET_S) % DIA_S) + DIA_S) % DIA_S;
+  return { h: Math.floor(s / 3600), m: Math.floor((s % 3600) / 60) };
+}
+
+/** Epoch del inicio (00:00 local) de una fecha, o de la hora indicada. */
+export function epochDeFecha(fecha: C.FechaLocal, hora: number = 0, minuto: number = 0): C.EpochS {
+  return msUtcDe(fecha) / 1000 + hora * 3600 + minuto * 60 - TZ_OFFSET_S;
+}
+
+/**
+ * Instante de referencia para las reglas que necesitan "ahora" pero solo reciben `hoy` (copiado sin confirmar de menos
+ * de 7 días, por vencer en < 48 h, marcas de tiempo de las ops de la copia): el reloj de la app si cae en ese día; si no,
+ * el mediodía local de `hoy`. Así el resultado es determinista con fijarReloj() y coherente con la fecha que se pasa.
+ */
+export function instanteDe(hoy: C.FechaLocal): C.EpochS {
+  const t = ahoraS();
+  return fechaLocalDe(t) === hoy ? t : epochDeFecha(hoy, 12);
+}
+
+function primeroDeMes(anio: number, mes: number): C.FechaLocal {
+  return `${String(anio).padStart(4, '0')}-${String(mes).padStart(2, '0')}-01`;
+}
+
+/** Desde/hasta de un periodo ('7d','30d','90d','12m','todo','2026-10'); ventanas inclusivas de N días (01_ux §6.0):
+ *  "últimos N días" = hoy − (N − 1) … hoy. 12m = 12 meses calendario incluyendo el actual (03 §6.2, analitica_ref).
+ *  'todo' empieza en `primeraFecha` (o hoy si falta). Un mes 'YYYY-MM' va del día 1 al último día de ese mes.
+ *  Ojo con 'todo' sin `primeraFecha`: queda desde = hasta = hoy, un rango de UN día. Para "Todo" pasa la primera fecha
+ *  del historial (dashboard.todo.periodo.desde; sin conexión, copia.dashboard.todo.periodo.desde) o pide sin rango;
+ *  si no, deCopia de videos, productos, tiendas y tienda devuelve null porque ese día no cubre el historial. */
+export function rangoDePeriodo(periodo: C.Periodo, hoy: C.FechaLocal, primeraFecha?: C.FechaLocal): { desde: C.FechaLocal; hasta: C.FechaLocal } {
+  const dias = /^(\d+)d$/.exec(periodo);
+  if (dias) {
+    const n = Math.max(1, Number(dias[1]));
+    return { desde: sumarDias(hoy, -(n - 1)), hasta: hoy };
+  }
+  if (periodo === '12m') {
+    const [a, m] = partesFecha(hoy);
+    const indice = a * 12 + (m - 1) - 11;
+    return { desde: primeroDeMes(Math.floor(indice / 12), (indice % 12) + 1), hasta: hoy };
+  }
+  if (periodo === 'todo') {
+    return { desde: primeraFecha !== undefined && primeraFecha <= hoy ? primeraFecha : hoy, hasta: hoy };
+  }
+  const mes = /^(\d{4})-(\d{1,2})$/.exec(periodo);
+  if (mes) {
+    const a = Number(mes[1]);
+    const m = Math.min(12, Math.max(1, Number(mes[2])));
+    const desde = primeroDeMes(a, m);
+    const siguiente = m === 12 ? primeroDeMes(a + 1, 1) : primeroDeMes(a, m + 1);
+    return { desde, hasta: sumarDias(siguiente, -1) };
+  }
+  return { desde: sumarDias(hoy, -29), hasta: hoy };
+}

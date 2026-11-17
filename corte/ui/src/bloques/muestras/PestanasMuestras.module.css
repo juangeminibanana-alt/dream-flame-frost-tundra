@@ -1,0 +1,86 @@
+/* Pestañas de Muestras: segmentado del lienzo (contenedor surface-2 radio 14, pulgar surface-3) + acción principal. */
+.raiz {
+  container-type: inline-size;
+  /* Con container-type el ancho no sale del contenido: ocupa la fila (pestañas a la izquierda, acciones a la derecha). */
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.pestanas {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: auto;
+  gap: 2px;
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.pestana {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: calc(var(--control-h-md) - 2px);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: 1;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease-standard), color var(--dur-fast) var(--ease-standard);
+}
+.pestana:hover {
+  color: var(--text-1);
+  background: var(--surface-hover);
+}
+.pestana:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.activa,
+.activa:hover {
+  background: var(--surface-3);
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.conteo {
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.conteoAtencion {
+  color: var(--warn-fg);
+}
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+@container (max-width: 599px) {
+  .pestanas {
+    display: grid;
+    grid-auto-columns: 1fr;
+    width: 100%;
+  }
+  .pestana {
+    min-height: var(--touch-min);
+    padding: 0 var(--space-2);
+  }
+  .acciones {
+    display: none;
+  }
+}
+@media (forced-colors: active) {
+  .activa {
+    outline: 2px solid Highlight;
+  }
+}

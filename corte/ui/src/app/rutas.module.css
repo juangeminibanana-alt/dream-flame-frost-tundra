@@ -1,0 +1,26 @@
+/* Vistas de respaldo de la tabla de rutas (BUILD_SPEC §8.6). Solo tokens. */
+.respaldo {
+  display: grid;
+  place-items: center;
+  min-height: min(60vh, 520px);
+  padding: var(--space-8) 0;
+}
+
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding-top: var(--space-4);
+}
+
+.esqTitulo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.esqFila {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: var(--grid-gap);
+}

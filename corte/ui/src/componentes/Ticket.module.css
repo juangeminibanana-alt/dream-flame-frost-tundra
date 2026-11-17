@@ -1,0 +1,139 @@
+.ticket {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-4) 18px calc(var(--space-4) + var(--ticket-tooth) + 2px);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--surface-1);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+  /* Borde inferior dentado: zigzag de 8 px (dientes de 16 px de ancho). */
+  -webkit-mask:
+    linear-gradient(black 0 0) top / 100% calc(100% - var(--ticket-tooth)) no-repeat,
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / calc(var(--ticket-tooth) * 2) var(--ticket-tooth) repeat-x;
+  mask:
+    linear-gradient(black 0 0) top / 100% calc(100% - var(--ticket-tooth)) no-repeat,
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / calc(var(--ticket-tooth) * 2) var(--ticket-tooth) repeat-x;
+}
+:where(.ticket) {
+  width: 100%;
+  max-width: 360px;
+}
+/* Si el subtítulo no cabe junto a la marca, baja entero a su renglón (alineado a la derecha) en vez de partir la fecha. */
+.cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-2);
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px dashed var(--border-strong);
+}
+.marca {
+  font-size: 15px;
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  letter-spacing: -0.04em;
+  color: var(--text-1);
+}
+.subtitulo {
+  min-width: 0;
+  margin-left: auto;
+  text-align: right;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.ilustracion {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 152px;
+  height: 120px;
+  margin: var(--space-1) auto var(--space-2);
+}
+.diagonal {
+  position: absolute;
+  inset: 0;
+}
+.diagonal path {
+  fill: none;
+  stroke: var(--brand-ink);
+  stroke-width: 2;
+  stroke-dasharray: 4 5;
+}
+.palomita {
+  position: relative;
+}
+.renglones {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+.renglon {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--text-body-sm-size);
+  line-height: 24px;
+}
+.concepto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.guia {
+  flex: 1;
+  min-width: 12px;
+  border-bottom: 1px dotted var(--border-strong);
+  transform: translateY(-5px);
+}
+.cifra {
+  margin: 0;
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.rayado {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(45deg, var(--viz-hatch-line) 0 1px, var(--viz-hatch-bg) 1px var(--hatch-step));
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+.total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-strong);
+}
+.totalEtiqueta {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.totalCifra {
+  font-size: var(--text-display-size);
+  line-height: var(--text-display-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  letter-spacing: var(--tracking-display);
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.totalLargo {
+  font-size: calc(20px * var(--fs-half));
+  line-height: 1.3;
+  font-stretch: var(--stretch-kpi);
+  white-space: normal;
+}

@@ -1,0 +1,24 @@
+/* Contenedor de pantalla. La región recibe el foco al navegar, pero no dibuja un anillo alrededor de toda la vista. */
+.pantalla {
+  min-width: 0;
+  outline: none;
+  animation: entrar var(--dur-base) var(--ease-enter) both;
+}
+
+.pantalla:focus,
+.pantalla:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Cambio de pantalla: fundido + 8 px (02 §10.2); sin desplazamiento con movimiento reducido (tokens). */
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(var(--motion-distance));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,0 +1,168 @@
+/* QR de emparejamiento (02 §7.19): tile blanco de 236 a la izquierda, textos y código a la derecha; en angosto, una
+   columna con el QR centrado. */
+.contenedor {
+  container-type: inline-size;
+  min-width: 0;
+}
+.panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+  min-width: 0;
+}
+.compacto {
+  gap: var(--space-6);
+}
+/* Angosto: una columna; el QR arriba (a la izquierda, alineado con el texto) y los pasos y el código a todo el ancho. */
+@container (max-width: 600px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+  .lienzoQr {
+    justify-self: start;
+  }
+}
+@container (max-width: 340px) {
+  .lienzoQr {
+    justify-self: center;
+  }
+}
+.lienzoQr {
+  display: grid;
+  place-items: center;
+  min-width: 236px;
+  min-height: 236px;
+}
+.qr {
+  flex: none;
+}
+.tileVacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 236px;
+  min-height: 236px;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--border-default);
+  background: var(--surface-1);
+  color: var(--text-2);
+  text-align: center;
+}
+.conectado {
+  composes: tileVacio;
+  border-style: solid;
+  border-color: var(--ok-border);
+  background: var(--ok-bg);
+}
+.conectadoTexto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.textos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.titulo {
+  margin: 0;
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.texto {
+  margin: 0;
+  max-width: 52ch;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.pasos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: paso;
+}
+.pasos li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  counter-increment: paso;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-1);
+}
+.pasos li::before {
+  content: counter(paso);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+}
+.codigo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+.ayuda {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.direccion {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}
+.mono {
+  font-family: var(--font-mono);
+  color: var(--text-2);
+}
+/* Solicitud entrante: número de 4 dígitos grande en Geist Mono. */
+.solicitud {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  text-align: center;
+}
+.numero {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: calc(44px * var(--fs-lin));
+  line-height: 1.1;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+  color: var(--text-1);
+}
+.caduca {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}

@@ -1,0 +1,75 @@
+.ancla {
+  display: contents;
+}
+.burbuja {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  width: min(320px, calc(100vw - 24px));
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface-4);
+  border: 1px solid var(--brand-subtle-border);
+  box-shadow: var(--elev-highlight), var(--shadow-3);
+  color: var(--text-1);
+  outline: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--dur-base) var(--ease-enter), transform var(--dur-base) var(--ease-enter);
+}
+.burbuja[data-arriba] {
+  transform: translateY(-4px);
+}
+.colocada,
+.burbuja[data-arriba].colocada {
+  opacity: 1;
+  transform: none;
+}
+.burbuja:focus-visible {
+  box-shadow: var(--focus-ring), var(--shadow-3);
+}
+.flecha {
+  position: absolute;
+  top: -6px;
+  left: calc(var(--flecha-x, 50%) - 6px);
+  width: 12px;
+  height: 12px;
+  background: var(--surface-4);
+  border-left: 1px solid var(--brand-subtle-border);
+  border-top: 1px solid var(--brand-subtle-border);
+  transform: rotate(45deg);
+}
+.burbuja[data-arriba] .flecha {
+  top: auto;
+  bottom: -6px;
+  transform: rotate(225deg);
+}
+.fila {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+.marca {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: var(--brand);
+  box-shadow: inset 0 0 0 1px var(--progress-edge);
+}
+.texto {
+  flex: 1;
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-1);
+}
+.cerrar {
+  margin: -4px -4px 0 0;
+}
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}

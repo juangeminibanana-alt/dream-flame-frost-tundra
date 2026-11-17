@@ -1,0 +1,152 @@
+.kpi {
+  position: relative;
+  grid-row: span 3;
+  display: grid;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-1);
+  align-content: start;
+  min-width: 0;
+  /* Sin container-type aquí: la contención de layout anula el subgrid (las filas compartidas de la banda). El
+     contenedor de las cqi es .filaValor, que mide lo mismo que el KPI. */
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-1);
+  text-align: left;
+  font: inherit;
+}
+.pulsable {
+  cursor: pointer;
+}
+/* El hover llena la tarjeta (BandaKpi le da fondo, borde y radio). */
+.pulsable::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--surface-hover);
+  opacity: 0;
+  pointer-events: none;
+}
+.pulsable:hover::before {
+  opacity: 1;
+}
+
+.etiqueta {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: calc(13px * var(--fs-lin));
+  line-height: 1.3846;
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+
+.filaValor {
+  container-type: inline-size;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+}
+/* Lienzo aprobado: 30/700 en Main y Ventas, 24/700 en MovilInicio. El clamp encoge la cifra solo si la tarjeta no la
+   deja caber junto a la chispa. */
+.valor {
+  min-width: 0;
+  font-size: clamp(20px, 15.4cqi, var(--text-kpi-size));
+  line-height: var(--text-kpi-lh);
+  font-weight: 700;
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: proportional-nums;
+  white-space: nowrap;
+  color: var(--text-1);
+}
+/* La cifra nunca cede; la chispa sí (de 96 hasta 44, el trazo se escala con su viewBox): así a 1280 la cifra va a 30
+   junto a la chispa sin desbordar la tarjeta. */
+.valor {
+  flex: none;
+}
+.filaValor > .chispa {
+  flex: 0 1 96px;
+  min-width: 44px;
+  margin-bottom: 2px;
+}
+.filaValor > .chispa svg {
+  width: 100%;
+  height: auto;
+}
+@container (max-width: 190px) {
+  .chispa {
+    display: none;
+  }
+}
+
+/* La meta se parte en dos líneas si no cabe (nunca se corta): con subgrid, la fila crece para toda la banda. */
+.meta {
+  container-type: inline-size;
+  min-width: 0;
+  overflow-wrap: break-word;
+  font-size: calc(12px * var(--fs-lin));
+  line-height: 1.3333;
+  color: var(--text-3);
+}
+.variacion {
+  font-weight: var(--weight-semibold);
+}
+.sr {
+  composes: sr from './util/comun.module.css';
+}
+.flecha {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin: 0 3px 1px 0;
+  vertical-align: middle;
+  fill: currentColor;
+}
+.favorable { color: var(--ok-fg); }
+.desfavorable { color: var(--warn-fg); }
+.neutro { color: var(--text-2); }
+.restoVariacion {
+  color: var(--text-3);
+  font-weight: var(--weight-body);
+}
+.nota {
+  color: var(--text-3);
+}
+/* Tarjeta angosta (2×2 del celular): solo «▼ 21 %», como MovilInicio.png; el «vs. 30 días anteriores» sigue para el
+   lector de pantalla (oculto a la vista, no con display: none). */
+@container (max-width: 172px) {
+  .restoVariacion {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Banda angosta (2×2 del celular, MovilInicio.png): etiqueta de 12, como el lienzo móvil, para que «Reembolsos · 30
+   días» (20 caracteres) quepa entera en la tarjeta de 174. */
+@container bandaKpi (max-width: 639px) {
+  .etiqueta {
+    font-size: calc(12px * var(--fs-lin));
+    line-height: 1.3333;
+  }
+  .valor {
+    font-size: clamp(calc(24px * var(--fs-half)), 14cqi, max(calc(24px * var(--fs-half)), var(--text-kpi-size)));
+  }
+}
+
+/* Táctil (Android) y escala de texto: etiqueta y meta pueden partirse en dos líneas (02 §5.3). */
+:global(:root[data-density="touch"]) .etiqueta,
+:global(:root[data-density="touch"]) .meta {
+  white-space: normal;
+  line-height: 1.35;
+}

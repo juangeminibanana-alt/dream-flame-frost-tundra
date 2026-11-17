@@ -1,0 +1,192 @@
+/* Tabla densa (02 §7.5). --tabla-fondo = color detrás del encabezado pegajoso (lienzo o superficie de la tarjeta). */
+.tabla {
+  --tabla-fondo: var(--bg-canvas);
+  position: relative;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.desplazable {
+  min-width: 0;
+}
+.virtual .desplazable {
+  height: var(--tabla-alto, min(560px, 70vh));
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.encabezado,
+.fila {
+  display: grid;
+  grid-template-columns: var(--plantilla);
+  align-items: center;
+}
+.encabezado {
+  position: sticky;
+  top: var(--tabla-tope, 0px);
+  z-index: 2;
+  min-height: 36px;
+  background: var(--tabla-fondo);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.th {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 0 var(--space-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* Un título que no cabe se recorta con «…» (nunca se encima con el de al lado). */
+.thTexto {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* El botón se sale 4 px por lado sobre el relleno de la celda (margen negativo) para que su fondo de hover respire; su
+   tope de ancho suma esos 8 px, que si no se le quitaban al título y lo cortaban antes de tiempo («Comisión por ve…»). */
+.ordenar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  max-width: calc(100% + var(--space-1) * 2);
+  min-height: 28px;
+  margin: 0 calc(var(--space-1) * -1);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-xs);
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+}
+.ordenar:hover {
+  color: var(--text-1);
+  background: var(--surface-hover);
+}
+/* Anillo interior: el encabezado recorta (overflow) el anillo exterior de 4 px arriba y abajo. */
+.ordenar:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+.ordenActivo {
+  color: var(--text-1);
+}
+.flechaOrden {
+  opacity: 0.8;
+  transition: transform var(--dur-fast) var(--ease-standard);
+}
+.asc {
+  transform: rotate(180deg);
+}
+
+.fila {
+  position: relative;
+  min-height: var(--row-h);
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: default;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+.filaVirtual {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--row-h);
+  min-height: 0;
+  overflow: hidden;
+  transform: translateY(var(--y, 0px));
+}
+.cuerpoVirtual {
+  position: relative;
+}
+.fila:hover {
+  background: var(--surface-hover);
+}
+.seleccionada,
+.seleccionada:hover {
+  background: var(--surface-selected);
+  box-shadow: inset 3px 0 0 var(--nav-indicator);
+}
+.fila:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--border-focus);
+}
+.seleccionada:focus-visible {
+  box-shadow: inset 3px 0 0 var(--nav-indicator), inset 0 0 0 2px var(--border-focus);
+}
+.celda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 var(--space-3);
+  overflow: hidden;
+  color: var(--text-1);
+}
+.derecha {
+  justify-content: flex-end;
+  text-align: right;
+}
+.centro {
+  justify-content: center;
+  text-align: center;
+}
+.acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  padding: 0 var(--space-2);
+  opacity: 0;
+  transition: opacity var(--dur-instant) linear;
+}
+.accionesContenido {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex: none;
+}
+.fila:hover .acciones,
+.fila:focus-within .acciones,
+.seleccionada .acciones {
+  opacity: 1;
+}
+/* Sin hover (pantalla táctil): las acciones de fila siempre a la vista; si no, el toque caía en un botón invisible. */
+@media (hover: none) {
+  .acciones {
+    opacity: 1;
+  }
+}
+.nueva {
+  position: relative;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: -2px;
+  border-radius: var(--radius-full);
+  background: var(--info-solid);
+}
+.sr {
+  composes: sr from './util/comun.module.css';
+}
+/* Anclado al visor: con la tabla más ancha que quien la desplaza, se queda en la parte visible y se centra ahí
+   (Tabla.tsx mide el visor y pone --vacio-ancho). Sin visor horizontal ocupa el ancho de la tabla. */
+.vacio {
+  position: sticky;
+  left: 0;
+  box-sizing: border-box;
+  width: var(--vacio-ancho, 100%);
+  max-width: 100%;
+  padding: var(--space-6) var(--space-3);
+}
+@media (forced-colors: active) {
+  .seleccionada {
+    outline: 2px solid Highlight;
+  }
+}

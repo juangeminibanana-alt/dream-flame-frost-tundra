@@ -1,0 +1,521 @@
+/* Gráficas SVG propias (02 §9). Texto siempre con tokens de texto; las marcas con --viz-*. */
+.grafica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+}
+.cabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+}
+.titulo {
+  composes: titulo3 from '../util/comun.module.css';
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.nota {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+/* El monto al final de la nota («Semana pico: 2 mar – 8 mar · $1,234») manda sobre la fecha, como en Main.png. */
+.notaCifra {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.verTabla {
+  margin-left: auto;
+  align-self: center;
+}
+.leyenda {
+  min-width: 0;
+}
+.area {
+  position: relative;
+  min-width: 0;
+}
+/* UNA animación por gráfica sobre el contenedor HTML (02 §9.4.12). */
+.aparece {
+  animation: trazar var(--dur-slower) var(--ease-enter) both;
+}
+.apareceFundido {
+  animation: fundir var(--dur-slower) var(--ease-standard) both;
+}
+@keyframes trazar {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes fundir {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.sr {
+  composes: sr from '../util/comun.module.css';
+}
+.svg {
+  display: block;
+  max-width: none;
+  overflow: visible;
+  font-family: var(--font-sans);
+}
+
+/* Ejes y retícula: finos, sólidos y recesivos. */
+.reticula {
+  stroke: var(--viz-grid);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.base {
+  stroke: var(--viz-axis);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.eje {
+  fill: var(--viz-label);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+}
+.ejeActivo {
+  fill: var(--text-1);
+}
+.pico {
+  fill: var(--text-2);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+}
+/* «en curso» en micro (11), no a 10 (fuera de la escala de 02 §4.2). */
+.enCursoTexto {
+  fill: var(--text-3);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+}
+/* Rótulo directo del último periodo (el extremo de 02 §9.4.6): más callado que el del pico. */
+.ultimoValor {
+  fill: var(--text-3);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+}
+
+/* Marcas: la ranura completa es el objetivo; solo cambia el fill (sin filter). */
+.marca {
+  cursor: default;
+  outline: none;
+}
+.objetivo {
+  fill: transparent;
+}
+.marcaActiva .objetivo {
+  fill: var(--surface-hover);
+}
+.marca:focus-visible .objetivo {
+  fill: var(--surface-hover);
+  stroke: var(--border-focus);
+  stroke-width: 2;
+}
+.barra {
+  fill: var(--viz-mono);
+  transition: fill var(--dur-fast) linear;
+}
+.marcaActiva .barra,
+.marcaPico .barra,
+.marca:focus-visible .barra {
+  fill: var(--viz-current);
+}
+.enCurso .barra {
+  fill-opacity: 0.35;
+  stroke: var(--viz-mono);
+  stroke-width: 1.5;
+}
+.enCurso.marcaActiva .barra,
+.enCurso:focus-visible .barra {
+  stroke: var(--viz-current);
+}
+
+/* Apiladas: paleta categórica en orden fijo; tenue = 35 % + contorno de 1.5 px. */
+.segmento {
+  stroke-width: 0;
+}
+.tenue {
+  fill-opacity: 0.35;
+  stroke-width: 1.5;
+}
+.s1 { fill: var(--viz-1); stroke: var(--viz-1); }
+.s2 { fill: var(--viz-2); stroke: var(--viz-2); }
+.s3 { fill: var(--viz-3); stroke: var(--viz-3); }
+.s4 { fill: var(--viz-4); stroke: var(--viz-4); }
+.s5 { fill: var(--viz-5); stroke: var(--viz-5); }
+.s6 { fill: var(--viz-6); stroke: var(--viz-6); }
+.s7 { fill: var(--viz-7); stroke: var(--viz-7); }
+.s8 { fill: var(--viz-8); stroke: var(--viz-8); }
+.neutroSerie { fill: var(--viz-muted); stroke: var(--viz-muted); }
+.rayadoFondo { fill: var(--viz-hatch-bg); }
+.rayadoLinea { fill: var(--viz-hatch-line); }
+
+/* Muestras (leyenda, lectura y bloques de la barra apilada). */
+.muestra {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.m1 { background: var(--viz-1); }
+.m2 { background: var(--viz-2); }
+.m3 { background: var(--viz-3); }
+.m4 { background: var(--viz-4); }
+.m5 { background: var(--viz-5); }
+.m6 { background: var(--viz-6); }
+.m7 { background: var(--viz-7); }
+.m8 { background: var(--viz-8); }
+.t1 { background: color-mix(in srgb, var(--viz-1) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-1); }
+.t2 { background: color-mix(in srgb, var(--viz-2) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-2); }
+.t3 { background: color-mix(in srgb, var(--viz-3) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-3); }
+.t4 { background: color-mix(in srgb, var(--viz-4) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-4); }
+.t5 { background: color-mix(in srgb, var(--viz-5) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-5); }
+.t6 { background: color-mix(in srgb, var(--viz-6) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-6); }
+.t7 { background: color-mix(in srgb, var(--viz-7) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-7); }
+.t8 { background: color-mix(in srgb, var(--viz-8) 35%, transparent); box-shadow: inset 0 0 0 1.5px var(--viz-8); }
+.mRayado {
+  background: repeating-linear-gradient(45deg, var(--viz-hatch-line) 0 1px, var(--viz-hatch-bg) 1px var(--hatch-step));
+  box-shadow: inset 0 0 0 1px var(--border-default);
+}
+.mNeutro { background: var(--viz-muted); }
+.mono { background: var(--viz-mono); }
+
+.leyendaLista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.leyendaElemento {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.leyendaValor {
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.leyendaPct {
+  color: var(--text-3);
+}
+
+/* Lectura flotante (tooltip de la gráfica): el valor manda, la etiqueta acompaña. */
+.lectura {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  max-width: 280px;
+  padding: var(--space-2) 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-4);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-3);
+  color: var(--text-1);
+  pointer-events: none;
+  animation: fundir var(--dur-fast) linear both;
+}
+.lecturaValor {
+  font-size: calc(15px * var(--fs-lin));
+  line-height: 1.333;
+  font-weight: var(--weight-semibold);
+}
+.lecturaEtiqueta {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.lecturaFilas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-1);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--border-subtle);
+}
+.lecturaFila {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.lecturaFila b {
+  margin-left: auto;
+  padding-left: var(--space-3);
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.lecturaFilaEtiqueta {
+  min-width: 0;
+}
+/* Clave de línea de 10×2 (no un cuadro) en la lectura. */
+.clave {
+  flex: none;
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+}
+.clave.t1, .clave.t2, .clave.t3, .clave.t4, .clave.t5, .clave.t6, .clave.t7, .clave.t8 {
+  height: 4px;
+}
+.clave.mRayado {
+  height: 6px;
+}
+
+/* Barra apilada horizontal (HTML). */
+.apilada {
+  display: flex;
+  gap: 2px;
+  height: 24px;
+  min-width: 0;
+}
+.bloque {
+  flex: var(--crece) 1 0;
+  min-width: 3px;
+  border-radius: var(--radius-2xs);
+  transition: opacity var(--dur-fast) linear;
+  outline: none;
+}
+.apilada:has(.bloqueActivo) .bloque:not(.bloqueActivo) {
+  opacity: 0.55;
+}
+.bloque:focus-visible {
+  box-shadow: var(--focus-ring);
+}
+.bloqueVacio {
+  flex: 1;
+  border-radius: var(--radius-2xs);
+  background: var(--stage-track);
+}
+.directas {
+  position: relative;
+  height: calc(16px * var(--fs-lin));
+  margin-top: calc(var(--space-1) * -1);
+}
+.directasDos {
+  height: calc(32px * var(--fs-lin));
+}
+.directa {
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.directaSegunda {
+  top: calc(16px * var(--fs-lin));
+  overflow: visible;
+}
+.lecturaLinea {
+  min-height: calc(16px * var(--fs-lin));
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.lecturaLinea b {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+
+/* Barras horizontales. */
+.horizontales {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hElemento {
+  min-width: 0;
+}
+.hContenido {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 6px var(--space-2);
+  margin: 0 calc(var(--space-2) * -1);
+  width: calc(100% + var(--space-4));
+  border-radius: var(--radius-sm);
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+.hPulsable {
+  cursor: pointer;
+}
+.hPulsable:hover {
+  background: var(--surface-hover);
+}
+.hFila {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.hEtiqueta {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.hValor {
+  flex: none;
+  white-space: nowrap;
+  color: var(--text-1);
+}
+.hValor b {
+  font-weight: var(--weight-semibold);
+}
+.hSecundario {
+  color: var(--text-3);
+}
+.hPista {
+  display: block;
+  height: 8px;
+  border-radius: var(--radius-2xs);
+  background: var(--progress-track);
+  overflow: hidden;
+}
+.hBarra {
+  display: block;
+  height: 100%;
+  width: calc(var(--f, 0) * 100%);
+  min-width: 2px;
+  border-radius: 0 var(--radius-2xs) var(--radius-2xs) 0;
+  /* El cambio a iris con hover o foco es inmediato: solo transform y opacity se animan (02 §10.3). */
+  background: var(--viz-mono);
+}
+.hContenido:hover .hBarra,
+.hContenido:focus-visible .hBarra {
+  background: var(--viz-current);
+}
+
+/* Calendario de calor: 5 cubetas secuenciales + la pista. */
+.calMarco {
+  position: relative;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.celdaCal {
+  outline: none;
+  stroke: transparent;
+  stroke-width: 2;
+}
+.celdaActiva,
+.celdaCal:focus-visible {
+  stroke: var(--text-1);
+}
+.q0 { fill: var(--stage-track); background: var(--stage-track); }
+.q1 { fill: var(--viz-seq-1); background: var(--viz-seq-1); }
+.q2 { fill: var(--viz-seq-2); background: var(--viz-seq-2); }
+.q3 { fill: var(--viz-seq-3); background: var(--viz-seq-3); }
+.q4 { fill: var(--viz-seq-4); background: var(--viz-seq-4); }
+.q5 { fill: var(--viz-seq-5); background: var(--viz-seq-5); }
+.calLeyenda {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-caption-size);
+  color: var(--text-3);
+}
+.calMuestra {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.calVacio {
+  margin: 0;
+  color: var(--text-3);
+  font-size: var(--text-body-sm-size);
+}
+
+/* Sparkline. */
+.sparkline {
+  display: inline-flex;
+  flex: none;
+}
+.sparkSvg {
+  display: block;
+  overflow: visible;
+}
+.sparkLinea {
+  fill: none;
+  stroke: var(--viz-mono);
+  stroke-width: 1.75;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.sparkVacia {
+  stroke: var(--viz-grid);
+  stroke-width: 1.75;
+}
+.sparkAhora {
+  fill: var(--viz-now);
+  stroke: var(--viz-now-ring);
+  stroke-width: 2;
+}
+
+/* Tabla gemela. */
+.tablaGemela {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.tabla th,
+.tabla td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  white-space: nowrap;
+}
+.tabla thead th {
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.tabla tbody th {
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+}
+.tabla tbody tr:last-child th,
+.tabla tbody tr:last-child td {
+  border-bottom: 0;
+}
+.num {
+  text-align: right !important;
+}

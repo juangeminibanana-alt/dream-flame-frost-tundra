@@ -1,0 +1,79 @@
+.codigo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.sr {
+  composes: sr from './util/comun.module.css';
+}
+.grupos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+}
+.grupo {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: calc(30px * var(--fs-half));
+  line-height: 1.2;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.12em;
+  color: var(--text-1);
+  padding-right: calc(var(--space-2) - 0.12em);
+}
+/* En una ventana angosta los 3 grupos siguen en una línea (el código se dicta de corrido). */
+@media (max-width: 440px) {
+  .grupos {
+    column-gap: var(--space-2);
+  }
+  .grupo {
+    font-size: calc(25px * var(--fs-half));
+    letter-spacing: 0.1em;
+    padding-right: calc(var(--space-2) - 0.1em);
+  }
+}
+.cuenta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.anillo {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  transform: rotate(-90deg);
+}
+.pista {
+  fill: none;
+  stroke: var(--progress-track);
+  stroke-width: 3;
+}
+.avance {
+  fill: none;
+  stroke: var(--brand-ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--f, 1));
+  /* Sin transición: avanza un paso por segundo (solo transform/opacity se animan, 02 §10.3). */
+}
+.texto {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.vencido .grupo {
+  color: var(--text-3);
+  text-decoration: line-through;
+  text-decoration-color: var(--border-strong);
+}
+.vencido .texto {
+  color: var(--warn-fg);
+}

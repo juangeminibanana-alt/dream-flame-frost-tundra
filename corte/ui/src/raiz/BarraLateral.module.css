@@ -1,0 +1,267 @@
+/* Barra lateral de Windows (02 §7.7, lienzo Main.png). Solo tokens. */
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg-sunken);
+  border-right: 1px solid var(--border-subtle);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.lateral {
+  width: var(--sidebar-w);
+  padding: var(--space-5) 14px var(--space-4);
+}
+.riel {
+  width: var(--rail-w);
+  padding: var(--space-3) var(--space-2) var(--space-2);
+  align-items: center;
+}
+
+/* ---------------------------------------------------------------- marca */
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px var(--space-5);
+}
+.riel .marca {
+  padding: var(--space-1) 0 var(--space-3);
+}
+.wordmark {
+  color: var(--text-1);
+  font-size: 19px;
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-brand);
+  letter-spacing: -0.02em;
+}
+.demo {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: var(--space-1-5);
+  margin: calc(var(--space-2) * -1) 10px var(--space-4);
+  padding: 2px var(--space-2);
+  border: 1px solid var(--info-border);
+  border-radius: var(--radius-full);
+  background: var(--info-bg);
+  color: var(--info-fg);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  font-weight: var(--weight-semibold);
+}
+.riel .demo {
+  align-self: center;
+  margin: calc(var(--space-2) * -1) 0 var(--space-3);
+  padding: 1px 6px;
+  font-size: 10px;
+}
+.demoPunto {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: currentColor;
+}
+
+/* ---------------------------------------------------------------- grupos */
+.grupo + .grupo {
+  margin-top: var(--space-4);
+}
+.overline {
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-1-5);
+  color: var(--text-3);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.separador {
+  display: block;
+  width: 32px;
+  height: 1px;
+  margin: 0 auto var(--space-3);
+  background: var(--border-default);
+}
+.grupo:first-of-type .separador {
+  display: none;
+}
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------------------------------------------------------------- elementos */
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--dur-instant) var(--ease-standard), color var(--dur-instant) var(--ease-standard);
+}
+.item:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.item:focus-visible {
+  outline-offset: -2px;
+}
+.activo,
+.activo:hover {
+  background: var(--brand-subtle);
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.icono {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: inherit;
+}
+.activo .icono {
+  color: var(--brand-ink);
+}
+.etiqueta {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.atajo {
+  flex: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.item:hover .atajo,
+.item:focus-visible .atajo {
+  opacity: 1;
+}
+.insignia {
+  flex: none;
+}
+
+/* Riel: ícono arriba, etiqueta corta de 11 abajo. Cabe completo en la ventana mínima de 960×640. */
+.riel .lista {
+  align-items: center;
+  gap: 2px;
+}
+.riel .grupo + .grupo {
+  margin-top: var(--space-2);
+}
+.riel .separador {
+  margin-bottom: var(--space-2);
+}
+.riel .item {
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  width: 64px;
+  min-height: 52px;
+  padding: 6px var(--space-1);
+  font-size: 11px;
+  line-height: 14px;
+  text-align: center;
+}
+.riel .etiqueta {
+  flex: none;
+  width: 100%;
+}
+.insigniaRiel {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  box-shadow: 0 0 0 2px var(--bg-sunken);
+}
+
+/* ---------------------------------------------------------------- pie */
+.relleno {
+  flex: 1;
+  min-height: var(--space-6);
+}
+.pie {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+.riel .pie {
+  align-items: center;
+  gap: var(--space-1);
+}
+.cuenta {
+  min-height: 48px;
+  padding: var(--space-1-5) var(--space-2);
+}
+.riel .cuenta {
+  justify-content: center;
+  width: 56px;
+  min-height: 44px;
+  padding: 6px;
+}
+.avatar {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-2);
+}
+.puntoProblema {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--crit-solid);
+  box-shadow: 0 0 0 2px var(--bg-sunken);
+}
+.engrane {
+  flex: none;
+  color: var(--text-3);
+}
+.cuenta:hover .engrane {
+  color: var(--text-1);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (forced-colors: active) {
+  .activo {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

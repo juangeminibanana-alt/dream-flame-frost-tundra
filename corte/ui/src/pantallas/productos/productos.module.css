@@ -1,0 +1,929 @@
+/* Productos y Detalle de producto (01_ux §4.13; 02 §5, §7.4, §8, §9). Solo tokens de tokens.css. */
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+/* Android: EncabezadoPantalla deja la barra (56 dp) y su contexto como hermanos dentro de .pantalla, y el gap de 20 los
+   separaba de más (20 arriba de la barra y 20 entre la barra y el contexto). Como en Ventas, aquí el gap es 0 y lo que
+   sigue al encabezado lleva su margen: 12 el primero (más los 12 del contexto) y 20 entre los demás. */
+:global(:root[data-platform="android"]) .pantalla {
+  gap: 0;
+}
+:global(:root[data-platform="android"]) .trasEncabezado {
+  margin-top: var(--space-3);
+}
+:global(:root[data-platform="android"]) .trasEncabezado + .trasEncabezado {
+  margin-top: var(--space-5);
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.srSolo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.estado {
+  margin: var(--space-12) auto;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.resumen,
+.mostrando {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.mostrando {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+
+/* ------------------------------------------------------------------ carga */
+.carga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.cargaTarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.cargaFoto {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-lg);
+}
+.cargaHeroe {
+  display: grid;
+  grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+  gap: var(--space-6);
+}
+.cargaFotoGrande {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xl);
+}
+.cargaHeroeTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+.cargaKpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-4);
+}
+@media (max-width: 599px) {
+  .cargaHeroe {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cargaFotoGrande {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+/* ------------------------------------------------------------------ lista: controles */
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.filaControles,
+.filaFiltros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+.segmentos {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.segmentoVista {
+  margin-left: auto;
+  flex: none;
+}
+.filaFiltros[data-solo-busqueda] .buscador {
+  margin-left: 0;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.buscador {
+  flex: 0 1 300px;
+  min-width: 200px;
+  margin-left: auto;
+}
+@media (max-width: 599px) {
+  .segmentos {
+    flex: 1 1 100%;
+  }
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--content-pad-x) * -1);
+    padding-inline: var(--content-pad-x);
+    mask-image: linear-gradient(to right, var(--text-1) calc(100% - 28px), transparent);
+  }
+  .chips > * {
+    flex: none;
+  }
+  .buscador {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+}
+:global(:root[data-platform="android"]) .segmentos,
+:global(:root[data-platform="android"]) .buscador {
+  flex: 1 1 100%;
+  margin-left: 0;
+}
+
+/* ------------------------------------------------------------------ lista: cuadrícula 1:1 (3–5 columnas en Windows, 2 en el celular)
+   Mínimo de 200: a 960 son 3 columnas de ~261 (con 4 de ~192, «$12,345 · 1,234 unidades» de TarjetaProducto bajaba a
+   dos renglones y las cifras de la fila quedaban a distinta altura); 4 de ~230 a 1280 y 5 de ~213 a 1440. */
+.rejilla {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+@media (max-width: 599px) {
+  .rejilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+.celda {
+  display: flex;
+  min-width: 0;
+}
+.tarjeta {
+  flex: 1;
+}
+/* Chips de la tarjeta con un alto fijo de renglones (Chip mide 22 de alto mínimo, 02 §7.2): la cifra queda a la misma
+   altura en toda la fila, lleve la tarjeta uno, dos o ningún chip. */
+.chipsFila {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--space-1-5);
+  width: 100%;
+  min-height: 22px;
+}
+.chipsFila[data-renglones="2"] {
+  min-height: calc(2 * 22px + var(--space-1-5));
+}
+.planear {
+  margin-top: var(--space-1);
+}
+.tablaMarco {
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ detalle */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.heroe {
+  display: grid;
+  grid-template-columns: minmax(240px, 340px) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+  min-width: 0;
+  margin-bottom: var(--space-4);
+}
+.detalle[data-compacta] .heroe {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  margin-bottom: var(--space-1);
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .heroe {
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+}
+.heroeFoto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.heroeFoto > :first-child {
+  width: 100%;
+}
+.guardar {
+  align-self: stretch;
+}
+.heroeTexto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+  padding-top: var(--space-1);
+}
+.tienda {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+a.tienda:hover {
+  color: var(--text-link);
+}
+a.tienda:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.tituloCompleto {
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.ficha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  align-self: stretch;
+  min-width: 0;
+  padding: var(--space-4) 0 var(--space-1);
+  border-top: 1px solid var(--border-subtle);
+}
+.fichaPrecio {
+  align-self: stretch;
+  margin-bottom: var(--space-1);
+}
+.dato {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.dato svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--text-3);
+}
+.chipsFicha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+.sinFicha {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  align-self: stretch;
+  margin: var(--space-1) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--info-border);
+  background: var(--info-bg);
+  color: var(--info-fg);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.sinFicha svg {
+  flex: none;
+  margin-top: 1px;
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-self: stretch;
+  margin-top: var(--space-1);
+}
+.id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.kpis {
+  padding: var(--space-1) 0 var(--space-2);
+}
+
+/* ListaNotas (de @/bloques) ya es tarjeta: toma el padding (20) y la sombra de Tarjeta amplio. */
+.notasPagina {
+  min-width: 0;
+}
+.notasPagina .notasTarjeta {
+  padding: var(--space-5);
+  box-shadow: var(--elev-highlight), var(--shadow-1);
+}
+
+/* Secciones en tarjeta */
+.seccion {
+  min-width: 0;
+}
+.seccionInterior {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.seccionCabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seccionTitulos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+/* Cabeza con acciones (Parecidos: Mejor comisión | Más vendidos): título a la izquierda, control a la derecha; en el
+   celular el control baja a todo lo ancho. */
+.seccionCabezaConAcciones {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+}
+.seccionCabezaConAcciones .seccionTitulos {
+  flex: 1 1 320px;
+}
+.seccionAcciones {
+  flex: none;
+  min-width: 0;
+}
+.detalle[data-compacta] .seccionAcciones {
+  flex: 1 1 100%;
+}
+.seccionTitulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.seccionNota,
+.listaCorta {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.vacioCorto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-2);
+}
+
+/* Columnas 8/4 desde 1180 */
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.columnaAncha,
+.columnaLateral {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+@media (max-width: 1179px) {
+  .columnas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* Videos que lo venden: casi todas las portadas son la foto de ESTE producto, así que van chicas (~132, la medida de
+   rail de 02 §8.1) para que las cifras, y no la misma foto repetida, sean lo que distingue a cada una. */
+.rejillaVideos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 124px), 1fr));
+  gap: var(--space-3);
+}
+@media (max-width: 599px) {
+  .rejillaVideos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.miniatura {
+  width: 100%;
+}
+.listaMuestras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ================================================================== ficha completa (contrato rev. 4, 15/11) */
+
+/* ---- Galería de tu vitrina: tira bajo la foto grande. En la ventana, rejilla de miniaturas de ≥ 48 (6 por fila a
+   340, 4 a 260); en el celular, una fila que se desliza con miniaturas de 64 (objetivo táctil). */
+.galeria {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.galeriaCuenta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.tira {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.tiraElemento {
+  display: flex;
+  min-width: 0;
+}
+.miniFoto {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.miniFotoImagen {
+  width: 100%;
+}
+.miniFoto:hover,
+.miniFoto[aria-pressed="true"] {
+  opacity: 1;
+}
+/* La elegida: anillo de 2 px separado de la foto por el fondo (se lee igual en oscuro y en claro). */
+.miniFoto[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--bg-canvas), 0 0 0 4px var(--text-1);
+}
+.miniFoto:focus-visible {
+  outline: none;
+  opacity: 1;
+  box-shadow: var(--focus-ring);
+}
+.detalle[data-compacta] .tira {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  /* Deja ver el anillo de la elegida sin recortarlo. */
+  margin: -4px;
+  padding: 4px;
+}
+.detalle[data-compacta] .tiraElemento {
+  flex: 0 0 64px;
+  scroll-snap-align: start;
+}
+
+/* ---- Comisión y Precio: lado a lado desde 900 (Comisión trae más: 3/5 del ancho), apiladas debajo. */
+.dosTarjetas {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+}
+.dosTarjetas[data-solo],
+.detalle[data-compacta] .dosTarjetas {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 899px) {
+  .dosTarjetas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.seccionDato {
+  min-width: 0;
+}
+
+/* La tasa que de verdad pagaron tus pedidos: el dato principal de la tarjeta, en lima suave. */
+.destacado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-subtle-border);
+  background: var(--brand-subtle);
+  min-width: 0;
+}
+.destacadoTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.destacadoEtiqueta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.destacadoNota {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.cifraGrande {
+  flex: none;
+  font-size: var(--text-kpi-size);
+  line-height: var(--text-kpi-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+
+/* Renglones etiqueta / cifra (plan abierto, planes dirigidos, precios). */
+.renglones {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+.renglon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border-subtle);
+  min-width: 0;
+}
+.renglon:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.renglon:last-child {
+  padding-bottom: 0;
+}
+.renglonTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.renglonEtiqueta {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.renglonDetalle {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  overflow-wrap: anywhere;
+}
+.renglonValor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin: 0;
+  flex: none;
+  max-width: 60%;
+}
+.renglonCifra {
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-lh);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.tachada {
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+.diferencia {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.diferencia svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--text-3);
+}
+.diferencia[data-sentido="mas"] svg {
+  color: var(--ok-fg);
+}
+.barras {
+  margin-top: var(--space-1);
+}
+.notaChica,
+.subnota {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+
+/* ---- Muestra: estado de la elegibilidad, tus solicitudes, las anteriores y las variantes. */
+.bloqueMuestra {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.estadoMuestra {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.estadoMuestra .chipsFicha {
+  margin-top: 0;
+}
+.subbloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.subcabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.subtitulo {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.listaRecuperadas,
+.listaSkus {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+/* Variantes: una columna en la columna lateral; en una sola columna ancha (600–1179) se reparten en 2–3. */
+.listaSkus {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  column-gap: var(--space-6);
+}
+.recuperada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-sunken);
+}
+.recuperada + .recuperada {
+  margin-top: var(--space-2);
+}
+.recuperadaTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.recuperadaVariante {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.sku {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "variante precio" "estado estado";
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.skuVariante {
+  grid-area: variante;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.skuPrecio {
+  grid-area: precio;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+}
+.skuEstado {
+  grid-area: estado;
+  display: flex;
+  min-width: 0;
+}
+.skuDisponible {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--ok-fg);
+}
+/* Las que no se pueden pedir quedan atenuadas (el chip dice por qué: agotado, ya la pediste…). */
+.sku[data-disponible="no"] .skuVariante,
+.sku[data-disponible="no"] .skuPrecio {
+  color: var(--text-3);
+}
+.verMas {
+  align-self: flex-start;
+}
+
+/* ---- Origen de las ventas y la nota del permiso que falta. */
+.origenBarras {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.notaPermiso {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: calc(var(--space-2) * -1) 0 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.notaPermiso svg {
+  flex: none;
+}
+
+/* ---- Parecidos en el marketplace: rejilla de TarjetaProducto con columnas por clase de ancho (2 · 3 · 4 · 5) y dos
+   filas completas a la vista. */
+.esteProducto {
+  margin: calc(var(--space-1) * -1) 0 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.rejillaParecidos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--columnas, 4), minmax(0, 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+.detalle[data-compacta] .rejillaParecidos {
+  gap: var(--space-3);
+}
+.parecidosPie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* rev. 5 · Videos que lo venden con las métricas de TikTok: vistas y pedidos por 1,000 vistas bajo cada portada. */
+.videoCelda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.videoMetricas {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0;
+  padding-inline: 2px;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.videoVistas {
+  color: var(--text-2);
+  font-weight: var(--weight-medium);
+}
+.videoPorMilCifra {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.videoSinCifras {
+  font-style: italic;
+}
+.sinCorte {
+  white-space: nowrap;
+}
+.videoPorMil {
+  color: var(--text-3);
+}

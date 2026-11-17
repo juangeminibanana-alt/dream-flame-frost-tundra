@@ -1,0 +1,1370 @@
+/* Inicio (01_ux §4.1; 02 §5.2, §5.3, §7.3, §7.18, §7.23; lienzo aprobado Main.png / MovilInicio.png). Solo tokens. */
+
+.pantalla {
+  min-width: 0;
+}
+/* La raíz es de bloque: el encabezado de pantalla (pegajoso; en Android, barra + línea de contexto debajo) queda en
+   flujo normal y con sus propios márgenes, sin el hueco de la columna. El resto va en .contenido. */
+.inicio {
+  container: inicio / inline-size;
+  display: block;
+  width: 100%;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-bottom: var(--space-12);
+  min-width: 0;
+}
+.inicio[data-compacto] {
+  padding-bottom: var(--space-8);
+}
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+  min-width: 0;
+}
+.inicio[data-compacto] .contenido {
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+/* Android: la línea de contexto ya trae 12 px abajo; con 4 más, el saludo queda a 16 como el resto del ritmo. */
+.inicio[data-compacto][data-android] .contenido {
+  margin-top: var(--space-1);
+}
+/* Espacio final del alto de una capa global fija abajo (capas.ts): el pie sube por encima de ella. */
+.holgura {
+  flex: none;
+  pointer-events: none;
+}
+
+.srSolo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.recorte {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.empuje {
+  flex: 1 1 auto;
+}
+
+/* Enlaces de acción (lima), sin subrayado salvo hover; foco visible solo con teclado. */
+.enlace,
+.enlaceChico,
+.enlacePie {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand-ink);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+.enlace {
+  min-height: var(--control-h-sm);
+  font-size: var(--text-body-size);
+}
+.enlaceChico {
+  font-size: var(--text-body-sm-size);
+}
+.enlacePie {
+  align-self: flex-start;
+  min-height: var(--control-h-sm);
+  font-size: var(--text-body-sm-size);
+}
+.enlace:hover,
+.enlaceChico:hover,
+.enlacePie:hover {
+  color: var(--brand-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+:global(:root[data-theme="light"]) .enlace:hover,
+:global(:root[data-theme="light"]) .enlaceChico:hover,
+:global(:root[data-theme="light"]) .enlacePie:hover {
+  color: var(--brand-ink);
+}
+.enlace:focus-visible,
+.enlaceChico:focus-visible,
+.enlacePie:focus-visible,
+.tiraFoto:focus-visible,
+.tiraMas:focus-visible,
+.tiendaFila:focus-visible,
+.franjaEnlace:focus-visible,
+.hoyEnlace:focus-visible,
+.ordenNuevo:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ------------------------------------------------------------------ saludo (fila 1) */
+.saludo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-1);
+}
+.saludoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+/* Medidas del lienzo (Main.html:71-72) y de EncabezadoPantalla en Windows: título 30/700, contexto 14 en text-3. */
+.saludoTitulo {
+  margin: 0;
+  font-size: calc(30px * var(--fs-half));
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: var(--tracking-display);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.saludoContexto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-3);
+}
+/* Buscador de 40 de alto, 240 de mínimo y radio 10, y Sincronizar de 40×40 con radio 10 (Main.html:74-80): las mismas
+   variables que pone EncabezadoPantalla en sus acciones; CampoBusqueda y BotonIcono las leen. En táctil, el buscador
+   sube al mínimo táctil (BotonIcono ya pasa a 48 circular por su cuenta). */
+.saludoAcciones {
+  --busqueda-alto: 40px;
+  --busqueda-ancho-min: 240px;
+  --busqueda-radio: var(--radius-md);
+  --busqueda-texto: var(--text-body-size);
+  --boton-icono-lado: 40px;
+  --boton-icono-radio: var(--radius-md);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+:global(:root[data-density="touch"]) .saludoAcciones {
+  --busqueda-alto: var(--touch-min);
+}
+.saludoBuscar {
+  width: 280px;
+  max-width: 100%;
+}
+.holaCompacto {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------------ primera sincronización */
+.trayendo {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--info-bg);
+  border: 1px solid var(--info-border);
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+}
+.trayendoIcono {
+  flex: none;
+  margin-top: 2px;
+  color: var(--info-fg);
+}
+/* ------------------------------------------------------------------ Vencen pronto / Promesas vencidas */
+.franja {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--warn-border);
+  box-shadow: var(--elev-highlight);
+}
+.franja[data-tono="critico"] {
+  border-color: var(--crit-border);
+}
+.franjaTitulo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.franjaTitulo svg {
+  color: var(--warn-fg);
+}
+.franja[data-tono="critico"] .franjaTitulo svg {
+  color: var(--crit-fg);
+}
+.franjaLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.franjaFila {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.franjaFila:first-child {
+  border-top: 0;
+}
+.franjaEnlace {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.franjaTexto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-width: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------------ fila del héroe (+ «Hoy» con plan) */
+.filaHeroe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* Con plan, «Hoy» va al lado del héroe: 8 + 4 columnas (01 §4.1, 02 §5.2 fila 2) desde la Expandida (contenido de
+   968 a 1280×800). Con 960×640 (riel de 80, contenido de ~830) el héroe ocupa las 12 y «Hoy» baja (02 §5.2). */
+@container inicio (min-width: 900px) {
+  .filaHeroe[data-con-hoy] {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}
+
+/* El panel es el contenedor de referencia del titular (5cqi del panel: 40 px en Windows, 28 en el celular) y de su
+   rejilla. PanelFirma conserva su relleno de 28/30 (18 en celular): aquí no se anula. */
+.heroe {
+  container: heroe / inline-size;
+  min-width: 0;
+}
+/* Windows: la foto de la siguiente muestra es una tarjeta dentro del relleno del panel, a la izquierda, con el texto a
+   la derecha y 28 de separación (el gap del lienzo, Main.html:86). Con 52 % del interior (tope 540) y 420 de alto
+   queda ~472 × 420 a 1280: con la tira, el primer pliegue pasa del 25 % de foto (02 §5.2, §13) y la columna de texto
+   (~408) deja «Te faltan 12 videos / de muestras» en 2 renglones de 40. */
+.heroeRejilla {
+  display: grid;
+  grid-template-columns: clamp(240px, 52%, 540px) minmax(0, 1fr);
+  column-gap: var(--space-7);
+  min-height: 420px;
+}
+.heroeRejilla:not([data-con-foto]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Panel amplio (1440×900 en adelante): la ventana es más alta y la foto crece con ella (~555 × 460). */
+@container heroe (min-width: 1080px) {
+  .heroeRejilla {
+    grid-template-columns: clamp(240px, 52%, 580px) minmax(0, 1fr);
+    min-height: 460px;
+  }
+}
+/* Panel más angosto (960×640, o con plan junto a «Hoy»): la foto cede ancho para que el titular no baje a 3 renglones. */
+@container heroe (max-width: 880px) {
+  .heroeRejilla {
+    grid-template-columns: clamp(200px, 40%, 320px) minmax(0, 1fr);
+    min-height: 380px;
+  }
+}
+
+.heroeFoto {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-width: 0;
+  min-height: 100%;
+  border-radius: var(--radius-lg);
+  background: var(--media-bg);
+}
+.heroeFoto[data-compacto] {
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  border-radius: var(--radius-lg);
+}
+.heroeFotoEnlace {
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: var(--text-on-media);
+  text-decoration: none;
+}
+.heroeFotoEnlace:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: -3px;
+}
+/* La foto llena su columna (cover); especificidad de dos clases para ganarle a la proporción de <Foto>. */
+.heroeFoto .fotoLlena {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.velo {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1-5);
+  padding: var(--space-16) var(--space-5) var(--space-5);
+  background: var(--media-scrim);
+  color: var(--text-on-media);
+  pointer-events: none;
+}
+.heroeFoto[data-compacto] .velo {
+  padding: var(--space-12) var(--space-4) var(--space-4);
+}
+/* Foto que cedió alto para que «Armar mi plan» quepa en el pliegue (cabe.ts): el velo se aprieta y nunca sube por
+   encima de la foto (1 chip; bajo 240 px, sin chips y el nombre en un renglón). */
+.heroeFoto[data-ajustada] .velo {
+  padding-top: var(--space-8);
+}
+.heroeFoto[data-ajustada="baja"] .veloNombre {
+  -webkit-line-clamp: 1;
+}
+.veloSobre {
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-on-media) 80%, transparent);
+}
+.veloTienda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: color-mix(in srgb, var(--text-on-media) 92%, transparent);
+}
+.veloNombre {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: calc(19px * var(--fs-lin));
+  line-height: 1.26;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-on-media);
+}
+.chipsFoto {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1-5);
+  max-width: 100%;
+  margin-top: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-md);
+  background: var(--media-glyph-bg);
+}
+
+.heroeTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* La columna de acciones es su propio contenedor (el titular mide contra el panel, no contra esta columna). */
+.accionesMarco {
+  container: acciones / inline-size;
+}
+/* Columna de texto angosta (con plan a 1280: el héroe en 8 columnas junto a «Hoy»): «1 no se puede etiquetar ·
+   Avisar a la tienda ›» ya no cabe en un renglón y el «·» quedaba colgando al final. El enlace baja bajo su texto,
+   sin separador, como en el celular. */
+@container acciones (max-width: 320px) {
+  /* Más específica que la regla base de .lineasAviso li (más abajo, align-items: center), que centraba el enlace bajo
+     su texto. En el celular (data-compacto) cada línea sigue centrada. */
+  .accionesMarco .lineasAviso:not([data-compacto]) li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-0-5);
+  }
+  .accionesMarco .lineasAviso .separador {
+    display: none;
+  }
+}
+.heroeCompacto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.heroeCompacto .heroeTitulos {
+  margin-top: calc(var(--space-2) * -1);
+}
+.sobretitulo {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-ink);
+}
+.heroeTitulos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  margin-top: calc(var(--space-2) * -1);
+}
+/* Titular parejo del lienzo (Main.html:92, MovilInicio.html:43): 40 px en Windows y 28 en el celular (5 % del ancho del
+   panel), interlínea 1.08, 700 y −0.025em, con la cifra del mismo tamaño que el resto de la frase. */
+.heroeTitulo {
+  margin: 0;
+  font-size: clamp(calc(28px * var(--fs-half)), 5cqi, calc(40px * var(--fs-half)));
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--text-1);
+  text-wrap: balance;
+}
+.heroeDespues {
+  white-space: normal;
+}
+.heroeNumero {
+  font-stretch: var(--stretch-brand);
+  color: var(--text-1);
+  /* Cifra dentro de la frase: proporcional, como el resto del texto. */
+  font-variant-numeric: proportional-nums;
+}
+.heroeSub {
+  margin: 0;
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-lh);
+  color: var(--text-2);
+}
+.heroeLinea,
+.heroeLineaTenue {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.heroeLinea {
+  color: var(--text-1);
+}
+.heroeLineaTenue {
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+.atraso {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-semibold);
+  color: var(--warn-fg);
+}
+.heroeBarra {
+  max-width: 560px;
+}
+.ordenNuevo {
+  appearance: none;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--info-border);
+  background: var(--info-bg);
+  color: var(--info-fg);
+  font: inherit;
+  font-size: var(--text-body-sm-size);
+  cursor: pointer;
+}
+.accionesMarco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+}
+.acciones[data-compacto] {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+.acciones[data-compacto] .enlace {
+  align-self: center;
+  min-height: var(--touch-min);
+}
+.accionPrincipal {
+  display: inline-flex;
+}
+.acciones[data-compacto] .accionPrincipal {
+  display: flex;
+  flex-direction: column;
+}
+.lineasAviso {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5) var(--space-5);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.lineasAviso li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.lineaAvisoTexto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.puntoAtencion {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--warn-solid);
+}
+.lineasAviso[data-compacto] {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+.lineasAviso[data-compacto] li {
+  flex-direction: column;
+  gap: var(--space-0-5);
+}
+.lineasAviso[data-compacto] .separador {
+  display: none;
+}
+.lineasAviso[data-compacto] .enlaceChico {
+  min-height: var(--control-h-sm);
+}
+
+/* Tira de pendientes (02 §7.23): 64×64, desplazable, se desvanece a la derecha, ficha final «+N». */
+.tira {
+  list-style: none;
+  display: flex;
+  gap: var(--space-2);
+  margin: auto 0 0;
+  padding: var(--space-1) var(--space-12) var(--space-1) var(--space-1);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--space-1);
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 56px), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 56px), transparent);
+}
+.tira::-webkit-scrollbar {
+  display: none;
+}
+.tiraSuelta {
+  margin: 0 calc(var(--content-pad-x) * -1);
+  padding-left: var(--content-pad-x);
+  scroll-padding-inline: var(--content-pad-x);
+}
+.tiraElemento {
+  flex: none;
+  scroll-snap-align: start;
+}
+.tiraFoto {
+  display: block;
+  border-radius: var(--radius-md);
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+:global(:root[data-platform="windows"]) .tiraFoto:hover {
+  transform: translateY(-2px);
+}
+.tiraMas {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+/* Al día: ticket «Estás al día» + celebración. */
+.heroeAlDia {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-7);
+}
+.heroeAlDia[data-compacto] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.heroeAlDia .heroeTexto {
+  padding: 0;
+}
+.heroeTicket {
+  width: 320px;
+  max-width: 100%;
+}
+.heroeTituloAlDia {
+  margin: 0;
+  font-size: var(--text-display-size);
+  line-height: var(--text-display-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--text-1);
+  text-wrap: balance;
+}
+
+/* Contenedor angosto en Windows (p. ej. ventana mínima con el panel abierto): la foto pasa arriba. */
+@container inicio (max-width: 639px) {
+  .heroeRejilla {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-5);
+    min-height: 0;
+  }
+  .heroeRejilla .heroeFoto {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ «Hoy» */
+.hoy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.hoyConteo {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  color: var(--text-2);
+}
+.hoyCompleto {
+  margin: 0;
+  color: var(--ok-fg);
+  font-weight: var(--weight-semibold);
+}
+.hoyLista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.hoyFila {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.hoyFila:first-child {
+  border-top: 0;
+}
+.hoyEnlace {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.hoyTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.hoyNombre {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.hoyTienda {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-body-sm-size);
+  color: var(--text-2);
+}
+/* «Hoy» en su columna de 4 (con plan, ≥ 1440): el botón baja a todo lo ancho bajo la foto y el texto, para que el
+   nombre no se parta en 3 líneas ni la tienda en 2. */
+.hoy {
+  container: hoy / inline-size;
+}
+@container hoy (max-width: 460px) {
+  .hoyFila {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-2);
+  }
+}
+
+/* ------------------------------------------------------------------ dinero (banda abierta, 48 px arriba) */
+.dinero {
+  margin-top: calc(var(--band-gap) - var(--space-6));
+}
+.inicio[data-compacto] .dinero {
+  margin-top: calc(var(--band-gap) - var(--space-4));
+}
+.bandaTitulo {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------------ tarjetas de la fila 4 */
+.filaDos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-width: 0;
+}
+@container inicio (min-width: 760px) {
+  .filaDos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.tarjetaSeccion {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.seccionInterna {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.tarjetaCabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.tarjetaTitulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.vacioSuave {
+  margin: 0;
+  font-size: var(--text-body-size);
+  color: var(--text-2);
+}
+.vacioTarjeta {
+  margin: var(--space-4) auto;
+}
+
+/* Tiendas que necesitan atención */
+.tiendasLista {
+  container: tiendas / inline-size;
+  list-style: none;
+  margin: 0 calc(var(--space-2) * -1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tiendaFila {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto 16px;
+  align-items: center;
+  gap: var(--space-3);
+  padding: calc(var(--space-2) + var(--space-0-5)) var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-1);
+  text-decoration: none;
+  transition: background-color var(--dur-instant) linear;
+}
+.tiendaFila:hover {
+  background: var(--surface-hover);
+}
+.tiendaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.tiendaNombreLinea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  min-width: 0;
+}
+.tiendaNombre {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.tiendaPorque {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.tiendaFotos {
+  display: flex;
+  align-items: center;
+  padding-left: var(--space-2);
+}
+.tiendaFotos .tiendaFoto {
+  margin-left: -10px;
+  box-shadow: 0 0 0 2px var(--surface-1);
+}
+.tiendaFotos .tiendaFoto:first-child {
+  margin-left: 0;
+}
+.tiendaChevron {
+  color: var(--text-3);
+}
+@container tiendas (max-width: 440px) {
+  .tiendaFila {
+    grid-template-columns: 40px minmax(0, 1fr) 16px;
+  }
+  .tiendaFotos {
+    display: none;
+  }
+}
+
+/* Video estrella */
+.estrella {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--space-5);
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.estrellaPortada {
+  position: relative;
+  isolation: isolate;
+  align-self: start;
+  display: block;
+  border-radius: var(--radius-lg);
+  color: var(--text-on-media);
+  text-decoration: none;
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+:global(:root[data-platform="windows"]) .estrellaPortada:hover {
+  transform: translateY(-2px);
+}
+.estrellaPortada:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.estrellaPortada .estrellaFoto {
+  display: block;
+}
+.estrellaRotulo {
+  position: absolute;
+  left: var(--space-2);
+  top: var(--space-2);
+  z-index: 2;
+  max-width: calc(100% - var(--space-4));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  color: var(--text-on-media);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-semibold);
+}
+/* Portada de 120 (celular): el rótulo baja a 10 px para caber entero, como MiniaturaVideo a ≤ 139 px. */
+.inicio[data-compacto] .estrellaRotulo,
+.inicio[data-compacto] .estrellaUnidades {
+  left: 6px;
+  font-size: 10px;
+  padding-inline: 6px;
+}
+.inicio[data-compacto] .estrellaRotulo {
+  top: 6px;
+}
+.inicio[data-compacto] .estrellaUnidades {
+  bottom: 6px;
+}
+.estrellaUnidades {
+  position: absolute;
+  left: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: calc(100% - var(--space-4));
+  padding: var(--space-0-5) var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  color: var(--text-on-media);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.estrellaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.estrellaCifra {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-kpi-size);
+  line-height: var(--text-kpi-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: proportional-nums;
+  color: var(--text-1);
+}
+.estrellaNota,
+.estrellaVende {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: 1.5;
+  color: var(--text-2);
+}
+.estrellaProducto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--space-1) 0 0;
+  min-width: 0;
+}
+.estrellaNombre {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.esqEstrella {
+  width: 168px;
+  aspect-ratio: 9 / 16;
+  height: auto;
+}
+.inicio[data-compacto] .esqEstrella {
+  width: 120px;
+}
+
+/* Videos que más venden: 5 columnas en Windows, riel desplazable en celular. */
+.topVideos {
+  min-width: 0;
+}
+.rielVideos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.rielElemento {
+  min-width: 0;
+}
+.rielVideos .rielMiniatura {
+  width: 100%;
+}
+.rielVideos[data-compacto] {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--content-pad-x);
+  margin: 0 calc(var(--content-pad-x) * -1);
+  padding: 0 var(--content-pad-x) var(--space-1);
+}
+.rielVideos[data-compacto]::-webkit-scrollbar {
+  display: none;
+}
+.rielVideos[data-compacto] .rielElemento {
+  flex: none;
+  width: 148px;
+  scroll-snap-align: start;
+}
+@container inicio (max-width: 759px) {
+  .rielVideos:not([data-compacto]) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .rielVideos:not([data-compacto]) .rielElemento:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+/* Para tener en cuenta */
+.alertas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.alerta {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.alerta:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.alertaIcono {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--info-bg);
+  color: var(--info-fg);
+}
+.alerta[data-tono="critico"] .alertaIcono {
+  background: var(--crit-bg);
+  color: var(--crit-fg);
+}
+.alerta[data-tono="atencion"] .alertaIcono {
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+}
+.alertaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.alertaTitulo {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.alertaTexto {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+@container inicio (max-width: 599px) {
+  .alerta {
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: start;
+  }
+  .alerta > :last-child:not(.alertaTextos) {
+    grid-column: 2;
+  }
+}
+
+/* Pie */
+.pie {
+  margin: var(--space-2) 0 0;
+  text-align: center;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  text-wrap: balance;
+}
+
+/* ------------------------------------------------------------------ avisos por sección y estados */
+.avisoSeccion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px dashed var(--border-default);
+}
+.avisoIcono {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+.avisoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.avisoTextos b {
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.estadoGlobal {
+  margin: var(--space-12) auto;
+}
+
+/* Esqueletos con la forma final */
+.carga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.esqSaludo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.esqHeroe {
+  display: grid;
+  grid-template-columns: clamp(220px, 40%, 420px) minmax(0, 1fr);
+  gap: var(--space-7);
+  min-height: 360px;
+}
+.esqHeroe[data-compacto] {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+.esqHeroe .esqHeroeFoto {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+.esqHeroeTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  min-width: 0;
+}
+.esqHeroe .esqHeroeFotoCompacta {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+.esqTira {
+  display: flex;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+.esqKpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.esqDos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+.esqFilas,
+.esqGrafica {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+@container inicio (max-width: 599px) {
+  .esqKpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .esqDos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------------------------
+ * rev. 5 · Perfil de TikTok (Display API): franja discreta sin tarjeta, en body-sm y text-2, con las cifras en text-1
+ * tabulares. Los cambios de 7 días en --ok-fg / --warn-fg (nunca rojo). La invitación (una sola vez) es igual de quieta.
+ * ------------------------------------------------------------------------------------------------------------------ */
+.perfil,
+.invitacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+
+.perfilIcono {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+
+.perfilTexto {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-4);
+  margin: 0;
+  min-width: 0;
+}
+
+.perfilCuenta b,
+.perfilCifra b {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.perfilCifra {
+  white-space: nowrap;
+}
+
+.perfilCambio {
+  margin-left: var(--space-1);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-variant-numeric: tabular-nums;
+}
+
+.perfilCambio[data-sentido='sube'] {
+  color: var(--ok-fg);
+}
+
+.perfilCambio[data-sentido='baja'] {
+  color: var(--warn-fg);
+}
+
+.invitacion {
+  flex-wrap: nowrap;
+  padding-block: var(--space-2);
+  background: transparent;
+}
+
+.invitacionEnlace {
+  appearance: none;
+  display: inline-flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: var(--control-h-sm);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-1);
+  font: inherit;
+  font-weight: var(--weight-medium);
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+}
+
+.invitacionEnlace:hover {
+  color: var(--brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.invitacionEnlace:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.invitacionCerrar {
+  flex: none;
+}
+
+.inicio[data-compacto] .perfil {
+  padding: var(--space-3);
+}

@@ -1,0 +1,776 @@
+/*
+ * TarjetaMuestra (lienzo Muestras.png: fila de 12/14 de padding, radio 16 → --radius-lg, foto de 64 con radio 12 →
+ * --radius-md, título 14/600 en una línea, tienda · variante en 13, chips de 11–12 y botón secundario de 36).
+ * Responde al ancho de SU contenedor (container query), no a la ventana: en una columna de 390 se apila.
+ */
+.carril {
+  position: relative;
+  container-type: inline-size;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+}
+.carrilDeslizable {
+  touch-action: pan-y;
+}
+
+.tarjeta {
+  position: relative;
+  min-width: 0;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-highlight);
+  color: var(--text-1);
+  transition: border-color var(--dur-fast) var(--ease-standard), background-color var(--dur-fast) var(--ease-standard);
+}
+.tarjeta:hover {
+  border-color: var(--border-default);
+}
+.tarjeta:has(.abrir:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+.seleccionada,
+.seleccionada:hover {
+  border-color: var(--brand-subtle-border);
+  background: linear-gradient(var(--surface-selected), var(--surface-selected)), var(--surface-1);
+}
+/* Marcada (selección múltiple): fondo de acento y borde del color de la marca (el de la casilla), para que se lea
+ * también sin la casilla a la vista y no se confunda con la abierta en el panel (.seleccionada: borde sutil), que en
+ * el tema oscuro tiene casi el mismo fondo (surface-selected ≈ brand-subtle). */
+.marcada,
+.marcada:hover {
+  border-color: var(--brand);
+  background: linear-gradient(var(--brand-subtle), var(--brand-subtle)), var(--surface-1);
+}
+
+/* ---------------------------------------------------------------------------------------- lista (cola) */
+.lista {
+  display: grid;
+  grid-template-columns: 24px 64px minmax(0, 1fr) auto auto;
+  grid-template-areas: "lado foto cuerpo precio acciones";
+  align-items: center;
+  column-gap: 14px;
+  padding: 12px 14px;
+  transform: translateX(var(--dx, 0px));
+  transition: transform var(--dur-base) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
+}
+.arrastrando {
+  transition: none;
+}
+.lado {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.posicion {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  line-height: 1;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.foto {
+  width: 64px;
+}
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+/* Anchos mínimos de precio y acciones: cada fila es su propia rejilla, así que sin ellos el precio de una fila sin
+ * botón (p. ej. «No se puede etiquetar») o con un precio más corto quedaba corrido respecto a las demás. 124 = «Planear»
+ * (la acción más común de la cola) + el menú ⋯. */
+.precio {
+  min-width: 108px;
+}
+.acciones {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+  min-width: 124px;
+}
+.filaNombre {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-width: 0;
+}
+.nombre {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-1);
+  font: inherit;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  text-align: left;
+}
+.abrir {
+  cursor: pointer;
+}
+/* El botón del nombre se estira sobre toda la tarjeta: un solo objetivo de foco y de clic. */
+.abrir::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.abrir:focus-visible {
+  outline: none;
+}
+/* Renglones de partes «a · b» (tienda · variante, tienda · promesa, fecha · variante): las partes se acomodan en
+ * renglones VISIBLES —nada queda oculto ni cortado a media altura— y la primera parte siempre abre el primer renglón.
+ * El «·» va al inicio de cada parte (salvo la primera), dentro de una franja de --sep-partes; la fila se corre esa misma
+ * franja a la izquierda y .partes recorta solo hacia los lados, así que el «·» de una parte que abre renglón queda fuera
+ * de la vista y la parte arranca alineada con la primera. */
+.partes {
+  --sep-partes: 1.2em; /* 6 px + «·» + 6 px a 13 px */
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+}
+.partesFila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+  margin-left: calc(-1 * var(--sep-partes));
+}
+.sep {
+  flex: none;
+  width: var(--sep-partes);
+  text-align: center;
+  color: var(--text-3);
+}
+.meta {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+/* Avatar + tienda: una sola pieza (el avatar nunca se queda solo) que abre el primer renglón y se recorta con «…». */
+.grupoTienda {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding-left: var(--sep-partes);
+}
+.avatar {
+  flex: none;
+}
+.tienda {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* «· variante»: arranca en 0 y crece hasta su ancho natural. Su mínimo automático es el menor entre su ancho natural y
+ * `width` (≈ 10 letras): si junto a la tienda no le cabe ni eso, baja entera al segundo renglón (visible), donde ocupa
+ * todo el ancho y solo se recorta con «…» si tampoco cabe. Así nunca queda como «· C…». */
+.grupoVariante {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  width: min(calc(var(--sep-partes) + 10ch), 100%);
+  max-width: max-content;
+}
+.variante {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-3);
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.chipsLista {
+  margin-top: 2px;
+}
+.solicitada {
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.boton {
+  white-space: nowrap;
+}
+.menu {
+  position: relative;
+  z-index: 1;
+}
+.punto {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--info-solid);
+}
+
+/* Áreas de la fila de la cola (solo en la variante lista: las demás variantes tienen su propia rejilla). El pie no
+ * genera caja en ancho: precio y acciones son columnas de la fila. */
+.pie {
+  display: contents;
+}
+.lista > .lado { grid-area: lado; }
+.lista > .foto { grid-area: foto; }
+.lista > .cuerpo { grid-area: cuerpo; }
+.lista > .pie > .precio { grid-area: precio; }
+.lista > .pie > .acciones { grid-area: acciones; }
+
+/* Casilla de selección múltiple (escritorio: al pasar el cursor; Android: mantener presionado). 24 × 24: el mínimo de
+ * objetivo con puntero; en Android toda la tarjeta es el objetivo y la casilla solo lo dibuja. */
+.casilla {
+  position: relative;
+  z-index: 1;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+.casillaDibujo {
+  z-index: 0;
+  pointer-events: none;
+}
+.casilla input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.caja {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--surface-2);
+  color: transparent;
+}
+.casilla input:checked + .caja,
+.cajaMarcada {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--text-on-brand);
+}
+.casilla input:focus-visible + .caja {
+  box-shadow: var(--focus-ring);
+}
+
+/* Fondo del gesto de deslizar (Android). */
+.fondoGesto {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+}
+.fondoDerecha {
+  justify-content: flex-start;
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+}
+.fondoIzquierda {
+  justify-content: flex-end;
+  background: var(--surface-3);
+  color: var(--text-1);
+}
+.gestoTexto {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Compacta (densidad): fila más baja y foto de 48. */
+:global(:root[data-density="compact"]) .lista {
+  grid-template-columns: 24px 48px minmax(0, 1fr) auto auto;
+  padding: 8px 12px;
+  column-gap: 12px;
+}
+:global(:root[data-density="compact"]) .foto {
+  width: 48px;
+}
+
+/* Ventana media (600–760): nombre y tienda junto al precio y las acciones, y los chips en su propio renglón a todo lo
+ * ancho (también debajo del precio), para que no queden uno por renglón en una columna de 300.
+ * La columna «lado» (.conLado) se conserva siempre en Windows —la casilla que aparece al pasar el cursor toma el lugar
+ * del Nº de la cola sin reacomodar nada— y en Android en el modo selección. Sin ella (Android normal) se esconde. */
+@container (max-width: 760px) {
+  .lista {
+    grid-template-columns: 64px minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "foto nombre precio acciones"
+      "foto meta precio acciones"
+      "foto chips chips chips";
+    grid-template-rows: auto auto auto;
+    row-gap: 4px;
+  }
+  .lado {
+    display: none;
+  }
+  :global(:root[data-density="compact"]) .lista {
+    grid-template-columns: 48px minmax(0, 1fr) auto auto;
+  }
+  .lista.conLado {
+    grid-template-columns: 24px 64px minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "lado foto nombre precio acciones"
+      "lado foto meta precio acciones"
+      "lado foto chips chips chips";
+  }
+  :global(:root[data-density="compact"]) .lista.conLado {
+    grid-template-columns: 24px 48px minmax(0, 1fr) auto auto;
+  }
+  .conLado > .lado {
+    display: flex;
+  }
+  .lista .cuerpo {
+    display: contents;
+  }
+  .lista .filaNombre {
+    grid-area: nombre;
+  }
+  .lista .meta {
+    grid-area: meta;
+  }
+  .lista .chipsLista {
+    grid-area: chips;
+    margin-top: 2px;
+  }
+}
+
+/* Angosta (celular, columna de 390): foto + nombre y tienda arriba, los chips a todo el ancho y precio + acción abajo
+ * en un renglón que se parte si no cabe (en un teléfono de 360 «Marcar publicada» baja a la derecha, debajo del precio,
+ * en vez de ensanchar la tarjeta). */
+@container (max-width: 599px) {
+  .lista {
+    grid-template-columns: 64px minmax(0, 1fr);
+    grid-template-areas:
+      "foto nombre"
+      "foto meta"
+      "chips chips"
+      "pie pie";
+    grid-template-rows: auto 1fr auto auto;
+    align-items: start;
+    row-gap: var(--space-1);
+    column-gap: var(--space-3);
+    padding: var(--space-3);
+  }
+  :global(:root[data-density="compact"]) .lista {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+  /* Con columna «lado» (Windows siempre; Android en el modo selección): el Nº de la cola o la casilla van a la
+   * izquierda de la foto, centrados con ella. */
+  .lista.conLado {
+    grid-template-columns: 24px 64px minmax(0, 1fr);
+    grid-template-areas:
+      "lado foto nombre"
+      "lado foto meta"
+      "chips chips chips"
+      "pie pie pie";
+  }
+  :global(:root[data-density="compact"]) .lista.conLado {
+    grid-template-columns: 24px 48px minmax(0, 1fr);
+  }
+  .lista > .pie {
+    grid-area: pie;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
+    min-width: 0;
+  }
+  .conLado > .lado {
+    align-self: start;
+    justify-content: center;
+    height: 64px;
+  }
+  :global(:root[data-density="compact"]) .conLado > .lado {
+    height: 48px;
+  }
+  .lista .meta {
+    align-self: start;
+  }
+  .lista .chipsLista {
+    grid-area: chips;
+    margin-top: var(--space-2);
+  }
+  /* Con la letra al 130–200 % un chip («TikTok: Vence en 20 h») o la fecha de solicitud pueden ser más anchos que la
+   * tarjeta: se parten en renglones en vez de perder la fecha bajo «…» o salirse por la orilla. Mientras caben (letra
+   * al 100 %) cada uno sigue en un renglón: un elemento de una fila flex que se parte solo se parte si no cabe ni solo.
+   * Con la letra grande (--fs ≥ 1.15) la píldora pasa a un radio suave para no pellizcar el texto de dos renglones. */
+  .lista .chipsLista > * {
+    white-space: normal;
+    text-wrap: pretty;
+  }
+  .lista .chipsLista > :not(.solicitada) {
+    border-radius: max(var(--radius-md), calc(var(--radius-md) + (1.15 - var(--fs, 1)) * 1000px));
+  }
+  .nombre {
+    display: -webkit-box;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow-wrap: anywhere;
+  }
+  .precio {
+    align-items: flex-start;
+    text-align: left;
+    min-width: 0;
+  }
+  .acciones {
+    margin-left: auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+  /* El botón cede ancho al ⋯ y, si con la letra grande no cabe en un renglón, la etiqueta baja de renglón dentro del
+   * botón (02 §12.2) en vez de salirse por los lados. */
+  .acciones .boton {
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: normal;
+    border-radius: max(var(--radius-md), calc(var(--radius-md) + (1.15 - var(--fs, 1)) * 1000px));
+  }
+}
+
+/* ---------------------------------------------------------------------------------------- tablero */
+.tablero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  cursor: grab;
+}
+.tablero:active {
+  cursor: grabbing;
+}
+.tableroArriba {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3);
+}
+.tiendaTablero {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.tableroPie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+.tableroMenu {
+  display: inline-flex;
+  margin-left: auto;
+}
+.foto48 {
+  width: 48px;
+}
+.foto40 {
+  width: 40px;
+}
+.nombre2 {
+  display: -webkit-box;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.tablero .meta {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+/* En una columna angosta (Tablero, «Avisar» en el celular) la promesa o el avance («Le prometiste el sáb 14 nov»,
+ * «Tu avance: Planeada · jue 12 nov») se parte en dos renglones antes que perder la fecha bajo «…»; con dos renglones
+ * la píldora pasa a un radio suave para no pellizcar el texto. */
+.tarjeta .chipPartible {
+  white-space: normal;
+  border-radius: var(--radius-md);
+  text-wrap: pretty;
+}
+.avisada {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--ok-fg);
+}
+.botonTablero {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+}
+
+/* ---------------------------------------------------------------------------------------- agenda y aviso */
+.agenda,
+.aviso {
+  display: grid;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-2);
+}
+.agenda {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  min-height: 64px;
+}
+.contenedorAviso {
+  container-type: inline-size;
+  min-width: 0;
+}
+.aviso {
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  grid-template-areas: "foto cuerpo chip";
+  min-height: 56px;
+  box-shadow: none;
+}
+.aviso > .foto40 { grid-area: foto; }
+.aviso > .cuerpo { grid-area: cuerpo; }
+.aviso > .chipAviso { grid-area: chip; }
+.nombre1 {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+/* Tienda · lo prometido (agenda) y fecha prometida · variante (aviso), con los renglones de .partes: lo prometido va
+ * junto a la primera parte si cabe completo; si no, baja a su propio renglón. La fecha nunca se parte ni queda bajo «…»
+ * (antes, con 2 renglones recortados, a 360 se leía «le prometiste el lun 1…»). */
+.metaAgenda {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.partePrimera {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  padding-left: var(--sep-partes);
+}
+.recorte {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Parte de texto que se lee completa: va en el renglón de la anterior solo si cabe entera; si no, abre renglón y ahí
+ * se parte en palabras (el «·» queda alineado con su primer renglón). */
+.parteTexto {
+  display: flex;
+  align-items: baseline;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+.textoParte {
+  min-width: 0;
+}
+.sinPartir {
+  white-space: nowrap;
+}
+.sinFecha {
+  color: var(--warn-fg);
+  font-weight: var(--weight-medium);
+}
+.estadoAgenda {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.atrasado {
+  border-color: var(--warn-border);
+}
+.atrasadoChip {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  font-weight: var(--weight-semibold);
+}
+.hecho {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--stage-listo);
+  color: var(--stage-on-light);
+}
+.chipAviso {
+  min-width: 0;
+  max-width: 100%;
+}
+/* Fila angosta (columna de «Avisar» o celular): el chip de avance baja a su propio renglón, a todo el ancho de la fila,
+ * para que «Tu avance: Planeada · jue 12 nov» quepa en una línea en vez de partirse junto a la foto. */
+@container (max-width: 560px) {
+  .aviso {
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-areas:
+      "foto cuerpo"
+      "chip chip";
+    align-items: start;
+    row-gap: var(--space-2);
+  }
+  .aviso > .chipAviso {
+    justify-self: start;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------- sesión */
+/* El contenedor que se mide envuelve a .sesion: un elemento no puede consultar su propio ancho. */
+.contenedorSesion {
+  container-type: inline-size;
+  min-width: 0;
+}
+.sesion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+  min-width: 0;
+}
+.fotoSesion {
+  width: 100%;
+}
+.sesionDatos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.sesionTienda {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+/* El nombre de la sesión se lee completo en varios renglones: sin el overflow oculto de .nombre, que le comía 2 px de
+ * los rasgos bajos (g, p, y) del último renglón. */
+.sesionNombre {
+  overflow: visible;
+  white-space: normal;
+  font-size: var(--text-title1-size);
+  line-height: var(--text-title1-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-title);
+  overflow-wrap: anywhere;
+}
+.sesion .abrir::after {
+  display: none;
+}
+.sesionVariante {
+  margin: 0;
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.sesionBotones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+/* Los dos insumos parten de su ancho de contenido (así nunca se recortan: si no caben juntos, el segundo baja) y luego
+ * se estiran para llenar el renglón. El botón con atajo llega envuelto (ayuda con la tecla), así que se estira el botón. */
+.sesionBotones > * {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sesionBotones button {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+@container (max-width: 640px) {
+  .sesion {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+/* ---------------------------------------------------------------------------------------- tira */
+.tira {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: pointer;
+}
+.tira:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.fotoTira {
+  width: 64px;
+}
+.tira .punto {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 3;
+  box-shadow: 0 0 0 2px var(--surface-1);
+}
+.tira.seleccionada {
+  box-shadow: 0 0 0 2px var(--brand);
+  background: none;
+}
+
+@media (forced-colors: active) {
+  .seleccionada,
+  .marcada {
+    outline: 2px solid Highlight;
+  }
+  .cajaMarcada {
+    background: Highlight;
+    color: HighlightText;
+  }
+}

@@ -1,0 +1,97 @@
+/* Foto con pozo de color, LQIP y fundido de 120 ms (02 §8.3). Ningún filter en imágenes (02 §10.3). */
+.foto {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--foto-color, var(--media-bg));
+  border-radius: var(--radius-sm);
+}
+/* Ancho por omisión = anchoCss (especificidad 0: cualquier clase del consumidor lo reemplaza). */
+:where(.foto) {
+  width: var(--foto-ancho);
+  max-width: 100%;
+  flex: none;
+}
+.llenar {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  max-width: none;
+}
+.p11 { aspect-ratio: 1 / 1; }
+.p45 { aspect-ratio: 4 / 5; }
+.p916 { aspect-ratio: 9 / 16; }
+
+.rxs { border-radius: var(--radius-xs); }
+.rsm { border-radius: var(--radius-sm); }
+.rmd { border-radius: var(--radius-md); }
+.rlg { border-radius: var(--radius-lg); }
+.rxl { border-radius: var(--radius-xl); }
+
+.lqip,
+.img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
+}
+.img {
+  opacity: 0;
+  z-index: 1;
+}
+.contener {
+  object-fit: contain;
+}
+.visible {
+  opacity: 1;
+}
+.fundido {
+  transition: opacity var(--dur-image) linear;
+}
+
+/* Filete interior de 1 px y velo del 6 % sobre fotos blancas en oscuro, en ::after y sin filter. */
+.foto::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--media-border);
+  background: var(--media-veil);
+  pointer-events: none;
+}
+.foto[data-estado="mosaico"]::after {
+  background: transparent;
+}
+
+/* Rótulo discreto ("Foto del producto"), legible sobre foto blanca (7.87:1). */
+.rotulo {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 3;
+  max-width: calc(100% - 12px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--media-glyph-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-on-media) 14%, transparent);
+  color: var(--text-on-media);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caption);
+}
+
+@media (forced-colors: active) {
+  .foto {
+    forced-color-adjust: none;
+  }
+}

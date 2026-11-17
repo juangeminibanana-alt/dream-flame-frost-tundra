@@ -1,0 +1,117 @@
+/* «Ventas de este producto» (01 §4.3): tarjeta surface-1 radio 14, caso A/B/C arriba y los 3 mejores videos. */
+.tarjeta {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.titulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.verTodos {
+  composes: enlace from '../util/comun.module.css';
+}
+.caso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-subtle-border);
+  background: var(--surface-selected);
+}
+.texto {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-1);
+}
+.texto strong {
+  font-weight: var(--weight-semibold);
+}
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.nota > :first-child {
+  flex: none;
+  margin-top: 1px;
+}
+.mejores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.subtitulo {
+  composes: overline from '../util/comun.module.css';
+}
+.videos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.video {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: 4px 0;
+}
+.destacado {
+  padding: 0;
+}
+.miniatura {
+  width: 44px;
+}
+.videoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.videoId {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+  color: var(--text-1);
+}
+.videoMeta {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.videoCifra {
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+}

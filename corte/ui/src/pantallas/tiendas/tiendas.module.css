@@ -1,0 +1,659 @@
+/* Tiendas y Detalle de tienda (01_ux §4.9–4.10; 02 §5, §7, §8). Solo tokens de tokens.css. */
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+/* Android: EncabezadoPantalla deja la barra (56 dp) y su contexto como hermanos dentro de .pantalla, y el gap de 20 los
+   separaba de más (20 arriba de la barra y 20 entre la barra y el contexto). Como en Ventas, aquí el gap es 0 y lo que
+   sigue al encabezado lleva su margen: 12 el primero (más los 12 del contexto) y 20 entre los demás. */
+:global(:root[data-platform="android"]) .pantalla {
+  gap: 0;
+}
+:global(:root[data-platform="android"]) .trasEncabezado {
+  margin-top: var(--space-3);
+}
+:global(:root[data-platform="android"]) .trasEncabezado + .trasEncabezado {
+  margin-top: var(--space-5);
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.srSolo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.estado {
+  margin: var(--space-12) auto;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+  color: var(--text-1);
+}
+
+/* ------------------------------------------------------------------ carga */
+.carga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.cargaChips {
+  display: flex;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+.cargaTarjetas {
+  display: grid;
+  gap: var(--space-3);
+}
+.cargaHeroe {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+.cargaHeroeTexto {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-2);
+}
+.cargaKpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ------------------------------------------------------------------ lista: controles */
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+/* Una fila de chips arriba de lo que filtran (02 §7.11); en angosto se desplaza con desvanecido a la derecha. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+.buscador {
+  flex: 0 1 280px;
+  min-width: 180px;
+}
+.segmentoModo {
+  margin-left: auto;
+  flex: none;
+}
+.mostrando {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+/* Celular: la fila de chips va a sangre (de borde a borde de la pantalla); el desvanecido lo decide data-desborde. */
+:global(:root[data-platform="android"]) .chips {
+  margin-inline: calc(var(--content-pad-x) * -1);
+  padding-inline: var(--content-pad-x);
+  scroll-padding-inline: var(--content-pad-x);
+}
+/* Celular: la búsqueda toma el renglón y el orden va al lado como botón de ícono con el alto, el relleno y el borde del
+   secundario (Menu lo pinta fantasma; en táctil, circular). */
+:global(:root[data-platform="android"]) .buscador {
+  flex: 1 1 0;
+}
+@media (max-width: 599px) {
+  .chips {
+    margin-inline: calc(var(--content-pad-x) * -1);
+    padding-inline: var(--content-pad-x);
+    scroll-padding-inline: var(--content-pad-x);
+  }
+  .buscador {
+    flex: 1 1 0;
+  }
+}
+:global(:root) .controles .ordenIcono {
+  flex: none;
+  width: var(--control-h-md);
+  height: var(--control-h-md);
+  border-radius: var(--radius-md);
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+:global(:root) .controles .ordenIcono:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+
+/* Escritorio: una sola fila de chips arriba de lo que filtran (02 §7.11). Si no caben (1280: 8 chips en ~968 px), la fila
+   se desplaza y se desvanece SOLO del lado que queda fuera de vista (data-desborde lo pone useDesborde). */
+.chips[data-fila-unica] {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.chips[data-fila-unica]::-webkit-scrollbar {
+  display: none;
+}
+.chips[data-fila-unica] > * {
+  flex: none;
+}
+.chips[data-desborde="derecha"] {
+  mask-image: linear-gradient(to right, var(--text-1) calc(100% - 48px), transparent);
+}
+.chips[data-desborde="izquierda"] {
+  mask-image: linear-gradient(to left, var(--text-1) calc(100% - 48px), transparent);
+}
+.chips[data-desborde="ambos"] {
+  mask-image: linear-gradient(to right, transparent, var(--text-1) 48px, var(--text-1) calc(100% - 48px), transparent);
+}
+
+/* ------------------------------------------------------------------ lista: cuerpo */
+/* Celda «Tienda»: foto de 40 (28 en compacta, --thumb-row) + nombre de 1 línea. */
+.celdaTienda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.celdaTiendaFoto {
+  flex: none;
+  width: var(--thumb-row);
+}
+.celdaTiendaNombre {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.tablaMarco {
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+.listaTarjetas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.rejillaFichas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+  gap: var(--space-4);
+  min-width: 0;
+}
+.rejillaFichas > li,
+.listaTarjetas > li {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.rejillaFichas > li > *,
+.listaTarjetas > li > * {
+  flex: 1;
+}
+/* El pie de PanelLateral es un flex con wrap: este bloque ocupa todo su ancho (si no, se encoge a su contenido y los
+   botones se reparten un ancho chico: «Avisar a / esta tienda» en dos renglones). Cada botón con su texto en un renglón;
+   el primario toma el espacio que sobra. */
+.panelPie {
+  flex: 1 1 100%;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.panelPie > * {
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ detalle */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  container-type: inline-size;
+}
+.detalle[data-modo="panel"] {
+  gap: var(--space-6);
+}
+
+.heroeTarjeta {
+  overflow: hidden;
+}
+.heroe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-6);
+  align-items: start;
+  min-width: 0;
+}
+.heroe:not([data-fila]) .heroeTexto {
+  padding-top: var(--space-2);
+}
+/* El porqué es el titular de la tienda (como «Te faltan 12 videos» en Main.png): crece con el ancho del detalle, de
+   title1 (24) a display (32), y mide 26ch para partirse en dos renglones parejos. */
+.heroe:not([data-fila]) .heroePorque {
+  font-size: clamp(var(--text-title1-size), 2.7cqi, var(--text-display-size));
+  line-height: 1.22;
+  max-width: 26ch;
+}
+.heroe[data-fila] {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+.heroeFotos {
+  display: grid;
+  grid-template-columns: 220px;
+  gap: var(--space-2);
+}
+/* 3 fotos: 4:5 de 220 (275 de alto) + dos cuadradas de 134 apiladas (134 + 8 + 134 = 276). 2 fotos: pareja 4:5. */
+.heroeFotos[data-n="3"] {
+  grid-template-columns: 220px 134px;
+}
+.heroeFotos[data-n="2"] {
+  grid-template-columns: 176px 176px;
+}
+/* Detalle ancho (≥ 1000 de contenido, 1440 en adelante): las fotos crecen y llenan el hueco junto al titular. */
+@container (min-width: 1000px) {
+  .heroeFotos {
+    grid-template-columns: 264px;
+  }
+  .heroeFotos[data-n="3"] {
+    grid-template-columns: 264px 161px;
+  }
+  .heroeFotos[data-n="2"] {
+    grid-template-columns: 210px 210px;
+  }
+}
+.heroeIdentidad {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-1);
+}
+.heroeFotosChicas {
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: var(--space-2);
+  align-content: start;
+}
+.heroeFila {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+.heroeFila[data-n="1"] {
+  grid-template-columns: minmax(0, 220px);
+}
+.heroeFila[data-n="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.heroeFoto {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+.heroeFoto > * {
+  width: 100%;
+}
+div.heroeFoto {
+  cursor: default;
+}
+:global(:root[data-platform="windows"]) button.heroeFoto:hover,
+:global(:root:not([data-platform])) button.heroeFoto:hover {
+  transform: translateY(-2px);
+}
+.heroeFoto:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.heroeTexto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.heroePorque {
+  margin: 0;
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+  max-width: 34ch;
+  overflow-wrap: anywhere;
+}
+.heroe[data-fila] .heroePorque {
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+}
+.heroeId {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+/* BandaKpi ya son 4 tarjetas (surface-1, borde y radio): va abierta debajo del héroe, sin filete ni tarjeta alrededor.
+   En el panel el detalle separa de 24; entre el héroe y su banda bastan 16, como en el detalle de video. */
+.kpis {
+  align-self: stretch;
+  min-width: 0;
+}
+.detalle[data-modo="panel"] > .kpis {
+  margin-top: calc(var(--space-4) - var(--space-6));
+}
+.hechos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+.hechosChips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.hecho {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.hecho svg {
+  flex: none;
+  color: var(--text-3);
+}
+
+/* Secciones */
+.seccionTarjeta {
+  min-width: 0;
+}
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.seccion:not([data-en-tarjeta]) {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}
+.seccionCabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+.seccionTitulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.seccionAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.vacioCorto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-2);
+}
+.listaMuestras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.listaMuestras > li {
+  min-width: 0;
+}
+.seccion .tablaMarco {
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+/* Promesas */
+.avisos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.aviso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.avisoCabeza {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.avisoFecha {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.avisoTexto {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.promesas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.promesa {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.promesaProducto {
+  flex: 1 1 100%;
+  min-width: 0;
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.promesaFecha {
+  color: var(--text-2);
+}
+
+/* Ventas */
+.ventas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.grafica {
+  min-width: 0;
+}
+.subseccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.subtitulo {
+  margin: 0;
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.rejillaProductos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 156px), 1fr));
+  gap: var(--space-3);
+}
+.rejillaProductos[data-modo="panel"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.rejillaVideos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.miniatura {
+  width: 100%;
+}
+@container (max-width: 560px) {
+  .rejillaProductos,
+  .rejillaVideos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Columnas 8/4 desde 1180 (01 §4.10) */
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.columnaPrincipal,
+.columnaLateral {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.columnaLateral {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+}
+
+/* Héroe angosto: las fotos arriba y el texto debajo */
+@container (max-width: 719px) {
+  .heroe {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .heroeFotos {
+    order: -1;
+  }
+  .heroeFotos,
+  .heroeFotos[data-n="3"] {
+    grid-template-columns: minmax(0, 1.64fr) minmax(0, 1fr);
+  }
+  .heroeFotos[data-n="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .heroeFotos[data-n="1"],
+  .heroeFotos[data-n="0"] {
+    grid-template-columns: minmax(0, 220px);
+  }
+}
+
+/* Celular: «Avisar a esta tienda» fija abajo (01 §4.10), encima de la barra inferior del marco (02 §7.8). */
+.barraFija {
+  position: sticky;
+  bottom: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-3));
+  z-index: var(--z-sticky);
+  margin-top: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+  background: var(--glass-bg-solid);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-3);
+}
+
+/* ListaNotas (de @/bloques) ya es tarjeta: en la página toma el padding (20) y la sombra de Tarjeta amplio. */
+.notasPagina {
+  min-width: 0;
+}
+.notasPagina .notasTarjeta {
+  padding: var(--space-5);
+  box-shadow: var(--elev-highlight), var(--shadow-1);
+}
+
+/* Notas en el panel: con filete arriba, como las demás secciones abiertas. */
+.notasPanel {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+}

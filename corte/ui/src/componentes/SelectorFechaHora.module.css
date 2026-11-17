@@ -1,0 +1,10 @@
+.raiz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 360px;
+}
+.hora {
+  max-width: 200px;
+}

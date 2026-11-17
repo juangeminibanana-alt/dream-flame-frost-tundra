@@ -1,0 +1,705 @@
+/* Muestras › Pendientes (01 §4.2; 02 §5, §7; lienzo Muestras.png). Solo tokens de tokens.css. */
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+:global([data-platform='android']) .pantalla {
+  /* Espacio para el botón flotante y la barra de selección sobre la barra inferior. */
+  padding-bottom: calc(var(--space-24) + var(--inset-bottom));
+  /* Celular: bloques un poco más juntos para que la primera tarjeta (con su foto) suba hacia el primer pliegue. */
+  gap: var(--space-4);
+}
+.cuerpoVista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.pestanasMovil {
+  margin-top: calc(var(--space-2) * -1);
+}
+/* Riel (600–1179): pestañas + acción principal en su fila, pegadas al encabezado. */
+.pestanas {
+  margin-top: calc(var(--space-3) * -1);
+}
+/* ≥ 1180 (lienzo Muestras.png): segmentado arriba a la derecha, junto al título, dentro del encabezado pegajoso.
+   PestanasMuestras mide su fila con container-type (sin ancho propio por contenido): le damos uno que cabe con las
+   pestañas y la acción en una línea (doble clase: gana sobre el `width: 100%` del bloque sin depender del orden). */
+.pestanasCabeza.pestanasCabeza {
+  width: 600px;
+  max-width: 100%;
+}
+.selectorVista {
+  display: inline-flex;
+  flex: none;
+  margin-left: auto;
+}
+.parrafo {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+}
+.aviso {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+
+/* ------------------------------------------------------------------ franja de progreso */
+.franja,
+.franjaMovil {
+  display: grid;
+  min-width: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--elev-highlight);
+}
+/* Escritorio: una sola banda (lienzo, 16/18 de relleno): «Te faltan» | barra + datos. */
+.franja {
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: 'faltan barra' 'faltan datos';
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+  padding: var(--space-4) var(--space-5);
+}
+.franja > .teFaltan {
+  grid-area: faltan;
+  align-self: stretch;
+  align-content: center;
+  padding-right: var(--space-6);
+  border-right: 1px solid var(--border-subtle);
+}
+.franja > .barraEtapas {
+  grid-area: barra;
+}
+.franja > .franjaDatos {
+  grid-area: datos;
+}
+/* Celular: «franja de progreso compacta» (01 §4.2 «Celular»): relleno 12/16 y renglones juntos. */
+.franjaMovil {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1-5);
+  padding: var(--space-3) var(--space-4);
+}
+.franjaMovil > .barraEtapas {
+  order: 3;
+  margin-top: var(--space-1);
+}
+.teFaltan {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 var(--space-1-5);
+  color: var(--text-1);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  white-space: nowrap;
+}
+.teFaltanCifra {
+  font-size: var(--text-title1-size);
+  line-height: var(--text-title1-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+}
+.barraEtapas {
+  min-width: 0;
+}
+.franjaDatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.franjaDatos li + li::before {
+  content: '·';
+  padding: 0 var(--space-2);
+  color: var(--text-3);
+}
+
+/* ------------------------------------------------------------------ barra de herramientas */
+.herramientas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.filaHerramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+/* La búsqueda nunca recorta su texto de ayuda («Buscar por producto, tienda o variante»). */
+.busqueda {
+  flex: 1 1 300px;
+  max-width: 320px;
+  min-width: 284px;
+}
+/* Los chips se parten DENTRO de su grupo antes de empujar el selector de vista a otra fila. */
+.chipsFiltro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.agrupar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.rotulo {
+  padding-right: var(--space-1);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.herramientasDerecha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+.filtrosActivos {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  white-space: nowrap;
+}
+.herramientasMovil {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.herramientasMovil > .busqueda {
+  flex: none;
+  min-width: 0;
+  max-width: none;
+}
+.botonOrdenMovil {
+  align-self: center;
+}
+.chipsDesplazables {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 calc(var(--content-pad-x) * -1);
+  padding: var(--space-1) var(--content-pad-x);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, var(--bg-canvas) var(--content-pad-x), var(--bg-canvas) calc(100% - var(--space-8)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, var(--bg-canvas) var(--content-pad-x), var(--bg-canvas) calc(100% - var(--space-8)), transparent 100%);
+}
+.chipsDesplazables::-webkit-scrollbar {
+  display: none;
+}
+.chipsDesplazables > * {
+  flex: none;
+}
+.filaMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+.hojaCuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* «Hay un orden nuevo · Actualizar»: píldora que acompaña al scroll. */
+.ordenNuevo {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-2));
+  z-index: var(--z-sticky);
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--surface-4);
+  border: 1px solid var(--info-border);
+  box-shadow: var(--shadow-2);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+}
+.ordenNuevo > svg {
+  color: var(--info-fg);
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ oferta única */
+.oferta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--brand-subtle);
+  border: 1px solid var(--brand-subtle-border);
+}
+.ofertaIcono {
+  display: grid;
+  place-items: center;
+  width: var(--space-10);
+  height: var(--space-10);
+  border-radius: var(--radius-full);
+  background: var(--surface-1);
+  color: var(--brand-ink);
+}
+.ofertaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-0-5);
+  min-width: 0;
+}
+.ofertaTitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.ofertaTexto {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.ofertaAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+@media (max-width: 719px) {
+  .oferta {
+    grid-template-columns: auto minmax(0, 1fr);
+    padding: var(--space-4);
+  }
+  .ofertaAcciones {
+    grid-column: 1 / -1;
+  }
+  .ofertaAcciones > * {
+    flex: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ cuerpo: cola + panel */
+.contenedorCuerpo {
+  container: cuerpo-cola / inline-size;
+  min-width: 0;
+}
+.cuerpo {
+  display: block;
+  min-width: 0;
+}
+.cuerpoConPanel {
+  display: grid;
+  /* Panel de 480 (C5) a la derecha de la cola. */
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
+  align-items: start;
+  gap: var(--space-5);
+  min-width: 0;
+}
+/* Con el panel abierto la cola toma todo el resto: a 1440 mide ~628 px y TarjetaMuestra («lista», @/bloques) usa su
+   forma de 600–760 (precio y acción a la derecha, como Muestras.png); a 1280 mide ~468 y usa la apilada. */
+.columnaCola {
+  min-width: 0;
+}
+.cuerpo > .columnaCola[data-vista='lista'] {
+  max-width: 960px;
+}
+.estadoCentro {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+
+/* ------------------------------------------------------------------ secciones y filas */
+.secciones {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.seccion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.seccionCabeza {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: var(--space-1-5);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.seccionTitulo {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.seccionConteo {
+  color: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+}
+.accionesSeccion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--space-2) + var(--space-0-5));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;
+}
+.fila {
+  min-width: 0;
+  scroll-margin-block: calc(var(--header-h) + var(--space-6));
+}
+.filaMovil {
+  min-width: 0;
+  scroll-margin-block: calc(var(--header-h) + var(--space-6));
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+.tarjetaCelda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.tarjeta {
+  min-width: 0;
+}
+.filaExtra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+}
+.filaExtraTexto {
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+/* ------------------------------------------------------------------ tabla */
+.tablaCola {
+  --tabla-alto: max(360px, calc(100dvh - var(--header-h) - 300px));
+}
+
+/* ------------------------------------------------------------------ tablero */
+.tablero {
+  display: grid;
+  grid-template-columns: repeat(var(--columnas), minmax(220px, 1fr));
+  gap: var(--space-3);
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+.columnaTablero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  min-height: 280px;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--bg-sunken);
+  border: 1px dashed transparent;
+  transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
+}
+.columnaTablero[data-sobre] {
+  background: var(--brand-subtle);
+  border-color: var(--brand-subtle-border);
+}
+.columnaCabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.columnaTitulo {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+}
+.puntoEtapa {
+  flex: none;
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--stage-track);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+.puntoEtapa[data-etapa='planeada'] {
+  background: var(--stage-planeada);
+  box-shadow: none;
+}
+.puntoEtapa[data-etapa='video_listo'] {
+  background: var(--stage-listo);
+  box-shadow: none;
+}
+.puntoEtapa[data-etapa='programada'] {
+  background: var(--stage-programada);
+  box-shadow: none;
+}
+.puntoEtapa[data-etapa='publicada'] {
+  background: var(--stage-publicada);
+  box-shadow: none;
+}
+/* Columna sin tarjetas: zona para soltar arriba (no centrada en una columna que se estira con la más larga). */
+.columnaVacia {
+  margin: 0;
+  padding: var(--space-6) var(--space-3);
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-3);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  text-align: center;
+}
+.columnaLista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.columnaLista > li {
+  cursor: grab;
+}
+.columnaLista > li:active {
+  cursor: grabbing;
+}
+
+/* ------------------------------------------------------------------ selección múltiple */
+.barraSeleccion {
+  position: sticky;
+  bottom: var(--space-4);
+  z-index: var(--z-sticky);
+  align-self: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  max-width: 100%;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface-4);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-3);
+}
+.barraSeleccionMovil {
+  position: fixed;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-3));
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-4);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-3);
+  transform: translateY(calc(var(--holgura, 0px) * -1));
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+.seleccionConteo {
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+}
+.seleccionAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* ------------------------------------------------------------------ botón flotante (Android) */
+.fab {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--bottomnav-h) + var(--inset-bottom) + var(--space-4));
+  z-index: var(--z-sticky);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-3);
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard),
+    visibility 0s linear 0s;
+}
+/* Una capa global anclada abajo (la tarjeta «¿Le enviaste el mensaje…?») ocupa su lugar: se retira mientras está
+   (Flotante alTaparse="ocultar" + capas.ts) y vuelve cuando se va. */
+.fab[data-tapada] {
+  opacity: 0;
+  transform: translateY(var(--space-4));
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-base) var(--ease-standard),
+    transform var(--dur-base) var(--ease-standard),
+    visibility 0s linear var(--dur-base);
+}
+
+/* ------------------------------------------------------------------ estados */
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.cargandoTexto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+}
+.esqueletoFranja {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+.esqueletoFila {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+}
+.esqueletoTextos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.esqueletoPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--surface-1);
+}
+.bannerCache {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--text-1);
+}
+.bannerCache > svg {
+  color: var(--warn-fg);
+  flex: none;
+}
+.bannerTexto {
+  flex: 1 1 240px;
+  min-width: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.alDia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-10) 0;
+}
+.alDiaTicket {
+  flex: none;
+}
+.alDiaTextos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  max-width: 40ch;
+}
+.alDiaTitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.alDiaTexto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+}

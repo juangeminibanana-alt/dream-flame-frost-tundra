@@ -1,0 +1,811 @@
+/* Armar mi plan (01 §4.5; 02 §7; familia de Muestras.png: tarjetas surface-1 de radio 16, fotos de producto). */
+
+.asistente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.asistenteExito {
+  justify-content: center;
+}
+
+/* ------------------------------------------------------------------ superficie del asistente (640 en escritorio) */
+.tarjeta {
+  flex: 1 1 560px;
+  max-width: 680px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+}
+.asistenteRevisar .tarjeta {
+  max-width: 920px;
+}
+.aside {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------ indicador de pasos */
+.pasos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.paso {
+  position: relative;
+  min-width: 0;
+  padding-bottom: var(--space-3);
+}
+.paso::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--stage-track);
+}
+.pasoHecho::after,
+.pasoActual::after {
+  background: var(--brand);
+}
+.pasoActual::after {
+  opacity: 0.55;
+}
+.pasoBoton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  min-height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-3);
+  font: inherit;
+  text-align: left;
+}
+button.pasoBoton {
+  cursor: pointer;
+  color: var(--text-2);
+}
+button.pasoBoton:hover {
+  color: var(--text-1);
+}
+button.pasoBoton:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.pasoActual .pasoBoton {
+  color: var(--text-1);
+}
+.pasoNumero {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+}
+.pasoActual .pasoNumero {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: var(--text-on-brand);
+}
+.pasoHecho .pasoNumero {
+  border-color: var(--brand-subtle-border);
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+}
+.pasoTitulo {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+}
+.cabezaPaso {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.pasoDe {
+  display: none;
+  margin: 0;
+  color: var(--brand-ink);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.tituloPaso {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-title);
+}
+
+/* ------------------------------------------------------------------ paso 1 */
+.campos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.campoFila {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+/* L M M J V S D siempre en UNA fila: en táctil (48 dp por chip) a 390 o 360 no caben 7 + sus huecos, así que el chip
+ * toma el séptimo del ancho disponible (≈ 46 a 390, ≈ 42 a 360). El área táctil de 48 la da la clase .hit del chip. */
+.campoDias {
+  container-type: inline-size;
+}
+@container (max-width: 400px) {
+  :global(html[data-density='touch']) .diasAjustados {
+    --control-h-md: min(48px, calc((100cqi - 6 * var(--space-1-5)) / 7));
+  }
+}
+.etiqueta {
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+}
+.ayuda {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+
+/* ------------------------------------------------------------------ paso 2 */
+.incluir {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.opcionesIncluir {
+  display: grid;
+  /* 360 px como mínimo: en la tarjeta de 640 las dos opciones van una debajo de la otra y el segmentado «Orden» tiene
+   * todo el ancho («En lote por tipo de prenda» en un renglón, no en tres). */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: var(--space-4) var(--space-6);
+  align-items: start;
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.conteoIncluidas {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-variant-numeric: tabular-nums;
+}
+.grupos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.grupoCabeza {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 1;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+.grupoCasilla {
+  font-weight: var(--weight-semibold);
+}
+.grupoLista {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fila {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: opacity var(--dur-fast) var(--ease-standard);
+}
+.fila:last-child {
+  border-bottom: 0;
+}
+.filaQuitada {
+  opacity: 0.55;
+}
+.foto48 {
+  width: 48px;
+}
+.foto44 {
+  width: 44px;
+}
+.filaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.filaCasilla {
+  min-width: 0;
+  font-weight: var(--weight-medium);
+}
+/* El separador « · » va delante del estado y se recorta cuando el estado baja de renglón (margen negativo + overflow):
+ * así nunca queda un punto suelto al inicio de la segunda línea. */
+.filaMeta {
+  --separador: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-left: 28px;
+  overflow: hidden;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.filaTienda {
+  flex: 0 1 auto;
+  min-width: 0;
+  padding-right: var(--separador);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.filaEstado {
+  flex: none;
+  margin-left: calc(var(--separador) * -1);
+  white-space: nowrap;
+}
+.filaEstado::before {
+  content: '·';
+  display: inline-block;
+  width: var(--separador);
+  color: var(--text-3);
+  font-weight: var(--weight-body);
+  text-align: center;
+}
+.filaVence {
+  color: var(--warn-fg);
+  font-weight: var(--weight-semibold);
+}
+
+/* ------------------------------------------------------------------ paso 3 */
+.revisar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+}
+.terminaBloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--brand-subtle);
+  border: 1px solid var(--brand-subtle-border);
+}
+.ritmoTexto {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.termina {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.terminaRotulo {
+  color: var(--text-1);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+}
+.terminaFecha {
+  color: var(--text-1);
+  font-size: var(--text-display-size);
+  line-height: var(--text-display-lh);
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  overflow-wrap: anywhere;
+}
+.publica {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+}
+.listaAviso {
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-5);
+}
+.subtitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+}
+
+/* calendario del plan */
+.calendario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.calRejilla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  container-type: inline-size;
+}
+.calFila {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+.calCabeza {
+  padding-bottom: var(--space-1);
+}
+.calLetra {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+}
+.calCelda {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 84px;
+  min-width: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+}
+.calFuera {
+  border-color: transparent;
+  background: transparent;
+}
+.calLibre {
+  background: transparent;
+  border-style: dashed;
+}
+.calHoy {
+  border-color: var(--brand-subtle-border);
+  box-shadow: inset 0 0 0 1px var(--brand-subtle-border);
+}
+.calNumero {
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.calHoy .calNumero {
+  color: var(--brand-ink);
+  font-weight: var(--weight-semibold);
+}
+.calConteo {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.calLleno .calConteo {
+  color: var(--brand-ink);
+}
+.calFotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: auto;
+}
+.calFoto {
+  width: 28px;
+}
+.calSin {
+  margin-top: auto;
+  color: var(--text-3);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+@container (max-width: 520px) {
+  .calCelda {
+    min-height: 52px;
+    padding: var(--space-1-5);
+  }
+  .calFotos {
+    display: none;
+  }
+  .calConteo {
+    position: static;
+    margin-top: auto;
+    font-size: var(--text-body-size);
+  }
+  .calSin {
+    display: none;
+  }
+}
+
+/* primeros días */
+.primeros {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.primerosDias {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+.primerosDia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.primerosTitulo {
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+}
+.primerosLista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.primerosFila {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+.primerosTextos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.primerosNombre {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+}
+.primerosTienda {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+/* ------------------------------------------------------------------ pie */
+.pie {
+  margin-top: var(--space-2);
+}
+.pieMovil {
+  border-radius: var(--radius-lg);
+}
+.botonPrincipalMovil {
+  flex: 1 1 auto;
+}
+
+/* ------------------------------------------------------------------ vista previa (aside) */
+.previa {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+}
+.previaRotulo {
+  margin: 0;
+  color: var(--brand-ink);
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+}
+.previaTermina {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+.previaTerminaFecha {
+  color: var(--text-1);
+  font-size: var(--text-title2-size);
+  line-height: var(--text-title2-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-title);
+  text-wrap: balance;
+}
+.previaPublica {
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+}
+.previaPublica::first-letter {
+  text-transform: uppercase;
+}
+.previaVaciaTitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  text-wrap: balance;
+}
+.previaRitmo {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.previaChip {
+  align-self: flex-start;
+}
+.grafica {
+  margin-top: var(--space-1);
+}
+.previaDias {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+.previaSubtitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+}
+.previaDia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.previaDiaTitulo {
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+}
+.previaFotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.previaFoto {
+  min-width: 0;
+}
+.previaMas {
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-weight: var(--weight-semibold);
+}
+.previaVacia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+/* ------------------------------------------------------------------ éxito */
+.exito {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  max-width: 600px;
+  padding: var(--space-10) var(--space-6);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+  text-align: center;
+}
+.exitoPalomita {
+  margin-bottom: var(--space-2);
+}
+.exitoTitulo {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--text-1);
+  font-size: var(--text-title1-size);
+  line-height: var(--text-title1-lh);
+  font-weight: var(--weight-display);
+  letter-spacing: var(--tracking-title);
+  text-wrap: balance;
+}
+.exitoTitulo:focus {
+  outline: none;
+}
+.exitoDetalle {
+  margin: 0;
+  color: var(--text-2);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+}
+.exitoAviso {
+  width: 100%;
+  text-align: left;
+}
+/* Las fotos del primer día: la tarea concreta con la que arranca el plan (fotografía de producto protagonista). */
+.exitoPrimeras {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+.exitoFotos {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.exitoFoto {
+  width: 88px;
+  aspect-ratio: 1;
+}
+.exitoFotosTexto {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+@media (max-width: 599px) {
+  .exitoFoto {
+    width: 72px;
+  }
+}
+.exitoAcciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.exitoDeshacerLugar {
+  display: flex;
+  justify-content: center;
+  min-height: 32px;
+  margin-top: calc(var(--space-1) * -1);
+}
+.dondeAvisar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-3);
+  text-align: left;
+}
+.dondeTitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.dondeOpciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+/* ------------------------------------------------------------------ celular: pantalla completa */
+@media (max-width: 599px) {
+  .tarjeta {
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  /* Tres tercios de ~110 px no caben «¿Qué incluimos?»: el indicador queda en círculos y barras, y el paso se nombra
+   * abajo («PASO 2 DE 3» + el título), sin textos cortados. */
+  .pasoTitulo {
+    /* Oculto a la vista pero no al lector: los pasos hechos siguen siendo botones con nombre («Tu ritmo»). */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .pasoBoton {
+    min-height: 40px;
+    min-width: 40px;
+  }
+  .pasoDe {
+    display: block;
+  }
+  .previa {
+    position: static;
+  }
+  .exito {
+    padding: var(--space-8) var(--space-4);
+  }
+  .terminaBloque {
+    padding: var(--space-4);
+  }
+}

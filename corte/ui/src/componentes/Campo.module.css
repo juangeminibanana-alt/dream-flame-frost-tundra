@@ -1,0 +1,178 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+.etiqueta {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.sr {
+  composes: sr from './util/comun.module.css';
+}
+.caja {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-h-md);
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border-control);
+  color: var(--text-1);
+}
+.caja:hover {
+  border-color: var(--text-3);
+}
+.caja:focus-within {
+  background: var(--surface-1);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-subtle);
+}
+.conError,
+.conError:hover {
+  border-color: var(--crit-fg);
+}
+.conError:focus-within {
+  border-color: var(--crit-fg);
+  box-shadow: 0 0 0 3px var(--crit-bg);
+}
+/* Con teclado, el anillo 2+2 de todo lo interactivo (02 §12.2): el halo de 3 px en --brand-subtle casi no se ve
+   (≈1.06:1 en claro). El halo queda para el foco por clic. */
+.caja:has(.input:focus-visible),
+.caja:has(.area:focus-visible) {
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-ring);
+}
+.conError:has(.input:focus-visible),
+.conError:has(.area:focus-visible) {
+  border-color: var(--crit-fg);
+}
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: calc(var(--control-h-md) - 2px);
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-body);
+  outline: none;
+}
+.input:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+.input::placeholder {
+  color: var(--text-3);
+  opacity: 1;
+}
+.input::-webkit-search-cancel-button {
+  display: none;
+}
+/* Edge y WebView2 agregan su propio ojo (::-ms-reveal) y su ✕ (::-ms-clear): con el botón del campo se veían dos ojos. */
+.input::-ms-reveal,
+.input::-ms-clear {
+  display: none;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  letter-spacing: 0.04em;
+}
+/* Código corto (monoespaciado de texto con `maximo` ≤ 16, p. ej. «Código de tu PC»): se lee como código y no como un
+   input común. Geist Mono de 24 en 600 con interletra de código (+0.12 em, 02 §4.2) centrado en una caja de 56, como
+   las casillas de 02 §7.19, sobre surface-1 (MovilEmparejar). El borde se queda en --border-control, que es el que da
+   3:1 de contorno de control (el rgba .16 del lienzo no llega). La IP, la clave y las URL monoespaciadas no llevan
+   `maximo` corto y se quedan como campo normal. */
+.cajaCodigo {
+  min-height: 56px;
+  padding: 0 var(--space-3);
+  background: var(--surface-1);
+}
+.codigo {
+  min-height: 54px;
+  font-size: calc(24px * var(--fs-half));
+  line-height: 1.2;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+.codigo::placeholder {
+  letter-spacing: 0.12em;
+}
+.lupa {
+  color: var(--text-3);
+}
+.accionCaja {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  color: var(--text-3);
+}
+.accionCaja:hover {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+/* Táctil: «Borrar búsqueda» y «Mostrar» llegan a 48 de área sin crecer a la vista (tokens.css §14.3). */
+:global(:root[data-density="touch"]) .accionCaja::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  transform: translate(-50%, -50%);
+}
+.cajaArea {
+  align-items: stretch;
+  padding: var(--space-2) var(--space-3);
+}
+.area {
+  resize: vertical;
+  min-height: 72px;
+  padding: 0;
+}
+.ayuda,
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1-5);
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.error {
+  color: var(--crit-fg);
+}
+.error svg {
+  margin-top: 1px;
+}
+.pieArea {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.contador {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: calc(12px * var(--fs-lin));
+  color: var(--text-3);
+}
+@media (forced-colors: active) {
+  .caja:focus-within {
+    outline: 2px solid Highlight;
+  }
+}

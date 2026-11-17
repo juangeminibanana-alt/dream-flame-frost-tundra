@@ -1,0 +1,139 @@
+.selector {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 360px;
+}
+.cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.etiqueta {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.elegida {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.atajos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+.atajo {
+  position: relative;
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+.atajo:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text-1);
+}
+.atajo[aria-pressed="true"] {
+  background: var(--brand-subtle);
+  border-color: var(--brand-subtle-border);
+  color: var(--brand-ink);
+  font-weight: var(--weight-semibold);
+}
+.atajo:disabled {
+  color: var(--disabled-fg);
+  border-color: var(--disabled-border);
+  cursor: not-allowed;
+}
+.calendario {
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+.mes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+.tituloMes {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.semana,
+.dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.semana span {
+  text-align: center;
+  font-size: var(--text-micro-size);
+  line-height: 24px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-3);
+}
+.dia {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-medium);
+}
+:global(:root[data-density="touch"]) .dia {
+  min-height: 46px;
+}
+.dia:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+.otroMes {
+  color: var(--text-3);
+}
+/* Hoy: aro fino (no subrayado, que chocaba con la capacidad "2/3" de abajo). */
+.hoy {
+  box-shadow: inset 0 0 0 1px var(--border-strong);
+}
+.hoy .numero {
+  font-weight: var(--weight-semibold);
+}
+.elegido,
+.elegido:hover:not(:disabled) {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+}
+.dia:disabled {
+  color: var(--disabled-fg);
+  cursor: not-allowed;
+}
+.numero {
+  line-height: 1.2;
+}
+.ocupacion {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--text-3);
+}
+.elegido .ocupacion {
+  color: inherit;
+  opacity: 0.8;
+}
+.lleno {
+  color: var(--warn-fg);
+}

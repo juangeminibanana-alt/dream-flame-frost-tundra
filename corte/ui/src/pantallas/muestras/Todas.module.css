@@ -1,0 +1,208 @@
+/* Muestras › Todas (01 §4.7; 02 §7.5, §7.11). Solo tokens de tokens.css. */
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+.pestanasMovil {
+  margin-top: calc(var(--space-2) * -1);
+}
+.pestanas {
+  margin-top: calc(var(--space-3) * -1);
+}
+/* ≥ 1180: segmentado junto al título (ver Muestras.module.css .pestanasCabeza). */
+.pestanasCabeza.pestanasCabeza {
+  width: 600px;
+  max-width: 100%;
+}
+.contenido {
+  min-width: 0;
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  min-width: 0;
+}
+.busqueda {
+  flex: 0 1 300px;
+  min-width: 220px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  /* Ancho propio (max-content): si no cabe junto a la búsqueda y la exportación, baja la exportación a su fila (a la
+     derecha) en vez de partir los chips en dos renglones. */
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.chipsDesplazables {
+  display: flex;
+  flex-basis: 100%;
+  gap: var(--space-2);
+  margin: 0 calc(var(--content-pad-x) * -1);
+  padding: var(--space-1) var(--content-pad-x);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, var(--bg-canvas) var(--content-pad-x), var(--bg-canvas) calc(100% - var(--space-8)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, var(--bg-canvas) var(--content-pad-x), var(--bg-canvas) calc(100% - var(--space-8)), transparent 100%);
+}
+.chipsDesplazables::-webkit-scrollbar {
+  display: none;
+}
+.chipsDesplazables > * {
+  flex: none;
+}
+.exportar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2) var(--space-4);
+  margin-left: auto;
+}
+.nota {
+  margin: 0 0 var(--space-4);
+  max-width: 72ch;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.tabla {
+  --tabla-alto: max(380px, calc(100dvh - var(--header-h) - 240px));
+}
+/* «Estado en TikTok»: chip del grupo + motivo en una línea discreta (cabe en la fila de 52). */
+.celdaEstado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+.celdaMotivo {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* «Producto» con Tienda y Variante plegadas: foto de 40 + nombre (1 línea) + tienda · variante en text-3. */
+.celdaProducto {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  max-width: 100%;
+}
+.celdaFoto {
+  flex: none;
+  width: var(--thumb-row);
+}
+.celdaTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.celdaNombre {
+  overflow: hidden;
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.celdaSub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  min-width: 0;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.celdaAvatar {
+  flex: none;
+}
+.celdaSubTexto {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* ~100 tarjetas: se pintan de 24 en 24 (PantallaMuestrasTodas) y el navegador se salta las que están fuera de vista; sin
+   una lista virtual con scroll propio, que en el celular dejaría una caja con scroll dentro de la página. */
+.tarjetaFila {
+  min-width: 0;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 148px;
+}
+/* «Mostrando 24 de 80 · [Mostrar más]» (como el pie de la cola en Muestras.png). */
+.mas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-1) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.masTexto {
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.estado {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) 0;
+}
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.esqueletoChips {
+  display: flex;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+@media (max-width: 599px) {
+  .exportar {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+  .busqueda {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+}

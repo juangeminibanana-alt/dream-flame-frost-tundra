@@ -1,0 +1,89 @@
+.raiz {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+}
+.velo {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-scrim);
+  animation: aparecer var(--dur-slow) var(--ease-standard) both;
+}
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(var(--panel-w), 100vw);
+  background: var(--surface-3);
+  border-left: 1px solid var(--border-default);
+  box-shadow: var(--shadow-4);
+  color: var(--text-1);
+  outline: none;
+  animation: entrar var(--dur-slow) var(--ease-enter) both;
+}
+.panel:focus-visible {
+  box-shadow: var(--shadow-4);
+}
+.saliendo .velo {
+  animation: desaparecer var(--dur-base) var(--ease-exit) both;
+}
+.saliendo .panel {
+  animation: salir var(--dur-base) var(--ease-exit) both;
+}
+.cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--header-h);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+  flex: none;
+}
+.titulo {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.acciones {
+  display: flex;
+  gap: var(--space-1);
+  flex: none;
+}
+.cuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-5);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-3);
+  flex: none;
+}
+
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes desaparecer { from { opacity: 1; } to { opacity: 0; } }
+@keyframes entrar {
+  from { opacity: 0; transform: translateX(calc(var(--motion-distance) * 3)); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes salir {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateX(calc(var(--motion-distance) * 3)); }
+}

@@ -1,0 +1,77 @@
+/* TarjetaVideo: miniatura 9:16 + 2–3 renglones de datos (01 §4.12). */
+.video {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+.datos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 2px;
+}
+.titulo {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.meta {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.metaPartes {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 4px;
+  min-width: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.parte {
+  white-space: nowrap;
+}
+.sep {
+  color: var(--text-3);
+}
+/* Tarjeta angosta (riel de 148–180 px): pedidos y reembolsos van en dos renglones limpios, sin «·» colgando. */
+.datos {
+  container-type: inline-size;
+}
+@container (max-width: 190px) {
+  .metaPartes {
+    flex-direction: column;
+  }
+  .metaPartes .sep {
+    display: none;
+  }
+}
+.vivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--ok-fg);
+}
+.punto {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--ok-solid);
+}

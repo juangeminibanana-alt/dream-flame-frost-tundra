@@ -1,0 +1,132 @@
+/* Celdas de tabla de @/bloques (02 §7.5): miniatura de --thumb-row, texto de 1 línea, cifras tabulares a la derecha. */
+.producto,
+.tienda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.tienda {
+  gap: var(--space-2);
+}
+.miniatura {
+  width: var(--thumb-row);
+  flex: none;
+}
+.miniaturaVideo {
+  width: calc(var(--thumb-row) * 0.75);
+  flex: none;
+}
+.textos,
+.apilada,
+.apiladaDerecha {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.apiladaDerecha {
+  align-items: flex-end;
+}
+.principal,
+.principalNormal {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-1);
+}
+.principal {
+  font-weight: var(--weight-semibold);
+}
+.principalNormal {
+  font-weight: var(--weight-body);
+}
+.secundario {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.cifra {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.cifraFuerte {
+  composes: cifra;
+  font-weight: var(--weight-semibold);
+}
+.chips {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+.si {
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+  color: var(--ok-fg);
+  white-space: nowrap;
+}
+.aviso {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+.avisoOk {
+  composes: aviso;
+  color: var(--ok-fg);
+}
+.avisoPendiente {
+  composes: aviso;
+  color: var(--warn-fg);
+}
+.avisoCritico {
+  composes: aviso;
+  color: var(--crit-fg);
+}
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+.punto {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex: none;
+}
+.puntoOk {
+  composes: punto;
+  background: var(--ok-solid);
+}
+.puntoInfo {
+  composes: punto;
+  background: var(--info-solid);
+}
+.puntoAtencion {
+  composes: punto;
+  background: var(--warn-solid);
+}
+.puntoCritico {
+  composes: punto;
+  background: var(--crit-solid);
+}
+.puntoNeutro {
+  composes: punto;
+  background: var(--neutral-solid);
+}

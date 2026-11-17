@@ -1,0 +1,38 @@
+.avatar {
+  --lado: 32px;
+  --av-bg: var(--av-pizarra-bg);
+  --av-fg: var(--av-pizarra-fg);
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--lado);
+  height: var(--lado);
+  border-radius: calc(var(--lado) * 0.3);
+  background: var(--av-bg);
+  color: var(--av-fg);
+  font-size: max(9px, calc(var(--lado) * 0.4));
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-text);
+  letter-spacing: -0.01em;
+  user-select: none;
+  overflow: hidden;
+}
+.punto {
+  --lado: 10px;
+  border-radius: 3px;
+}
+.avatar[data-tono="iris"] { --av-bg: var(--av-iris-bg); --av-fg: var(--av-iris-fg); }
+.avatar[data-tono="coral"] { --av-bg: var(--av-coral-bg); --av-fg: var(--av-coral-fg); }
+.avatar[data-tono="aqua"] { --av-bg: var(--av-aqua-bg); --av-fg: var(--av-aqua-fg); }
+.avatar[data-tono="ambar"] { --av-bg: var(--av-ambar-bg); --av-fg: var(--av-ambar-fg); }
+.avatar[data-tono="rosa"] { --av-bg: var(--av-rosa-bg); --av-fg: var(--av-rosa-fg); }
+.avatar[data-tono="pizarra"] { --av-bg: var(--av-pizarra-bg); --av-fg: var(--av-pizarra-fg); }
+.avatar[data-tono="cielo"] { --av-bg: var(--av-cielo-bg); --av-fg: var(--av-cielo-fg); }
+.avatar[data-tono="verde"] { --av-bg: var(--av-verde-bg); --av-fg: var(--av-verde-fg); }
+
+@media (forced-colors: active) {
+  .avatar {
+    border: 1px solid CanvasText;
+  }
+}

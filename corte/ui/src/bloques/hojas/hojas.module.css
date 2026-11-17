@@ -1,0 +1,186 @@
+/* Hojas de etapa (01 §3.3: Android hoja inferior; Windows modal de 440, 02 §7.12–7.13). */
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+/* Señal de «hay más abajo» cuando el cuerpo de la hoja se desplaza (p. ej. «No puedo hacer este video» a 390×844): un
+ * desvanecido pegado (sticky) a la orilla de abajo del área que se desplaza, sobre el texto que sigue. Al final del
+ * desplazamiento —o si todo cabe— queda en su lugar, debajo del último bloque, sobre espacio vacío, y no tapa nada.
+ * El bottom negativo compensa el relleno inferior del cuerpo de la hoja (Hoja: --space-4), que sticky respeta. */
+.desvanecido {
+  position: sticky;
+  bottom: calc(-1 * var(--space-4));
+  flex: none;
+  height: var(--space-6);
+  margin-top: calc(-1 * var(--space-2));
+  background: linear-gradient(to bottom, transparent, var(--surface-3) 85%);
+  pointer-events: none;
+}
+/* Encabezado de la muestra dentro de la hoja: foto de 48 + nombre corto + tienda. */
+.muestra {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+.muestraTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+/* El nombre corto llega hasta 2 renglones (01 §3.7): en la hoja del celular uno solo lo dejaba en «Holafish 4 … de Algo…». */
+.muestraNombre {
+  composes: recorte2 from '../util/comun.module.css';
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.muestraMeta {
+  composes: recorte1 from '../util/comun.module.css';
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.ayuda {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.ayudaFuerte {
+  composes: ayuda;
+  color: var(--text-1);
+  font-weight: var(--weight-medium);
+}
+.pregunta {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  width: 100%;
+}
+:global(:root[data-platform="android"]) .pie > * {
+  flex: 1 1 140px;
+}
+/* Lista de videos para «Elegir de mis videos» y de etapas para «Cambiar etapa». */
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.opcion {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard);
+}
+.opcion:hover {
+  background: var(--surface-hover);
+}
+.opcion:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.opcion[aria-pressed="true"],
+.opcion[aria-current="true"] {
+  border-color: var(--brand-subtle-border);
+  background: var(--surface-selected);
+}
+.opcionTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.opcionTitulo {
+  composes: recorte1 from '../util/comun.module.css';
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+}
+/* Hasta 2 renglones: en el celular «Vendió desde el 13 mar · $123 de comisión» no cabe en uno y la cifra no se corta. */
+.opcionMeta {
+  composes: recorte2 from '../util/comun.module.css';
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.opcionIcono {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+.opcionMarca {
+  color: var(--brand-ink);
+}
+.opcionFlecha {
+  color: var(--text-3);
+}
+.opcion:disabled {
+  cursor: default;
+}
+.portada {
+  width: 40px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+/* Tarjeta «¿Es este video?». */
+.confirmar {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-subtle-border);
+  background: var(--surface-selected);
+}
+.confirmarTextos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.idVideo {
+  composes: mono from '../util/comun.module.css';
+  color: var(--text-2);
+}
+.separador {
+  height: 1px;
+  background: var(--border-subtle);
+  border: 0;
+  margin: 0;
+}

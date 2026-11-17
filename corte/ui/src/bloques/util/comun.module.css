@@ -1,0 +1,144 @@
+/* @/bloques · clases compartidas (solo tokens de tokens.css). */
+.recorte1 {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.recorte2 {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+.lector {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.overline {
+  margin: 0;
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.caption {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caption);
+  color: var(--text-3);
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+}
+/* Fila de chips que se desplaza en horizontal con desvanecido a la derecha (Android y anchos chicos). */
+.desplaza {
+  display: flex;
+  gap: var(--space-1-5);
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+  padding-bottom: 2px;
+}
+.desplaza::-webkit-scrollbar {
+  display: none;
+}
+/* Botón de texto (enlace con aspecto de enlace). */
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--brand-ink);
+  font: inherit;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  border-radius: var(--radius-xs);
+  text-decoration: none;
+}
+.enlace:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.enlace:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.enlaceSuave {
+  composes: enlace;
+  color: var(--text-2);
+  font-weight: var(--weight-medium);
+}
+/* Aviso en línea (faltantes del mensaje, promesas, provisional). */
+.aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: 10px var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--warn-border);
+  background: var(--warn-bg);
+  color: var(--text-1);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.aviso > :first-child {
+  flex: none;
+  margin-top: 1px;
+  color: var(--warn-fg);
+}
+.avisoInfo {
+  composes: aviso;
+  border-color: var(--info-border);
+  background: var(--info-bg);
+}
+.avisoInfo > :first-child {
+  color: var(--info-fg);
+}
+.avisoCritico {
+  composes: aviso;
+  border-color: var(--crit-border);
+  background: var(--crit-bg);
+}
+.avisoCritico > :first-child {
+  color: var(--crit-fg);
+}
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  width: 100%;
+}
+.pieEntre {
+  composes: pie;
+  justify-content: space-between;
+}

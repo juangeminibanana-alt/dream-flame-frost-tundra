@@ -1,0 +1,36 @@
+.punto {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--ok-solid);
+}
+.ok { background: var(--ok-solid); }
+.sincronizando { background: var(--info-solid); }
+.error { background: var(--crit-solid); }
+.inactivo { background: var(--neutral-solid); }
+
+.halo {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0;
+  animation: halo 1600ms var(--ease-exit) 3;
+  pointer-events: none;
+}
+.halo[data-pausado] {
+  animation-play-state: paused;
+}
+@keyframes halo {
+  from {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}

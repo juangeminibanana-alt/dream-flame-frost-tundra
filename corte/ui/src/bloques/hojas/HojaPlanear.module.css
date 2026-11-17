@@ -1,0 +1,70 @@
+/* Chips de fecha de un toque (01 §4.3 Planear): rejilla de 2 columnas que pasa a 1 en angosto. */
+.atajos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 168px), 1fr));
+  gap: var(--space-2);
+}
+.atajo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-standard), border-color var(--dur-fast) var(--ease-standard);
+}
+.atajo:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--brand-subtle-border);
+}
+.atajo:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.atajo:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.atajo:disabled {
+  cursor: not-allowed;
+  background: var(--disabled-bg);
+  border-color: var(--disabled-border);
+  color: var(--disabled-fg);
+}
+.atajoTitulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.atajoMeta {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.lleno .atajoMeta {
+  color: var(--warn-fg);
+}
+.actual {
+  border-color: var(--brand-subtle-border);
+}
+.otra {
+  border-style: dashed;
+}
+.ayudas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+.ayudas:empty {
+  display: none;
+}

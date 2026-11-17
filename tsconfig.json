@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    // `src/lib/db.ts` imports scripts/migration-plan.mjs; checkJs types the
+    // implementation itself instead of a hand-written declaration beside it.
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/contrato": ["./corte/spec/contrato.ts"],
+      "@/plataforma": ["./corte/ui/src/plataforma/index.ts"],
+      "@/datos": ["./corte/ui/src/datos/index.ts"],
+      "@/app": ["./corte/ui/src/app/index.ts"],
+      "@/raiz": ["./corte/ui/src/raiz/index.ts"],
+      "@/componentes": ["./corte/ui/src/componentes/index.ts"],
+      "@/dominio": ["./corte/ui/src/dominio/index.ts"],
+      "@/bloques": ["./corte/ui/src/bloques/index.ts"],
+      "@firmas/*": ["./corte/spec/ui_firmas/*"],
+      "@/pantallas/*": ["./corte/ui/src/pantallas/*"],
+      "@/*": ["./src/*"]
+    },
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "src",
+    "server",
+    "corte/ui/src/vite-env.d.ts"
+  ]
+}

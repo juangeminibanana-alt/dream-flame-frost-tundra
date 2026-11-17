@@ -1,0 +1,131 @@
+.barra {
+  --h: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+/* Héroe de Inicio (Main.png): barra de 8 y bloque de 560 como máximo. */
+.inicio {
+  --h: 8px;
+  max-width: 560px;
+}
+.muestras {
+  --h: 12px;
+}
+/* El progressbar es el contenedor: con poco ancho las celdas ceden a la pista continua (MovilInicio.png). */
+.progreso {
+  container-type: inline-size;
+  min-width: 0;
+}
+.dibujo {
+  display: block;
+}
+.pista {
+  display: flex;
+  height: var(--h);
+  border-radius: calc(var(--h) / 2);
+  background: var(--stage-track);
+  overflow: hidden;
+}
+/* Cada segmento se encima (h − 2) px sobre el anterior: la diagonal deja un corte de 2 px a 45°. */
+.segmento {
+  display: block;
+  flex: none;
+  height: 100%;
+  width: calc(var(--parte) + var(--h) - 2px);
+  margin-left: calc((var(--h) - 2px) * -1);
+}
+.segmento[data-primero] {
+  width: var(--parte);
+  margin-left: 0;
+}
+.primero { clip-path: polygon(0 0, 100% 0, calc(100% - var(--h)) 100%, 0 100%); }
+.medio { clip-path: polygon(var(--h) 0, 100% 0, calc(100% - var(--h)) 100%, 0 100%); }
+.final { clip-path: polygon(var(--h) 0, 100% 0, 100% 100%, 0 100%); }
+.completo { clip-path: none; }
+
+/* Una celda por video (lienzo aprobado): 8 de alto, radio 3 y 3 de separación. */
+.celdas {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  gap: 3px;
+  height: var(--h);
+}
+.celda {
+  display: block;
+  min-width: 0;
+  border-radius: 3px;
+  background: var(--stage-track);
+}
+.conCeldas .pista {
+  display: none;
+}
+/* Umbral de 360: un celular (≤ 430 de ventana, barra ≤ 360) lleva la pista continua de MovilInicio.png; la ventana
+   mínima de Windows y la tableta a 960 táctil (barra ≈ 400) conservan una celda por video. */
+@container (max-width: 360px) {
+  .conCeldas .celdas {
+    display: none;
+  }
+  .conCeldas .pista {
+    display: flex;
+  }
+}
+
+.publicada { background: var(--stage-publicada); }
+.programada { background: var(--stage-programada); }
+.video_listo { background: var(--stage-listo); }
+.planeada { background: var(--stage-planeada); }
+
+.textos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  min-width: 0;
+}
+.contador {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  font-weight: var(--weight-semibold);
+  color: var(--text-2);
+}
+/* En el héroe la cifra manda y el resto acompaña en text-3 (Main.png: «0 de 12» en mono 600 y «videos publicados» en
+   peso de texto). */
+.inicio .contador {
+  font-weight: var(--weight-body);
+  color: var(--text-3);
+}
+.cifra {
+  font-family: var(--font-mono);
+  font-size: calc(13px * var(--fs-lin));
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+}
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--space-1-5);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.elemento {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.punto {
+  margin-right: 1px;
+  color: var(--text-3);
+}
+.muestra {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none;
+}

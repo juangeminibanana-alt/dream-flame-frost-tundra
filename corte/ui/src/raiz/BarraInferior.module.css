@@ -1,0 +1,93 @@
+/* Barra inferior (02 §7.8). Solo tokens. La píldora aparece con fundido y escala .9 → 1 en 200 ms. */
+.barra {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-nav);
+  height: calc(var(--bottomnav-h) + var(--inset-bottom));
+  padding: 0 var(--inset-right) var(--inset-bottom) var(--inset-left);
+  border-top: 1px solid var(--glass-border);
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+.oculta {
+  transform: translateY(110%);
+  pointer-events: none;
+}
+.lista {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  height: 100%;
+  margin: 0;
+  padding: 0 var(--space-1);
+  list-style: none;
+}
+.celda {
+  min-width: 0;
+}
+.destino {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  width: 100%;
+  height: 100%;
+  min-height: var(--touch-min);
+  color: var(--text-2);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.destino:active .pildora {
+  background: var(--surface-pressed);
+}
+.destino:focus-visible {
+  outline-offset: -4px;
+  border-radius: var(--radius-md);
+}
+.pildora {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  color: inherit;
+}
+.activo .pildora {
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+  animation: pildora var(--dur-base) var(--ease-enter) both;
+}
+.etiqueta {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+  font-weight: var(--weight-medium);
+}
+.activo .etiqueta {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.insignia {
+  position: absolute;
+  top: -4px;
+  left: 32px;
+  box-shadow: 0 0 0 2px var(--bg-canvas);
+}
+
+@keyframes pildora {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@media (forced-colors: active) {
+  .activo .pildora {
+    outline: 2px solid Highlight;
+  }
+}

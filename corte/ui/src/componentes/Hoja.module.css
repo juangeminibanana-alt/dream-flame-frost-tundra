@@ -1,0 +1,122 @@
+.raiz {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+}
+.velo {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-scrim);
+  animation: aparecer var(--dur-slow) var(--ease-standard) both;
+}
+.marco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  animation: subir var(--dur-slow) var(--ease-enter) both;
+  pointer-events: none;
+}
+.hoja {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 640px);
+  max-height: var(--alto-max, 92dvh);
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+  background: var(--surface-3);
+  border: 1px solid var(--border-default);
+  border-bottom: 0;
+  box-shadow: var(--elev-highlight), var(--shadow-4);
+  color: var(--text-1);
+  padding-bottom: var(--inset-bottom);
+  outline: none;
+  transform: translateY(var(--traslado, 0px));
+  transition: transform var(--dur-slow) var(--ease-standard);
+  touch-action: none;
+}
+.hoja:focus-visible {
+  box-shadow: var(--elev-highlight), var(--shadow-4);
+}
+/* La hoja sigue al dedo 1:1: sin transición mientras se arrastra. */
+.arrastrando {
+  transition: none;
+}
+.saliendo .velo {
+  animation: desaparecer var(--dur-base) var(--ease-exit) both;
+}
+.saliendo .marco {
+  animation: bajar var(--dur-base) var(--ease-exit) both;
+}
+
+.asa {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  flex: none;
+  cursor: grab;
+}
+.asaBarra {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border-strong);
+}
+.cabeza {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) var(--space-2) var(--space-5);
+  flex: none;
+}
+.titulo {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.cuerpo {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 0 var(--space-5) var(--space-4);
+  touch-action: pan-y;
+}
+.pie {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  flex: none;
+}
+.pie > * {
+  flex: 1;
+}
+
+@keyframes aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes desaparecer { from { opacity: 1; } to { opacity: 0; } }
+@keyframes subir { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes bajar { from { transform: none; } to { transform: translateY(100%); } }
+
+/* Movimiento reducido (02 §10.4: sin desplazamientos, solo fundidos de 120–160 ms): la hoja aparece y se va con
+   fundido en vez de recorrer todo su alto. */
+@media (prefers-reduced-motion: reduce) {
+  :global(:root:not([data-motion="full"])) .marco {
+    animation-name: aparecer;
+  }
+  :global(:root:not([data-motion="full"])) .saliendo .marco {
+    animation-name: desaparecer;
+  }
+}
+:global(:root[data-reduced-motion]) .marco {
+  animation-name: aparecer;
+}
+:global(:root[data-reduced-motion]) .saliendo .marco {
+  animation-name: desaparecer;
+}

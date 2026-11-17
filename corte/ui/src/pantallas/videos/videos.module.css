@@ -1,0 +1,684 @@
+/* Videos y Detalle de video (01_ux §4.12; 02 §5, §7.18, §8, §9). Solo tokens de tokens.css. */
+
+.pantalla {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  min-width: 0;
+  padding-bottom: var(--space-12);
+}
+.accionesEncabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+/* Android: EncabezadoPantalla deja la barra (56 dp) y su contexto como hermanos dentro de .pantalla, y el gap de 20 los
+   separaba de más (20 arriba de la barra y 20 entre la barra y el contexto). Como en Ventas, aquí el gap es 0 y lo que
+   sigue al encabezado lleva su margen: 12 el primero (más los 12 del contexto) y 20 entre los demás. */
+:global(:root[data-platform="android"]) .pantalla {
+  gap: 0;
+}
+:global(:root[data-platform="android"]) .trasEncabezado {
+  margin-top: var(--space-3);
+}
+:global(:root[data-platform="android"]) .trasEncabezado + .trasEncabezado {
+  margin-top: var(--space-5);
+}
+.refrescando {
+  opacity: 0.6;
+  transition: opacity var(--dur-base) var(--ease-standard);
+}
+.srSolo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.estado {
+  margin: var(--space-12) auto;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-size);
+  line-height: var(--text-mono-lh);
+  color: var(--text-1);
+  overflow-wrap: anywhere;
+}
+.recorte {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sinCorte {
+  white-space: nowrap;
+}
+.notaFecha {
+  display: block;
+  color: var(--text-3);
+}
+
+/* ------------------------------------------------------------------ carga */
+.carga {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+.cargaControles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  overflow: hidden;
+  max-height: 36px;
+}
+.cargaTarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.cargaPoster {
+  aspect-ratio: 9 / 16;
+  border-radius: var(--radius-lg);
+}
+.cargaHeroe {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  gap: var(--space-6);
+}
+.cargaPosterGrande {
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  border-radius: var(--radius-lg);
+}
+.cargaHeroeTexto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding-top: var(--space-2);
+}
+.cargaKpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-4);
+}
+@media (max-width: 599px) {
+  .cargaHeroe {
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+/* ------------------------------------------------------------------ lista: controles (una fila arriba de lo que filtran) */
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.filaControles,
+.filaFiltros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  min-width: 0;
+}
+.segmentoRango {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.segmentoVista {
+  margin-left: auto;
+  flex: none;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.buscador {
+  flex: 0 1 300px;
+  min-width: 200px;
+  margin-left: auto;
+}
+.mostrando {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+/* Celular (y ventana compacta): el rango (botón de menú) toma el renglón y el orden va al lado como botón de ícono con
+   el mismo alto, relleno y borde que el secundario (Menu lo pinta fantasma; en táctil, circular). */
+.filaControles[data-angosta] {
+  flex-wrap: nowrap;
+}
+.menuRango {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+:global(:root) .controles .ordenIcono {
+  flex: none;
+  width: var(--control-h-md);
+  height: var(--control-h-md);
+  border-radius: var(--radius-md);
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+:global(:root) .controles .ordenIcono:hover {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+}
+@media (max-width: 599px) {
+  .segmentoRango {
+    flex: 1 1 100%;
+  }
+  .chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--content-pad-x) * -1);
+    padding-inline: var(--content-pad-x);
+    mask-image: linear-gradient(to right, var(--text-1) calc(100% - 28px), transparent);
+  }
+  .chips > * {
+    flex: none;
+  }
+  .buscador {
+    flex: 1 1 100%;
+    margin-left: 0;
+  }
+}
+:global(:root[data-platform="android"]) .segmentoRango,
+:global(:root[data-platform="android"]) .buscador {
+  flex: 1 1 100%;
+  margin-left: 0;
+}
+
+/* ------------------------------------------------------------------ lista: galería 9:16 (5–6 columnas en Windows, 2 en el celular)
+   01 §4.12: miniaturas de 180–220 de ancho. Con 176 de mínimo: 5 columnas de ~181 a 1280 (aun con barra de
+   desplazamiento), 5 de ~213 a 1440 (con 168 salían 6 de 174 y «123 pedidos · 12 % reembolsos» partía en dos renglones)
+   y 4 de ~200 a 960. */
+.rejilla {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 176px), 1fr));
+  gap: var(--space-6) var(--space-4);
+  min-width: 0;
+}
+@media (max-width: 599px) {
+  .rejilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-5) var(--space-3);
+  }
+}
+.celda {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.miniatura {
+  width: 100%;
+}
+.pie {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+  padding-inline: 2px;
+}
+.pieTienda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  max-width: 100%;
+  min-width: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-2);
+}
+.pieCifras {
+  max-width: 100%;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.pieChip {
+  margin-top: var(--space-1);
+}
+/* Si el texto no cabe (letra grande, tarjeta angosta) el chip se parte en dos renglones en vez de cortarse con «…». */
+.pie .pieChip {
+  white-space: normal;
+}
+.punto {
+  margin-right: 2px;
+}
+/* Celda «Video» de la tabla (02 §7.5: miniatura + nombre corto de 1 línea + dato en text-3). */
+.celdaVideo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.celdaVideoFoto {
+  flex: none;
+  width: 28px;
+}
+.celdaVideoTextos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.celdaVideoNombre {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+}
+.celdaVideoId {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.tablaMarco {
+  min-width: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ detalle */
+.detalle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  container-type: inline-size;
+}
+
+/* Héroe: banda abierta con la portada 9:16 y, a su lado, lo que dejó el video: texto, KPI, gráfica e ID. La última fila
+   es 1fr para que, si la portada es más alta que la columna, el sobrante quede abajo y no entre los bloques. */
+.heroe {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas:
+    "portada texto"
+    "portada kpis"
+    "portada grafica"
+    "portada id";
+  column-gap: var(--space-6);
+  row-gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+  margin-bottom: var(--space-2);
+}
+.detalle[data-compacta] .heroe {
+  grid-template-columns: 150px minmax(0, 1fr);
+  grid-template-rows: auto;
+  grid-template-areas: "portada texto";
+  gap: var(--space-4);
+  margin-bottom: 0;
+}
+.heroePortada {
+  grid-area: portada;
+  width: 100%;
+}
+.heroeTexto {
+  grid-area: texto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.heroe > .kpis {
+  grid-area: kpis;
+}
+.heroeGrafica {
+  grid-area: grafica;
+  align-self: stretch;
+}
+.heroe > .id {
+  grid-area: id;
+}
+/* Detalle de menos de 720 (ventana de ~600–900): la portada se queda con el texto y KPI, gráfica e ID bajan a todo lo
+   ancho; al lado de la portada la gráfica no se leía (~90 px). */
+@container (max-width: 719px) {
+  .detalle:not([data-compacta]) .heroe {
+    grid-template-columns: minmax(160px, 220px) minmax(0, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "portada texto"
+      "kpis kpis"
+      "grafica grafica"
+      "id id";
+    column-gap: var(--space-5);
+  }
+}
+.overline {
+  margin: 0;
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-overline);
+  text-transform: uppercase;
+  color: var(--brand-ink);
+}
+.tienda {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+.tienda:hover {
+  color: var(--text-link);
+}
+.tienda:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.fechas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.detalle[data-compacta] .fechas {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1-5);
+}
+.fecha {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.fecha svg {
+  flex: none;
+}
+.fecha svg {
+  color: var(--text-3);
+}
+/* [Abrir en TikTok] del detalle: en el encabezado desde 768; debajo (en el texto del héroe) en una ventana más angosta. */
+@media (min-width: 768px) {
+  :global(:root) .soloVentanaAngosta {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  :global(:root) .soloVentanaAncha {
+    display: none;
+  }
+}
+
+/* BandaKpi ya son 4 tarjetas: sin filete ni relleno extra encima (la banda antigua los necesitaba). */
+.kpis {
+  align-self: stretch;
+  min-width: 0;
+}
+.id {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+
+/* Portada + reproductor (Windows): el reproductor va encima de la foto; su póster deja ver la portada. */
+.marco {
+  position: relative;
+  display: block;
+  min-width: 0;
+}
+.marcoPortada {
+  width: 100%;
+}
+.marco > .reproductor {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  width: 100%;
+  max-width: none;
+  background: radial-gradient(closest-side at 50% 50%, color-mix(in srgb, var(--surface-1) 90%, transparent) 0%, color-mix(in srgb, var(--surface-1) 72%, transparent) 55%, transparent 100%);
+  box-shadow: none;
+}
+
+/* ListaNotas (de @/bloques) ya es tarjeta: toma el padding (20) y la sombra de Tarjeta amplio. */
+.notasPagina {
+  min-width: 0;
+}
+.notasPagina .notasTarjeta {
+  padding: var(--space-5);
+  box-shadow: var(--elev-highlight), var(--shadow-1);
+}
+
+/* Secciones en tarjeta (02 §5: tarjetas para módulos secundarios). */
+.seccion {
+  min-width: 0;
+}
+.seccionInterior {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.seccionCabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.seccionTitulo {
+  margin: 0;
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--text-1);
+}
+.seccionNota {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+.vacioCorto {
+  margin: 0;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  color: var(--text-2);
+}
+.listaCorta {
+  margin: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+}
+
+/* Columnas 8/4 desde 1180 (productos a la izquierda; muestras y notas a la derecha). */
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+}
+.columnaAncha,
+.columnaLateral {
+  min-width: 0;
+}
+.columnaLateral {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+@media (max-width: 1179px) {
+  .columnas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.rejillaProductos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr));
+  gap: var(--space-3);
+}
+@media (max-width: 599px) {
+  .rejillaProductos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.listaMuestras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.enlaceMuestra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: var(--control-h-md);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text-1);
+  text-decoration: none;
+  font-size: var(--text-body-sm-size);
+}
+.enlaceMuestra:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* ------------------------------------------------------------------ rev. 5 · métricas de TikTok (Display API) */
+/* Tarjeta: vistas, likes, comentarios y compartidos en text-3 (se parten en el punto medio, nunca a mitad de una cifra);
+   la conversión con su cifra en text-1 y tabular. */
+.pieMetricas {
+  max-width: 100%;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+.piePorMil {
+  max-width: 100%;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-2);
+}
+.piePorMilCifra {
+  font-weight: var(--weight-semibold);
+  color: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+.pieSinCifras {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  font-style: italic;
+}
+/* Tabla: cifras a la derecha, proporcionales y con los mismos decimales por columna (02 §7.5). */
+.celdaCifra {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+.celdaCifraFuerte {
+  font-weight: var(--weight-semibold);
+}
+.celdaCifraVacia {
+  color: var(--text-3);
+}
+
+/* Detalle: «En TikTok» (KPI de TikTok, conversión y vistas nuevas por día) a todo lo ancho, debajo del héroe. */
+.tiktok {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.tiktokCabeza {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.tiktokFila {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  min-width: 0;
+}
+@container (max-width: 719px) {
+  .tiktokFila {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.conversion {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.conversionCifra {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  color: var(--text-1);
+}
+.conversionValor {
+  font-size: var(--text-kpi-size);
+  line-height: var(--text-kpi-lh);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-display);
+}
+.conversionEtiqueta {
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+}
+.conversionDato {
+  margin: 0;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+.pieRenglon {
+  display: block;
+}

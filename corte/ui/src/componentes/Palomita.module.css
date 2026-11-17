@@ -1,0 +1,46 @@
+.palomita {
+  display: inline-grid;
+  place-items: center;
+  width: var(--t);
+  height: var(--t);
+  flex: none;
+}
+.palomita svg {
+  overflow: visible;
+}
+.circulo {
+  fill: var(--ok-solid);
+  transform-origin: 24px 24px;
+  transform-box: view-box;
+  animation: crecer var(--dur-slower) var(--ease-spring) both;
+}
+.trazo {
+  fill: none;
+  stroke: var(--ok-on-solid);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trazar var(--dur-slow) var(--ease-standard) 120ms forwards;
+}
+@keyframes crecer {
+  from { transform: scale(0.6); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes trazar {
+  to { stroke-dashoffset: 0; }
+}
+/* Movimiento reducido: aparece completa, sin rebote ni trazo. */
+@media (prefers-reduced-motion: reduce) {
+  :global(:root:not([data-motion="full"])) .circulo,
+  :global(:root:not([data-motion="full"])) .trazo {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+:global(:root[data-reduced-motion]) .circulo,
+:global(:root[data-reduced-motion]) .trazo {
+  animation: none;
+  stroke-dashoffset: 0;
+}

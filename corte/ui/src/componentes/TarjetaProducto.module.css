@@ -1,0 +1,148 @@
+.tarjeta {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--elev-highlight), var(--shadow-1);
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+/* Sombra en ::after con opacidad (02 §7.4). */
+.tarjeta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--shadow-3);
+  opacity: 0;
+  transition: opacity var(--dur-base) linear;
+  pointer-events: none;
+  z-index: 5;
+}
+:global(:root[data-platform="windows"]) .pulsable:hover,
+:global(:root:not([data-platform])) .pulsable:hover {
+  transform: translateY(-2px);
+}
+:global(:root[data-platform="windows"]) .pulsable:hover::after,
+:global(:root:not([data-platform])) .pulsable:hover::after {
+  opacity: 1;
+}
+.pulsable:active {
+  background: color-mix(in srgb, var(--surface-1), var(--text-1) 5%);
+}
+.pulsable:has(.nombreBoton:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.tarjeta .foto {
+  width: 100%;
+  border-radius: 0;
+}
+
+.ranking {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 4;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 12px;
+  background: var(--media-glyph-bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text-on-media) 12%, transparent);
+  color: var(--text-on-media);
+  font-size: 12px;
+  line-height: 24px;
+  font-weight: var(--weight-display);
+  text-align: center;
+}
+.rankingUno {
+  background: var(--brand);
+  color: var(--text-on-brand);
+  box-shadow: none;
+}
+
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px 14px;
+  min-width: 0;
+  flex: 1;
+}
+.tienda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.tiendaNombre {
+  composes: recorte1 from './util/comun.module.css';
+}
+.nombre {
+  composes: recorte2 from './util/comun.module.css';
+  margin: 0;
+  min-height: calc(2 * 19px * var(--fs-lin));
+  font-size: calc(14px * var(--fs-lin));
+  line-height: 1.357;
+  font-weight: var(--weight-medium);
+  color: var(--text-1);
+  text-align: left;
+}
+.nombreBoton {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: calc(14px * var(--fs-lin));
+  line-height: 1.357;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+}
+.nombreBoton:focus-visible {
+  box-shadow: none;
+}
+/* Botón estirado: toda la tarjeta es el objetivo del puntero. */
+.nombreBoton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+}
+.cifras {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px var(--space-2);
+  margin-top: auto;
+  min-width: 0;
+}
+.principal {
+  font-size: calc(18px * var(--fs-half));
+  line-height: 1.33;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  white-space: nowrap;
+}
+.secundaria {
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.chips {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}

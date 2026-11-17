@@ -1,0 +1,604 @@
+/* Agenda (01 §4.4; 02 §7; familia de Muestras.png: tarjetas surface-1 de radio 16 con foto, cifras en Geist Mono). */
+
+/* ------------------------------------------------------------------ navegación de periodo */
+.navegacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-4);
+  min-width: 0;
+}
+.flechas {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+}
+.periodo {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-title3-size);
+  line-height: var(--text-title3-lh);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+}
+.segmentado {
+  min-width: 200px;
+}
+
+/* ------------------------------------------------------------------ tira semanal con capacidad */
+.tira {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tiraDia {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'letra numero'
+    'barra barra'
+    'conteo conteo';
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+  width: 100%;
+  min-height: 72px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;}
+.tiraDia:hover {
+  background: var(--surface-hover);
+}
+.tiraDia:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.tiraHoy {
+  border-color: var(--brand-subtle-border);
+  background: var(--brand-subtle);
+}
+.tiraLibre {
+  background: transparent;
+  border-style: dashed;
+}
+.tiraLetra {
+  grid-area: letra;
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+}
+.tiraNumero {
+  grid-area: numero;
+  justify-self: end;
+  font-family: var(--font-mono);
+  font-size: var(--text-body-size);
+  font-weight: var(--weight-semibold);
+}
+.tiraHoy .tiraNumero {
+  color: var(--brand-ink);
+}
+.tiraBarra {
+  grid-area: barra;
+  align-self: center;
+}
+.tiraConteo,
+.tiraSin {
+  grid-area: conteo;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.tiraSin {
+  grid-row: 2 / 4;
+  align-self: end;
+  color: var(--text-3);
+}
+.tiraExcedido .tiraConteo {
+  color: var(--crit-fg);
+  font-weight: var(--weight-semibold);
+}
+
+/* ------------------------------------------------------------------ semana: «Sin fecha» + días */
+.semana {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  min-width: 0;
+}
+.sinFecha {
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-3));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-height: calc(100vh - var(--header-h) - var(--space-10));
+  min-width: 0;
+  padding: var(--space-4) var(--space-3) var(--space-3);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);}
+.sinFechaDestino {
+  border-color: var(--brand-subtle-border);
+  background: var(--brand-subtle);
+}
+.sinFechaCabeza {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+}
+.sinFechaTitulo {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-lh);
+  font-weight: var(--weight-semibold);
+}
+.tarjetasSinFecha {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 2px;
+}
+.ayudaSinFecha {
+  margin: 0;
+  padding: 0 var(--space-1);
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+
+.dias {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.banda {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4) var(--space-3) var(--space-3);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+  scroll-margin-top: calc(var(--header-h) + var(--space-4));}
+.bandaHoy {
+  border-color: var(--brand-subtle-border);
+  box-shadow: inset 3px 0 0 var(--nav-indicator), var(--elev-highlight);
+}
+.bandaLibre {
+  background: transparent;
+  border-style: dashed;
+  box-shadow: none;
+}
+.bandaPasada:not(.bandaHoy) .bandaNumero {
+  color: var(--text-3);
+}
+.bandaDestino {
+  border-color: var(--brand);
+  background: var(--brand-subtle);
+}
+.bandaCabeza {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-1);
+}
+.bandaNumero {
+  color: var(--text-1);
+  font-size: var(--text-title1-size);
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-stretch: var(--stretch-kpi);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+}
+.bandaHoy .bandaNumero {
+  color: var(--brand-ink);
+}
+.bandaTextos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.bandaSemana {
+  overflow: hidden;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--text-2);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+  font-weight: var(--weight-medium);
+}
+.capacidad {
+  font-family: var(--font-mono);
+}
+.sinVideos {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-lh);
+}
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tarjetasSinFecha {
+  grid-template-columns: minmax(0, 1fr);
+}
+.item {
+  min-width: 0;
+}
+.itemArrastrable {
+  cursor: grab;
+}
+.itemArrastrable:active {
+  cursor: grabbing;
+}
+.itemArrastrando {
+  opacity: 0.45;
+}
+.vacio {
+  display: flex;
+  align-items: center;
+  min-height: 64px;
+  margin: 0;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-default);
+  color: var(--text-3);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+}
+.bandaLibre .vacio {
+  border-color: transparent;
+  min-height: 40px;
+}
+
+/* Día sin nada: una sola línea (número, día y capacidad) para que lo que sí toca quede en el primer pliegue. Al arrastrar
+ * una tarjeta, los días que aceptan tarjetas vuelven a mostrar su zona para soltar. */
+.bandaVacia {
+  /* Número, día y capacidad en un renglón: «10  Mar 10 nov  0/3» completo (nunca «Mar 10 …»). */
+  grid-template-columns: 184px minmax(0, 1fr);
+  align-items: center;
+  padding-block: var(--space-2);
+  background: transparent;
+  box-shadow: none;
+}
+.bandaVacia .bandaSemana {
+  overflow: visible;
+}
+.bandaVacia.bandaHoy {
+  box-shadow: inset 3px 0 0 var(--nav-indicator);
+}
+.bandaVacia .bandaCabeza {
+  padding-top: 0;
+}
+.bandaVacia .bandaNumero {
+  min-width: 2ch;
+  font-size: var(--text-title3-size);
+}
+.bandaVacia .bandaTextos {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+.bandaVacia .vacio {
+  min-height: 32px;
+  padding: 0;
+  border-color: transparent;
+}
+.diasArrastrando .bandaVacia:not(.bandaPasada) .vacio {
+  min-height: 52px;
+  padding: 0 var(--space-3);
+  border-color: var(--border-default);
+}
+
+/* ------------------------------------------------------------------ agenda vacía */
+.vacia {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+.vaciaEstado {
+  padding-bottom: var(--space-4);
+}
+.vaciaTira {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  box-shadow: var(--elev-highlight);
+}
+/* Tira desplazable de 64 (02 §7.23): se desvanece a la derecha con mask-image; desplaza su contenedor, no la página. */
+.fotos {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0 calc(var(--space-5) * -1);
+  padding: 2px var(--space-5);
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(to right, var(--bg-canvas) calc(100% - var(--space-12)), transparent 100%);
+  mask-image: linear-gradient(to right, var(--bg-canvas) calc(100% - var(--space-12)), transparent 100%);
+}
+.fotos::-webkit-scrollbar {
+  display: none;
+}
+.fotos > li {
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ mes */
+.mes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+}
+.mesFila {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--space-1-5);
+}
+.mesCabeza {
+  padding-bottom: var(--space-1);
+}
+.mesLetra {
+  color: var(--text-3);
+  font-size: var(--text-caption-size);
+  font-weight: var(--weight-semibold);
+  text-align: center;
+}
+.mesCeldaEnvoltura {
+  display: block;
+  min-width: 0;
+}
+.mesCelda {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 92px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;}
+.mesCelda:hover {
+  background: var(--surface-hover);
+}
+.mesCelda:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.mesFuera {
+  opacity: 0.45;
+}
+.mesLibre {
+  background: transparent;
+  border-style: dashed;
+}
+.mesHoy {
+  border-color: var(--brand-subtle-border);
+  background: var(--brand-subtle);
+}
+.mesNumero {
+  font-family: var(--font-mono);
+  font-size: var(--text-body-sm-size);
+  font-weight: var(--weight-semibold);
+}
+.mesHoy .mesNumero {
+  color: var(--brand-ink);
+}
+.mesContenido {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.mesPuntos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-width: 48px;
+}
+.mesPunto {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--stage-planeada);
+}
+.mesPunto[data-etapa='video_listo'] {
+  background: var(--stage-listo);
+}
+.mesPunto[data-etapa='programada'] {
+  background: var(--stage-programada);
+}
+.mesPunto[data-etapa='publicada'] {
+  background: var(--stage-publicada);
+}
+.mesConteo {
+  font-size: var(--text-title3-size);
+  line-height: 1;
+  font-weight: var(--weight-display);
+  font-variant-numeric: tabular-nums;
+}
+.mesExcedido .mesConteo {
+  color: var(--crit-fg);
+}
+.mesSin {
+  color: var(--text-3);
+  font-size: var(--text-micro-size);
+  line-height: var(--text-micro-lh);
+}
+
+/* ------------------------------------------------------------------ celular */
+.sinFechaMovil {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.plegable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--text-1);
+  font: inherit;
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+}
+.plegable:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.girado {
+  transform: rotate(180deg);
+}
+.fab {
+  justify-content: flex-end;
+  margin-left: auto;
+  padding: 0 var(--holgura-derecha, 0px) 0 var(--holgura-izquierda, 0px);
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.fab > * {
+  box-shadow: var(--shadow-3);
+}
+
+@media (max-width: 1179px) {
+  .semana {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sinFecha {
+    position: static;
+    max-height: none;
+    order: 2;
+  }
+  .tarjetasSinFecha {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+@media (max-width: 599px) {
+  .tira {
+    gap: var(--space-1);
+  }
+  .tiraDia {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'letra'
+      'numero'
+      'barra'
+      'conteo';
+    justify-items: center;
+    min-height: 0;
+    padding: var(--space-2) var(--space-1);
+    text-align: center;
+  }
+  .tiraNumero {
+    justify-self: center;
+  }
+  .tiraBarra {
+    width: 100%;
+  }
+  .tiraSin {
+    grid-row: auto;
+    grid-area: barra;
+    align-self: center;
+  }
+  .banda {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: 0;
+    border: 0;
+    background: none;
+    box-shadow: none;
+  }
+  .bandaHoy {
+    box-shadow: none;
+  }
+  .bandaCabeza {
+    position: sticky;
+    top: calc(var(--header-h) + var(--inset-top));
+    z-index: 1;
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-2) 0;
+    background: var(--bg-canvas);
+  }
+  .bandaNumero {
+    display: none;
+  }
+  .bandaTextos {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .bandaSemana {
+    color: var(--text-1);
+    font-size: var(--text-body-sm-size);
+    line-height: var(--text-body-sm-lh);
+    font-weight: var(--weight-semibold);
+  }
+  .tarjetas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .vacio {
+    min-height: 48px;
+  }
+  .bandaVacia {
+    gap: 0;
+    padding: 0;
+  }
+  .bandaVacia .bandaTextos {
+    justify-content: space-between;
+  }
+  .bandaVacia .vacio {
+    min-height: 0;
+    padding: 0 0 var(--space-2);
+    font-size: var(--text-caption-size);
+    line-height: var(--text-caption-lh);
+  }
+  .bandaLibre .vacio {
+    display: none;
+  }
+  /* Celular: el vacío sube junto a las pestañas (en escritorio respira con 48 px arriba). */
+  .vacia > .vaciaEstado {
+    padding-top: var(--space-6);
+  }
+}

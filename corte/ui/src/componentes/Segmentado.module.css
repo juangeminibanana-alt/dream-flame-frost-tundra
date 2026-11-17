@@ -1,0 +1,94 @@
+/* Segmentado (02 §7.11) con las medidas del lienzo aprobado (pestañas «Pendientes · Agenda · Todas» y periodo de
+   Ventas): 44 de alto, relleno de 4 y radio 12; opciones con radio 9 y texto de 14 desde 600. Los colores siguen en 02
+   (contenedor surface-2, pulgar --seg-thumb-bg). Nunca baja de 44 de objetivo; en táctil mide 48 y cada opción
+   extiende su área hasta el borde del contenedor. */
+.segmentado {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  max-width: 100%;
+  min-height: max(44px, var(--control-h-md));
+  padding: var(--space-1);
+  border-radius: 12px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border-subtle);
+}
+.completo {
+  display: grid;
+  width: 100%;
+}
+.pulgar {
+  position: absolute;
+  top: var(--space-1);
+  bottom: var(--space-1);
+  left: var(--space-1);
+  width: calc((100% - 2 * var(--space-1)) / var(--n));
+  border-radius: 9px;
+  background: var(--seg-thumb-bg);
+  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--border-subtle);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform var(--dur-base) var(--ease-standard);
+}
+.opcion {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Sin espacio, la etiqueta pasa a dos líneas y el conteo baja (crece en alto con min-height): nunca se corta. */
+  flex-wrap: wrap;
+  gap: 0 var(--space-1-5);
+  min-width: 0;
+  /* En angosto el texto va centrado en columnas iguales: el aire lateral solo cuenta cuando la palabra casi llena la
+     columna, y con 6 «Compacta» y «Pendientes» caben enteras a 360 (con 10 se partían a media palabra). */
+  padding: var(--space-1) 6px;
+  border-radius: 9px;
+  color: var(--text-2);
+  font-size: var(--text-body-sm-size);
+  line-height: 1.2;
+  font-weight: var(--weight-medium);
+  text-align: center;
+  cursor: pointer;
+}
+/* Táctil: el área de cada opción llega al borde del contenedor (48), sin crecer a la vista (tokens.css §14.3). */
+:global(:root[data-density="touch"]) .opcion::after {
+  content: "";
+  position: absolute;
+  inset: calc(var(--space-1) * -1) 0;
+}
+.opcion:hover {
+  color: var(--text-1);
+}
+.opcion[aria-checked="true"] {
+  color: var(--text-1);
+  font-weight: var(--weight-semibold);
+}
+.etiqueta {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+/* Desde 600 (Windows): texto de 14 con 14 de aire, como las pestañas del lienzo. En angosto se queda en body-sm (14 en
+   táctil): con 14 y 12 fijos «Compacta» y «Pendientes» se partían a media palabra en columnas de 85–95 px. Sin %: en el
+   segmentado de ancho propio (inline-grid) un padding en % es cíclico y también partía la palabra. */
+@media (min-width: 600px) {
+  .opcion {
+    padding-inline: 14px;
+    font-size: calc(14px * var(--fs-lin));
+  }
+}
+.conteo {
+  font-family: var(--font-mono);
+  font-size: calc(12px * var(--fs-lin));
+  font-weight: var(--weight-medium);
+  color: var(--text-3);
+}
+.opcion[aria-checked="true"] .conteo {
+  color: var(--text-2);
+}
+@media (forced-colors: active) {
+  .opcion[aria-checked="true"] {
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

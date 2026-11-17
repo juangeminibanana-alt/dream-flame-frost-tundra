@@ -1,0 +1,29 @@
+/* ==========================================================================
+   Corte · fuentes empaquetadas (BUILD_SPEC §8.1.3, 02 §4.1)
+   Solo el subconjunto latin (estilo normal) de cada paquete: nada se descarga de internet.
+   - Mona Sans Variable: ejes wght 200–900 y wdth 75–125 (archivo "wdth" de @fontsource-variable/mona-sans 5.3.0).
+   - Geist Mono Variable: eje wght 100–900 (@fontsource-variable/geist-mono 5.3.0).
+   Presupuesto: ≤ 125 KB sumando los .woff2 emitidos (98,124 + 23,128 B). Lo comprueba scripts/verificar_dist.mjs.
+   Glifos «≈» U+2248, «→» U+2192, «✓» U+2713 y «★» U+2605: NO están en ningún woff2 de los dos paquetes
+   (lo comprueba scripts/subconjunto_fuentes.mjs leyendo la tabla cmap). Plan de §8.1.3: los componentes usan
+   íconos (Check, Star, ArrowRight) y «≈» cae a la fuente de respaldo del sistema de --font-sans/--font-mono.
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Mona Sans Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  font-stretch: 75% 125%;
+  src: url('../../../../node_modules/@fontsource-variable/mona-sans/files/mona-sans-latin-wdth-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Geist Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../../../../node_modules/@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
