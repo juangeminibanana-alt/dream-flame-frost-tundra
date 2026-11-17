@@ -1,9 +1,44 @@
 export const COLORES_PACK = [
-  { id: "signal-black", etiqueta: "Negro intenso", archivo: "ugc/producto/01_signal_black.jpg", en: "intense signal black", adjetivo: "negra", muestra: true },
-  { id: "royal-blue", etiqueta: "Azul royal", archivo: "ugc/producto/02_royal_blue.jpg", en: "royal blue", adjetivo: "azul royal", muestra: false },
-  { id: "burgundy", etiqueta: "Borgoña", archivo: "ugc/producto/03_burgundy.jpg", en: "burgundy", adjetivo: "borgoña", muestra: false },
-  { id: "white", etiqueta: "Blanco", archivo: "ugc/producto/04_white.jpg", en: "white", adjetivo: "blanca", muestra: false },
-  { id: "lilac", etiqueta: "Lila", archivo: "ugc/producto/05_lilac.jpg", en: "lilac", adjetivo: "lila", muestra: false },
+  {
+    id: "signal-black",
+    etiqueta: "Negro intenso",
+    archivo: "ugc/producto/01_signal_black.jpg",
+    en: "intense signal black",
+    adjetivo: "negra",
+    muestra: true,
+  },
+  {
+    id: "royal-blue",
+    etiqueta: "Azul royal",
+    archivo: "ugc/producto/02_royal_blue.jpg",
+    en: "royal blue",
+    adjetivo: "azul royal",
+    muestra: false,
+  },
+  {
+    id: "burgundy",
+    etiqueta: "Borgoña",
+    archivo: "ugc/producto/03_burgundy.jpg",
+    en: "burgundy",
+    adjetivo: "borgoña",
+    muestra: false,
+  },
+  {
+    id: "white",
+    etiqueta: "Blanco",
+    archivo: "ugc/producto/04_white.jpg",
+    en: "white",
+    adjetivo: "blanca",
+    muestra: false,
+  },
+  {
+    id: "lilac",
+    etiqueta: "Lila",
+    archivo: "ugc/producto/05_lilac.jpg",
+    en: "lilac",
+    adjetivo: "lila",
+    muestra: false,
+  },
 ] as const;
 
 export type ColorPack = (typeof COLORES_PACK)[number]["id"];
@@ -14,15 +49,37 @@ export function colorPack(id: string) {
 
 export function guionPack(id: string): string {
   const color = colorPack(id) ?? COLORES_PACK[0];
-  const talla = color.muestra ? " La mía es XL, como a doscientos veintisiete pesos." : " Como a doscientos veintisiete pesos.";
+  const talla = color.muestra
+    ? " La mía es XL, como a doscientos veintisiete pesos."
+    : " Como a doscientos veintisiete pesos.";
   return `No es hoodie: es sudadera ${color.adjetivo} de cuello Perkins con media cremallera. Corte entallado, tela afelpada.${talla}`;
 }
 
 export const IDEAS_PACK = [
-  { id: "probar", numero: "01", etiqueta: "Probar la prenda", texto: "La persona lleva el producto y muestra cómo se ve." },
-  { id: "manos", numero: "02", etiqueta: "Solo manos", texto: "El producto es protagonista, acompañado por las manos." },
-  { id: "unboxing", numero: "03", etiqueta: "Unboxing", texto: "Abrir, descubrir y presentar el producto." },
-  { id: "detalle", numero: "04", etiqueta: "Detalles del producto", texto: "Acercamientos para mostrar sus rasgos reales." },
+  {
+    id: "probar",
+    numero: "01",
+    etiqueta: "Probar la prenda",
+    texto: "La persona lleva el producto y muestra cómo se ve.",
+  },
+  {
+    id: "manos",
+    numero: "02",
+    etiqueta: "Solo manos",
+    texto: "El producto es protagonista, acompañado por las manos.",
+  },
+  {
+    id: "unboxing",
+    numero: "03",
+    etiqueta: "Unboxing",
+    texto: "Abrir, descubrir y presentar el producto.",
+  },
+  {
+    id: "detalle",
+    numero: "04",
+    etiqueta: "Detalles del producto",
+    texto: "Acercamientos para mostrar sus rasgos reales.",
+  },
 ] as const;
 
 export type IdeaPack = (typeof IDEAS_PACK)[number]["id"];
@@ -33,10 +90,20 @@ export function ideaPack(id: string) {
 
 export function refsIdea(idea: IdeaPack, archivoProducto: string): string[] {
   if (idea === "manos") {
-    return ["ugc/habitacion/01_habitacion.jpg", "ugc/avatar/02_frente.jpg", "ugc/avatar/05_perfil_izquierdo.jpg", archivoProducto];
+    return [
+      "ugc/habitacion/01_habitacion.jpg",
+      "ugc/avatar/02_frente.jpg",
+      "ugc/avatar/05_perfil_izquierdo.jpg",
+      archivoProducto,
+    ];
   }
   if (idea === "detalle") {
-    return ["ugc/habitacion/01_habitacion.jpg", "ugc/avatar/02_frente.jpg", archivoProducto, "ugc/avatar/01_rostro.jpg"];
+    return [
+      "ugc/habitacion/01_habitacion.jpg",
+      "ugc/avatar/02_frente.jpg",
+      archivoProducto,
+      "ugc/avatar/01_rostro.jpg",
+    ];
   }
   return [
     "ugc/habitacion/01_habitacion.jpg",
@@ -49,10 +116,13 @@ export function refsIdea(idea: IdeaPack, archivoProducto: string): string[] {
 
 export function promptIdea(idea: IdeaPack, colorId: string): string {
   const color = colorPack(colorId) ?? COLORES_PACK[0];
-  const prenda = `The last garment image is a fitted men's long-sleeve quarter-zip in ${color.en}: short Perkins collar, half zipper, metallic pull, darker panels on the shoulders and outer sleeves, no hood, no print. Copy that garment.`;
-  const cuarto = "The first image is the only room: frameless mirror, rough off-white stucco, beige tile, empty corner. No door, no hallway, no picture.";
-  const cuerpo = "Body size comes from the side-view image. Copy that stomach depth and that arm thickness. Do not make him heavier, rounder or slimmer. The front-body image has a blank head on purpose: do not invent a second face.";
-  const cierre = "Photorealistic, no text, no watermark, no logo, no extra people. Neck, chest and hands stay plain skin. Do not add drawings or letters on the skin.";
+  const prenda = `The referenced garment is a fitted men's long-sleeve quarter-zip in ${color.en}: short Perkins collar, half zipper, metallic pull, darker panels on the shoulders and outer sleeves, no hood, no print. Copy that garment.`;
+  const cuarto =
+    "The first image is the only room: frameless mirror, rough off-white stucco, beige tile, empty corner. No door, no hallway, no picture.";
+  const cuerpo =
+    "Body size comes from the side-view image. Copy that stomach depth and that arm thickness. Do not make him heavier, rounder or slimmer. The front-body image has a blank head on purpose: do not invent a second face.";
+  const cierre =
+    "Photorealistic, no text, no watermark, no logo, no extra people. Neck, chest and hands stay plain skin. Do not add drawings or letters on the skin.";
   if (idea === "manos") {
     return [
       "Hands-only photo. The sweatshirt is the subject and his face stays out of frame.",
@@ -129,22 +199,34 @@ export const AJUSTES_PACK: AjustesPack = {
   resolution: "720p",
 };
 
-export function ajustesPack(input: Partial<AjustesPack> | undefined): AjustesPack {
-  const duration = Number.isInteger(input?.duration) ? (input?.duration as number) : AJUSTES_PACK.duration;
-  const aspectRatio = RELACIONES_PACK.some((r) => r.id === input?.aspectRatio)
-    ? (input?.aspectRatio as RelacionPack)
-    : AJUSTES_PACK.aspectRatio;
-  const resolution = CALIDADES_PACK.some((c) => c.id === input?.resolution)
-    ? (input?.resolution as CalidadPack)
-    : AJUSTES_PACK.resolution;
-  return {
-    duration: Math.min(DURACION_PACK.max, Math.max(DURACION_PACK.min, duration)),
-    aspectRatio,
-    resolution,
-  };
+export function relacionPack(value: unknown): RelacionPack {
+  if (value === undefined) return AJUSTES_PACK.aspectRatio;
+  const relacion = RELACIONES_PACK.find((r) => r.id === value);
+  if (!relacion) throw new Error("Esa relación de aspecto no está disponible.");
+  return relacion.id;
 }
 
-export function promptVideo(id: string, ajustes: AjustesPack = AJUSTES_PACK, idea: IdeaPack = "probar"): string {
+export function ajustesPack(input: Partial<AjustesPack> | undefined): AjustesPack {
+  const duration = input?.duration === undefined ? AJUSTES_PACK.duration : input.duration;
+  if (!Number.isInteger(duration) || duration < DURACION_PACK.min || duration > DURACION_PACK.max) {
+    throw new Error(
+      `La duración debe ser un número entero entre ${DURACION_PACK.min} y ${DURACION_PACK.max} segundos.`,
+    );
+  }
+  const resolution =
+    input?.resolution === undefined
+      ? AJUSTES_PACK.resolution
+      : CALIDADES_PACK.find((c) => c.id === input.resolution)?.id;
+  if (!resolution) throw new Error("Con estas referencias, elige 480p o 720p.");
+  return { duration, aspectRatio: relacionPack(input?.aspectRatio), resolution };
+}
+
+export function promptVideo(
+  id: string,
+  ajustes: AjustesPack = AJUSTES_PACK,
+  idea: IdeaPack = "probar",
+  firstFrame = false,
+): string {
   const color = colorPack(id) ?? COLORES_PACK[0];
   const movimiento =
     idea === "manos"
@@ -154,13 +236,22 @@ export function promptVideo(id: string, ajustes: AjustesPack = AJUSTES_PACK, ide
         : idea === "detalle"
           ? "The view moves in on the Perkins collar, the half zipper, the metallic pull and the darker shoulder panel, then holds. No invented prints."
           : "Phone in one hand at chest height, mouth closed. He tugs the hem once, then turns a few degrees and holds. He is wearing the sweatshirt.";
-  return [
-    `The same man from <IMAGE_0>, <IMAGE_1>, <IMAGE_2>, <IMAGE_3> and <IMAGE_4> is in <IMAGE_5>, with the sweatshirt from <IMAGE_6> instead of the t-shirt.`,
+  const prompt = [
+    idea === "probar"
+      ? `The same man from <IMAGE_0>, <IMAGE_1>, <IMAGE_2>, <IMAGE_3> and <IMAGE_4> is in <IMAGE_5>, wearing the sweatshirt from <IMAGE_6> instead of the t-shirt.`
+      : `Use the person and hands from <IMAGE_0>, <IMAGE_1>, <IMAGE_2>, <IMAGE_3> and <IMAGE_4>, the room from <IMAGE_5>, and the separate sweatshirt from <IMAGE_6>. The selected idea determines which parts of the person are visible.`,
     `<IMAGE_0> is the front face. <IMAGE_3> is his right profile and <IMAGE_4> is his left profile. One man only. <IMAGE_1> has a blank head on purpose: do not put a different face there.`,
     `Body size comes from the side views <IMAGE_3> and <IMAGE_4>. Copy that chest, that stomach depth, that waist and that arm thickness. Do not make him heavier, rounder or slimmer than those side views.`,
-    `Sleeves stay down. The zipper is closed up to the collar. Neck, chest and hands are plain skin. Do not add drawings or letters on the skin.`,
+    idea === "probar"
+      ? "Sleeves stay down. The zipper is closed up to the collar. Neck, chest and hands are plain skin. Do not add drawings or letters on the skin."
+      : "Keep the separate garment's collar, zipper and sleeves faithful to the product reference. Hands are plain skin. Do not add drawings or letters on the skin.",
     `<IMAGE_5> is only that frameless mirror: rough off-white stucco and beige tile in an empty corner. No door, no hallway, no picture.`,
     `The garment from <IMAGE_6> is a fitted men's long-sleeve quarter-zip in ${color.en}, short Perkins collar, half zipper, metallic pull, darker panels on the shoulders and outer sleeves, no hood.`,
     `${ajustes.duration} seconds, framed ${ajustes.aspectRatio}. ${movimiento} No dance, no lip-sync, no extra people, no text.`,
+  ].join(" ");
+  if (!firstFrame) return prompt;
+  return [
+    "Use <IMAGE_0> as the exact first frame and preserve its composition, garment, person, room and lighting. Animate this selected idea rather than inventing a new opening image.",
+    prompt.replace(/<IMAGE_(\d+)>/g, (_, index: string) => `<IMAGE_${Number(index) + 1}>`),
   ].join(" ");
 }

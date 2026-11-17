@@ -7,6 +7,7 @@ import { test } from "node:test";
 import { promisify } from "node:util";
 import {
   APP_ENV_REL_PATH,
+  commandInvocation,
   mergeAppEnv,
   parseAppEnv,
   projectRoot,
@@ -57,6 +58,42 @@ test("an explicit process-env override wins over the file", () => {
   );
   assert.equal(merged.VITE_AUTH_ENABLED, "true");
   assert.equal(merged.PATH, "/usr/bin");
+});
+
+test("Windows starts Vite's installed JS entrypoint with Node and literal arguments", () => {
+  const root = join(tmpdir(), "workspace with spaces");
+  const args = ["build", "--base", "/a path/$literal"];
+  assert.deepEqual(
+    commandInvocation("vite", args, {
+      platform: "win32",
+      execPath: "node-with-spaces.exe",
+      root,
+    }),
+    {
+      command: "node-with-spaces.exe",
+      args: [join(root, "node_modules", "vite", "bin", "vite.js"), ...args],
+    },
+  );
+});
+
+test("Linux keeps the original Vite invocation", () => {
+  const args = ["dev", "--host", "0.0.0.0", "--port", "8080"];
+  assert.deepEqual(commandInvocation("vite", args, { platform: "linux" }), {
+    command: "vite",
+    args,
+  });
+});
+
+test("Windows leaves other commands unchanged instead of invoking a shell", () => {
+  const args = ["-e", PRINT_FLAG];
+  assert.deepEqual(commandInvocation(process.execPath, args, { platform: "win32" }), {
+    command: process.execPath,
+    args,
+  });
+  assert.deepEqual(commandInvocation("vite.cmd", ["build"], { platform: "win32" }), {
+    command: "vite.cmd",
+    args: ["build"],
+  });
 });
 
 test("the template ships auth off", () => {

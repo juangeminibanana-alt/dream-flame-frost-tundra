@@ -29,6 +29,10 @@
   object-fit: contain;
   background: var(--bg-sunken);
 }
+.medioAnterior {
+  display: block;
+  max-height: 36rem;
+}
 .aviso {
   margin: 0;
   color: var(--crit-fg);
@@ -114,7 +118,7 @@
 .chip span {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 var(--space-3);
   border-radius: var(--radius-full);
   border: 1px solid var(--border-default);
@@ -209,6 +213,68 @@
   color: var(--text-3);
   font-size: var(--text-body-sm-size);
   line-height: var(--text-body-sm-lh);
+}
+.estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-left: 3px solid var(--brand);
+  background: var(--surface-1);
+  min-width: 0;
+}
+.estadoTexto {
+  margin: 0;
+  color: var(--text-1);
+  font-size: var(--text-body-size, 1rem);
+  line-height: var(--text-body-lh, 1.5);
+  font-weight: var(--weight-medium);
+}
+.entrega {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.enlace {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--brand);
+  font: inherit;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-lh);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.enlace:hover:not(:disabled) {
+  background: var(--surface-selected);
+}
+.enlace:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+.enlace:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.ideaCuerpo button,
+.estado button,
+.entrega button {
+  min-height: 44px;
 }
 @media (max-width: 800px) {
   .cuerpo {
